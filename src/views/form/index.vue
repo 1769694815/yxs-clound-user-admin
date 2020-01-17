@@ -1,3 +1,10 @@
+<!--
+ * @Author: xwen
+ * @Date: 2019-12-31 09:12:06
+ * @LastEditTime : 2020-01-17 09:43:47
+ * @LastEditors  : xwen
+ * @Description: 新增富文本编辑器
+ -->
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="120px">
@@ -39,6 +46,9 @@
       <el-form-item label="Activity form">
         <el-input v-model="form.desc" type="textarea" />
       </el-form-item>
+      <el-form-item label="富文本编辑器">
+        <tinymce v-model="form.content" :height="300" />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">Create</el-button>
         <el-button @click="onCancel">Cancel</el-button>
@@ -48,7 +58,11 @@
 </template>
 
 <script>
+import Tinymce from '@/components/Tinymce'
 export default {
+  components: {
+    Tinymce
+  },
   data() {
     return {
       form: {
@@ -59,7 +73,8 @@ export default {
         delivery: false,
         type: [],
         resource: '',
-        desc: ''
+        desc: '',
+        content: ''
       }
     }
   },

@@ -24,7 +24,7 @@ import '@/permission' // permission control
  * please remove it before going online! ! !
  */
 import { mockXHR } from '../mock'
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'development') {
   mockXHR()
 }
 
@@ -32,6 +32,8 @@ if (process.env.NODE_ENV === 'production') {
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
+Vue.prototype.$upload_qiniu_url = 'https://upload-z2.qiniup.com/'
+Vue.prototype.$upload_qiniu_addr = 'https://jdzimage.chengyanzaixian.cn/'
 
 Vue.config.productionTip = false
 
