@@ -1,6 +1,7 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
+import { encryption } from '@/utils/index'
 
 const getDefaultState = () => {
   return {
@@ -34,9 +35,13 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const user = encryption({
+      data: userInfo,
+      key: 'pigxpigxpigxpigx',
+      param: ['password']
+    })
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login(user.username, user.password, user.code, user.randomStr).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)

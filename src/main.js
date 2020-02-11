@@ -11,6 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import * as urls from '@/config/env'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -34,6 +35,11 @@ if (process.env.NODE_ENV === 'development') {
 Vue.use(ElementUI)
 Vue.prototype.$upload_qiniu_url = 'https://upload-z2.qiniup.com/'
 Vue.prototype.$upload_qiniu_addr = 'https://jdzimage.chengyanzaixian.cn/'
+
+// 加载相关url地址
+Object.keys(urls).forEach(key => {
+  Vue.prototype[key] = urls[key]
+})
 
 Vue.config.productionTip = false
 
