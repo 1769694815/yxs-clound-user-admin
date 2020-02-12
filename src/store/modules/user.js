@@ -144,7 +144,6 @@ const mutations = {
     // Object.assign(state, state)
   },
   SET_ACCESS_TOKEN: (state, access_token) => {
-    console.log(access_token)
     state.access_token = access_token
     setStore({
       name: 'access_token',
@@ -181,13 +180,15 @@ const mutations = {
     }
     state.permissions = list
   },
-  SET_ROUTES: (state, routes) => {
-    console.log('routers', routes)
-    state.addRoutes = routes
-    state.routes = routes
+  SET_ROUTES: (state, params = {}) => {
+    let { type, asyncRoutes } = params
+    if (type !== false) {
+      state.addRoutes = asyncRoutes
+      state.routes = asyncRoutes
+    }
     setStore({
       name: 'menu',
-      content: routes,
+      content: asyncRoutes,
       type: 'session'
     })
   }
@@ -204,7 +205,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(user.username, user.password, user.code, user.randomStr).then(response => {
         const data = response.data
-        console.log(data)
         commit('SET_ACCESS_TOKEN', data.access_token)
         commit('SET_REFRESH_TOKEN', data.refresh_token)
         commit('SET_EXPIRES_IN', data.expires_in)
@@ -220,7 +220,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
         const data = response.data.data || {}
-        console.log('userInfo', data)
         commit('SET_USER_INFO', data.sysUser)
         commit('SET_ROLES', data.roles || [])
         commit('SET_PERMISSIONS', data.permissions || [])
@@ -232,7 +231,7 @@ const actions = {
   },
 
   // 获取系统菜单
-  getMenu({ commit }) {
+  getMenu({ commit }, obj) {
     return new Promise((resolve, reject) => {
       getMenu().then(response => {
         const data = response.data.data || {}
@@ -240,11 +239,9 @@ const actions = {
         menu.forEach(ele => {
           addPath(ele)
         })
-        // let type = obj.type
-        // commit('SET_MENU', {type, menu})
+        let type = obj.type
         const asyncRoutes = constantRoutes.concat(formatRoutes(menu))
-        console.log('asyncRoutes', asyncRoutes)
-        commit('SET_ROUTES', asyncRoutes)
+        commit('SET_ROUTES', { type, asyncRoutes })
         resolve(asyncRoutes)
       }).catch(error => {
         reject(error)

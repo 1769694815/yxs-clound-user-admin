@@ -1,23 +1,15 @@
 /*
- * @Date: 2020-02-11 17:07:24
+ * @Date: 2020-02-12 17:39:40
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-12 18:04:24
- * @Description: 菜单api
+ * @LastEditTime : 2020-02-12 18:30:20
+ * @Description: 获取部门api 
  */
 import request from '@/utils/request'
 
-export function getMenu(id) {
+export function fetchTree(query) {
   return request({
-    url: '/admin/menu',
-    params: { parentId: id },
-    method: 'get'
-  })
-}
-
-export function fetchMenuTree(query) {
-  return request({
-    url: '/admin/menu/tree',
+    url: '/admin/dept/tree',
     method: 'get',
     params: query
   })
@@ -25,7 +17,7 @@ export function fetchMenuTree(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/menu',
+    url: '/admin/dept/',
     method: 'post',
     data: obj
   })
@@ -33,21 +25,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/menu/' + id,
+    url: '/admin/dept/' + id,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return request({
-    url: '/admin/menu/' + id,
+    url: '/admin/dept/' + id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/menu',
+    url: '/admin/dept/',
     method: 'put',
     data: obj
   })
