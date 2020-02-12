@@ -1,34 +1,65 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getStore, setStore } from '@/utils/store'
+import { removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { encryption } from '@/utils/index'
 
-const getDefaultState = () => {
-  return {
-    token: getToken(),
-    name: '',
-    avatar: '',
-    roles: []
-  }
+const state = {
+  userInfo: {},
+  permissions: {},
+  roles: [],
+  expires_in: getStore({
+    name: 'expires_in'
+  }) || '',
+  access_token: getStore({
+    name: 'access_token'
+  }) || '',
+  refresh_token: getStore({
+    name: 'refresh_token'
+  }) || ''
 }
-
-const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => {
-    Object.assign(state, getDefaultState())
+    // Object.assign(state, state)
   },
-  SET_TOKEN: (state, token) => {
-    state.token = token
+  SET_ACCESS_TOKEN: (state, access_token) => {
+    console.log(access_token)
+    state.access_token = access_token
+    setStore({
+      name: 'access_token',
+      content: state.access_token,
+      type: 'session'
+    })
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_EXPIRES_IN: (state, expires_in) => {
+    state.expires_in = expires_in
+    setStore({
+      name: 'expires_in',
+      content: state.expires_in,
+      type: 'session'
+    })
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_REFRESH_TOKEN: (state, rfToken) => {
+    state.refresh_token = rfToken
+    setStore({
+      name: 'refresh_token',
+      content: state.refresh_token,
+      type: 'session'
+    })
+  },
+  SET_USER_INFO: (state, userInfo) => {
+    state.userInfo = userInfo
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles
+  },
+  SET_PERMISSIONS: (state, permissions) => {
+    const list = {}
+    for (let i = 0; i < permissions.length; i++) {
+      list[permissions[i]] = true
+    }
+    state.permissions = list
   }
 }
 
@@ -42,9 +73,11 @@ const actions = {
     })
     return new Promise((resolve, reject) => {
       login(user.username, user.password, user.code, user.randomStr).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        const data = response.data
+        console.log(data)
+        commit('SET_ACCESS_TOKEN', data.access_token)
+        commit('SET_REFRESH_TOKEN', data.refresh_token)
+        commit('SET_EXPIRES_IN', data.expires_in)
         resolve()
       }).catch(error => {
         reject(error)
@@ -53,25 +86,14 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { roles, name, avatar } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+      getInfo().then(response => {
+        const data = response.data.data || {}
+        console.log('userInfo', data)
+        commit('SET_USER_INFO', data.sysUser)
+        commit('SET_ROLES', data.roles || [])
+        commit('SET_PERMISSIONS', data.permissions || [])
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -80,11 +102,14 @@ const actions = {
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove token first
-        commit('RESET_STATE')
+      logout().then(() => {
+        commit('SET_USER_INFO', {})
+        commit('SET_ACCESS_TOKEN', '')
+        commit('SET_REFRESH_TOKEN', '')
+        commit('SET_EXPIRES_IN', '')
+        commit('SET_ROLES', [])
         resetRouter()
         resolve()
       }).catch(error => {
@@ -93,11 +118,14 @@ const actions = {
     })
   },
 
-  // remove token
-  resetToken({ commit }) {
+  // 注销session
+  fedLogOut({ commit }) {
     return new Promise(resolve => {
-      removeToken() // must remove token first
-      commit('RESET_STATE')
+      resetRouter()
+      commit('SET_USER_INFO', {})
+      commit('SET_ACCESS_TOKEN', '')
+      commit('SET_REFRESH_TOKEN', '')
+      commit('SET_ROLES', [])
       resolve()
     })
   }

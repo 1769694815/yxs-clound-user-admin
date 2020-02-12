@@ -73,7 +73,7 @@ service.interceptors.response.use(
         message: message,
         type: 'error'
       })
-      store.dispatch('FedLogOut').then(() => {
+      store.dispatch('user/fedLogOut').then(() => {
         router.push({ path: '/login' })
       })
       return
