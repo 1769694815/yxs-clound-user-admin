@@ -1,11 +1,13 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 import store from '@/store'
+import router from '@/router/index'
 import { getStore } from '../utils/store'
+import { serialize } from '@/utils/index'
 import qs from 'qs'
 
 // 返回其他状态吗
-axios.defaults.validateStatus = function (status) {
+axios.defaults.validateStatus = function(status) {
   return status >= 200 && status <= 500 // 默认的
 }
 // 跨域请求，允许保存cookie
@@ -38,7 +40,7 @@ service.interceptors.request.use(
     }
 
     if (config.method === 'get') {
-      config.paramsSerializer = function (params) {
+      config.paramsSerializer = function(params) {
         return qs.stringify(params, { arrayFormat: 'repeat' })
       }
     }

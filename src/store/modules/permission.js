@@ -42,7 +42,6 @@ function formatRoutes(aMenu = [], first) {
   if (aMenu.length === 0) return
   for (let i = 0; i < aMenu.length; i++) {
     const oMenu = aMenu[i]
-    console.log('oMenu', oMenu)
     if (routerList.includes(oMenu[propsDefault.path])) return
     const path = (() => {
       if (!oMenu[propsDefault.path]) {
@@ -54,12 +53,8 @@ function formatRoutes(aMenu = [], first) {
       }
     })()
 
-    console.log('path', path)
-
     // 特殊处理组件
     const component = 'views' + oMenu.path
-
-    console.log(component)
 
     const name = oMenu[propsDefault.label]
 
@@ -79,15 +74,12 @@ function formatRoutes(aMenu = [], first) {
         // 判断是否为首路由
         if (first) {
           require(['@/layout'], resolve)
-          console.log('resolve', resolve)
           // 判断是否为多层路由
         } else if (isChild && !first) {
-          console.log('resolve', resolve)
           require(['@/layout'], resolve)
 
           // 判断是否为最终的页面视图
         } else {
-          console.log('resolve', resolve)
           require([`@/${component}.vue`], resolve)
         }
       },

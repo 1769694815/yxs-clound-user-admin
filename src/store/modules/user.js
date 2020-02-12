@@ -1,6 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getStore, setStore } from '@/utils/store'
-import { removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { encryption } from '@/utils/index'
 
