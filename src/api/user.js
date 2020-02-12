@@ -2,7 +2,7 @@
  * @Date: 2020-02-03 11:05:34
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-11 14:20:18
+ * @LastEditTime : 2020-02-12 13:21:28
  * @Description: 用户信息
  */
 import request from '@/utils/request'
@@ -21,17 +21,16 @@ export function login(username, password, code, randomStr) {
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
+    url: '/admin/user/info',
+    method: 'get'
   })
 }
 
 export function logout() {
   return request({
-    url: '/user/logout',
-    method: 'post'
+    url: '/auth/token/logout',
+    method: 'delete'
   })
 }
