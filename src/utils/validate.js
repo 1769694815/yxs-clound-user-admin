@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-03 11:05:34
- * @LastEditors: xw
+ * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime: 2020-02-11 15:42:37
+ * @LastEditTime : 2020-02-11 17:13:11
  * @Description: 
  */
 /**
@@ -24,6 +24,14 @@ export function isExternal(path) {
 export function validUsername(str) {
   const valid_map = ['admin', 'editor']
   return valid_map.indexOf(str.trim()) >= 0
+}
+
+/**
+ * URL地址
+ * @param {*} s
+ */
+export function isURL(s) {
+  return /^http[s]?:\/\/.*/.test(s)
 }
 
 /**
