@@ -1,69 +1,130 @@
-// import { constantRoutes } from '@/router'
-import { getRoutes } from '@/api/role'
+import { constantRoutes } from '@/router'
 
-import Layout from '@/layout'
+import { isURL, validatenull } from '@/utils/validate'
+import { deepClone } from '@/utils/index'
+import { getMenu } from '@/api/admin/menu'
+import webiste from '@/settings'
 
-/**
- * Use meta.role to determine if the current user has permission
- * @param roles
- * @param route
- */
-function hasPermission(roles, route) {
-  if (route.meta && route.meta.roles) {
-    return roles.some(role => route.meta.roles.includes(role))
+function addPath(ele, first) {
+  const menu = webiste.menu
+  const propsConfig = menu.props
+  const propsDefault = {
+    label: propsConfig.label || 'name',
+    path: propsConfig.path || 'path',
+    icon: propsConfig.icon || 'icon',
+    children: propsConfig.children || 'children'
+  }
+  const icon = ele[propsDefault.icon]
+  ele[propsDefault.icon] = validatenull(icon) ? menu.iconDefault : icon
+  const isChild = ele[propsDefault.children] && ele[propsDefault.children].length !== 0
+  if (!isChild) ele[propsDefault.children] = []
+  if (!isChild && first && !isURL(ele[propsDefault.path])) {
+    ele[propsDefault.path] = ele[propsDefault.path] + '/index'
   } else {
-    return true
+    ele[propsDefault.children].forEach(child => {
+      addPath(child)
+    })
   }
 }
 
-/**
- * Filter asynchronous routing tables by recursion
- * @param routes asyncRoutes
- * @param roles
- */
-export function filterAsyncRoutes(routes, roles) {
-  const res = []
+const routerList = []
 
-  routes.forEach(route => {
-    const tmp = { ...route }
-    // console.log('tmp', tmp)
-    if (hasPermission(roles, tmp)) {
-      if (tmp.children) {
-        tmp.children = filterAsyncRoutes(tmp.children, roles)
-      }
-      res.push(tmp)
-    }
-  })
-  console.log(res)
-
-  return res
-}
-
-/**
- * @description: 替换component
- * @param {type}
- * @return:
- */
-export function dataArrayToRoutes(data) {
-  // console.log('data', data)
-  const res = []
-  data.forEach(item => {
-    const tmp = { ...item }
-    if (tmp.component) {
-      if (tmp.component === 'Layout') {
-        tmp.component = Layout
+function formatRoutes(aMenu = [], first) {
+  const aRouter = []
+  const propsConfig = webiste.menu.props
+  const propsDefault = {
+    label: propsConfig.label || 'label',
+    path: propsConfig.path || 'path',
+    icon: propsConfig.icon || 'icon',
+    children: propsConfig.children || 'children',
+    meta: propsConfig.meta || 'meta'
+  }
+  if (aMenu.length === 0) return
+  for (let i = 0; i < aMenu.length; i++) {
+    const oMenu = aMenu[i]
+    console.log('oMenu', oMenu)
+    if (routerList.includes(oMenu[propsDefault.path])) return
+    const path = (() => {
+      if (!oMenu[propsDefault.path]) {
+        return
+      } else if (first) {
+        return oMenu[propsDefault.path].replace('/index', '')
       } else {
-        let sub_view = tmp.component
-        sub_view = sub_view.replace(/^\/*/g, '')
-        tmp.component = () => import(`@/views/${sub_view}`) // 这里很重要，把view动态加载进来，而且似乎我只找到这样的写法，用拼接不行，然后 views 后面没有斜杆也不行
+        return oMenu[propsDefault.path]
       }
+    })()
+
+    console.log('path', path)
+
+    // 特殊处理组件
+    const component = 'views' + oMenu.path
+
+    console.log(component)
+
+    const name = oMenu[propsDefault.label]
+
+    const icon = oMenu[propsDefault.icon]
+
+    const children = oMenu[propsDefault.children]
+
+    const meta = {
+      keepAlive: Number(oMenu['keepAlive']) === 0,
+      title: name,
+      icon
     }
-    if (tmp.children) {
-      tmp.children = dataArrayToRoutes(tmp.children)
+    const isChild = children.length !== 0
+    const oRouter = {
+      path: path,
+      component(resolve) {
+        // 判断是否为首路由
+        if (first) {
+          require(['@/layout'], resolve)
+          console.log('resolve', resolve)
+          // 判断是否为多层路由
+        } else if (isChild && !first) {
+          console.log('resolve', resolve)
+          require(['@/layout'], resolve)
+
+          // 判断是否为最终的页面视图
+        } else {
+          console.log('resolve', resolve)
+          require([`@/${component}.vue`], resolve)
+        }
+      },
+      name: name,
+      icon: icon,
+      meta: meta,
+      redirect: (() => {
+        if (!isChild && first && !isURL(path)) return `${path}/index`
+        else return ''
+      })(),
+      // 处理是否为一级路由
+      children: !isChild ? (() => {
+        if (first) {
+          if (!isURL(path)) oMenu[propsDefault.path] = `${path}/index`
+          return [{
+            component(resolve) { require([`@/${component}.vue`], resolve) },
+            icon: icon,
+            name: name,
+            meta: meta,
+            path: 'index'
+          }]
+        }
+        return []
+      })() : (() => {
+        return formatRoutes(children, false)
+      })()
     }
-    res.push(tmp)
-  })
-  return res
+    aRouter.push(oRouter)
+  }
+  if (first) {
+    if (!routerList.includes(aRouter[0][propsDefault.path])) {
+      // this.$router.addRoutes(aRouter)
+      routerList.push(aRouter[0][propsDefault.path])
+    }
+  } else {
+    return aRouter
+  }
 }
 
 const state = {
@@ -79,22 +140,23 @@ const mutations = {
 }
 
 const actions = {
-  generateRoutes({ commit }, roles) {
-    return new Promise(resolve => {
-      let accessedRoutes = []
-      // 从接口获取动态路由
-      getRoutes().then(res => {
-        console.log('res', res)
-        const asyncRoutes = dataArrayToRoutes(res.data)
-        console.log('roles', roles)
-        if (roles.includes('admin')) {
-          accessedRoutes = asyncRoutes || []
-        } else {
-          accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
-        }
-        console.log('asyncRoutes', accessedRoutes)
-        commit('SET_ROUTES', accessedRoutes)
-        resolve(accessedRoutes)
+  // 获取系统菜单
+  getMenu({ commit }, obj) {
+    return new Promise((resolve, reject) => {
+      getMenu().then(response => {
+        const data = response.data.data || {}
+        const menu = deepClone(data)
+        menu.forEach(ele => {
+          addPath(ele)
+        })
+        // let type = obj.type
+        // commit('SET_MENU', {type, menu})
+        const asyncRoutes = constantRoutes.concat(formatRoutes(menu))
+        console.log('asyncRoutes', asyncRoutes)
+        commit('SET_ROUTES', asyncRoutes)
+        resolve(asyncRoutes)
+      }).catch(error => {
+        reject(error)
       })
     })
   }
