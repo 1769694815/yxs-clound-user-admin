@@ -4,9 +4,11 @@ const env = process.env
 const baseUrl = ''
 
 const codeUrl = `${window.location.origin}/code`
+const actUrl = `${window.location.origin}/act/modeler.html?modelId=`
 
 export {
   baseUrl,
+  actUrl,
   codeUrl,
   env
 }
