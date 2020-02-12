@@ -41,6 +41,37 @@
         </span>
       </el-form-item>
 
+      <el-form-item prop="code">
+        <el-row :span="24">
+          <el-col :span="16">
+            <el-input
+              :maxlength="code.len"
+              v-model="loginForm.code"
+              size="small"
+              auto-complete="off"
+              placeholder="请输入验证码"
+              @keyup.enter.native="handleLogin">
+              <i
+                slot="prefix"
+                class="icon-yanzhengma"/>
+            </el-input>
+          </el-col>
+          <el-col :span="8">
+            <div class="login-code">
+              <span
+                v-if="code.type == 'text'"
+                class="login-code-img"
+                @click="refreshCode">{{ code.value }}</span>
+              <img
+                v-else
+                :src="code.src"
+                class="login-code-img"
+                @click="refreshCode">
+            </div>
+          </el-col>
+        </el-row>
+      </el-form-item>
+
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
@@ -57,33 +88,36 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-
+// import { validUsername } from '@/utils/validate'
+import { randomLenNum } from '@/utils/index'
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
-      } else {
-        callback()
-      }
-    }
     return {
       loginForm: {
         username: 'admin',
-        password: '111111'
+        password: '123456',
+        code: 'cesq',
+        redomStr: ''
+      },
+      code: {
+        src: '/code',
+        value: '',
+        len: 4,
+        type: 'image'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, message: '密码长度最少为6位', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { min: 4, max: 4, message: '验证码长度为4位', trigger: 'blur' }
+        ]
       },
       loading: false,
       passwordType: 'password',
@@ -98,7 +132,18 @@ export default {
       immediate: true
     }
   },
+  created() {
+    this.refreshCode()
+  },
   methods: {
+    refreshCode() {
+      this.loginForm.code = ''
+      this.loginForm.randomStr = randomLenNum(this.code.len, true)
+      this.code.type === 'text'
+        ? (this.code.value = randomLenNum(this.code.len))
+        : (this.code.src = `${this.codeUrl}?randomStr=${this.loginForm.randomStr}`)
+      console.log('code', this.code)
+    },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
@@ -114,6 +159,7 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
+            console.log('登录成功')
             this.$router.push({ path: this.redirect || '/' })
             this.loading = false
           }).catch(() => {
@@ -172,6 +218,13 @@ $cursor: #fff;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
+  }
+  .login-code {
+    height: 54px;
+    &-img {
+      width: 100%;
+      height: 100%;
+    }
   }
 }
 </style>
