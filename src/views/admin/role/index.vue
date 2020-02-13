@@ -2,7 +2,7 @@
  * @Date: 2020-02-12 13:45:09
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-13 15:06:46
+ * @LastEditTime : 2020-02-13 20:24:11
  * @Description: 角色管理
  -->
 <template>
@@ -195,7 +195,7 @@
               show-checkbox
             />
           </el-col>
-          <el-col v-if="operationStatus === 1">
+          <el-col v-if="operationStatus !== 0">
             <el-form-item
               label="创建时间:"
               :label-width="formLabelWidth"
@@ -206,7 +206,7 @@
                 value-format="yyyy-MM-dd HH:mm:ss"
                 type="datetime"
                 placeholder="请选择日期时间"
-                :disabled="operationStatus === 1"
+                :disabled="operationStatus !== 0"
                 style="width: 100%!important;"
               ></el-date-picker>
             </el-form-item>

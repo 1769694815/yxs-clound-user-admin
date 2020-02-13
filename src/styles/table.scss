@@ -18,3 +18,15 @@
   margin-right: 8px;
   margin-bottom: 8px;
 }
+
+.el-form-item.is-success .el-input__validateIcon {
+  color: #C0C4CC;
+}
+
+.el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner:focus {
+  border-color: #409EFF;
+}
+
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-textarea__inner {
+  border-color:#C0C4CC;
+}
