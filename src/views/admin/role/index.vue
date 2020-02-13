@@ -2,23 +2,21 @@
  * @Date: 2020-02-12 13:45:09
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-12 18:29:07
+ * @LastEditTime : 2020-02-13 15:06:46
  * @Description: 角色管理
  -->
 <template>
   <div class="app-container calendar-list-container">
-    <!-- 头部菜单 -->
-    <el-form class="menu">
-      <el-form-item>
-        <el-button
-          v-if="roleManager_btn_add"
-          type="primary"
-          icon="el-icon-edit"
-          size="medium"
-          @click="handleCreate"
-        >添加</el-button>
-      </el-form-item>
-    </el-form>
+    <!-- 表格操作 -->
+    <div class="x__menu">
+      <el-button
+        v-if="roleManager_btn_add"
+        type="primary"
+        icon="el-icon-edit"
+        size="medium"
+        @click="handleCreate"
+      >添 加</el-button>
+    </div>
     <!-- 表格 -->
     <el-table
       :key="tableKey"
@@ -28,15 +26,51 @@
       stripe
       highlight-current-row
     >
-      <el-table-column type="index" label="序号" align="center" width="50" />
-      <el-table-column prop="roleName" label="角色名称" align="center" />
-      <el-table-column prop="roleCode" label="角色标识" align="center" width="120" />
-      <el-table-column prop="roleDesc" label="角色描述" align="center" width="150" />
-      <el-table-column prop="dsType" label="数据权限" align="center" width="180" />
-      <el-table-column prop="createTime" label="创建时间" align="center" />
-      <el-table-column label="操作" align="center">
+      <el-table-column
+        type="index"
+        label="序号"
+        align="center"
+        width="50"
+      />
+      <el-table-column
+        prop="roleName"
+        label="角色名称"
+        align="center"
+      />
+      <el-table-column
+        prop="roleCode"
+        label="角色标识"
+        align="center"
+        width="120"
+      />
+      <el-table-column
+        prop="roleDesc"
+        label="角色描述"
+        align="center"
+        width="150"
+      />
+      <el-table-column
+        prop="dsType"
+        label="数据权限"
+        align="center"
+        width="180"
+      />
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
+        align="center"
+      />
+      <el-table-column
+        label="操作"
+        align="center"
+      >
         <template slot-scope="scope">
-          <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
+          <el-button
+            type="text"
+            icon="el-icon-view"
+            size="mini"
+            @click="handleView(scope.row)"
+          >查看</el-button>
           <el-button
             v-if="roleManager_btn_edit"
             type="text"
@@ -70,11 +104,26 @@
       @pagination="getList"
     />
     <!-- 弹窗 -->
-    <el-dialog :visible.sync="dialogPvVisible" :title="dialogTitle(operationStatus)">
-      <el-row v-if="operationStatus !== 4" style="padding: 0 20px;" :span="24">
-        <el-form ref="dataForm" :rules="formRules" :model="form">
+    <el-dialog
+      :visible.sync="dialogPvVisible"
+      :title="dialogTitle(operationStatus)"
+    >
+      <el-row
+        v-if="operationStatus !== 4"
+        style="padding: 0 20px;"
+        :span="24"
+      >
+        <el-form
+          ref="dataForm"
+          :rules="formRules"
+          :model="form"
+        >
           <el-col>
-            <el-form-item prop="roleName" label="角色名称:" :label-width="formLabelWidth">
+            <el-form-item
+              prop="roleName"
+              label="角色名称:"
+              :label-width="formLabelWidth"
+            >
               <el-input
                 v-model="form.roleName"
                 autocomplete="off"
@@ -84,7 +133,11 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item prop="roleCode" label="角色标识:" :label-width="formLabelWidth">
+            <el-form-item
+              prop="roleCode"
+              label="角色标识:"
+              :label-width="formLabelWidth"
+            >
               <el-input
                 v-model="form.roleCode"
                 autocomplete="off"
@@ -94,10 +147,14 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item prop="roleDesc" label="角色描述:" :label-width="formLabelWidth">
+            <el-form-item
+              prop="roleDesc"
+              label="角色描述:"
+              :label-width="formLabelWidth"
+            >
               <el-input
-                type="textarea"
                 v-model="form.roleDesc"
+                type="textarea"
                 autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入角色描述"
@@ -105,7 +162,11 @@
             </el-form-item>
           </el-col>
           <el-col>
-            <el-form-item prop="dsType" label="数据权限:" :label-width="formLabelWidth">
+            <el-form-item
+              prop="dsType"
+              label="数据权限:"
+              :label-width="formLabelWidth"
+            >
               <el-select
                 v-model="form.dsType"
                 placeholder="请选择数据权限"
@@ -135,7 +196,10 @@
             />
           </el-col>
           <el-col v-if="operationStatus === 1">
-            <el-form-item label="创建时间:" :label-width="formLabelWidth">
+            <el-form-item
+              label="创建时间:"
+              :label-width="formLabelWidth"
+            >
               <el-date-picker
                 v-model="form.createTime"
                 format="yyyy-MM-dd HH:mm"
@@ -150,7 +214,11 @@
         </el-form>
       </el-row>
       <!-- 权限 -->
-      <el-row v-else style="padding: 0 20px;" :span="24">
+      <el-row
+        v-else
+        style="padding: 0 20px;"
+        :span="24"
+      >
         <div class="dialog-main-tree">
           <el-tree
             ref="menuTree"
@@ -167,16 +235,32 @@
           />
         </div>
       </el-row>
-      <div slot="footer" class="dialog-footer">
-        <el-button v-if="operationStatus === 0" type="primary" size="small" @click="create">保 存</el-button>
-        <el-button v-if="operationStatus === 2" type="primary" size="small" @click="update">修 改</el-button>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button
+          v-if="operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="create"
+        >保 存</el-button>
+        <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改</el-button>
         <el-button
           v-if="operationStatus === 4"
           type="primary"
           size="small"
           @click="updatePermession(roleId)"
         >更 新</el-button>
-        <el-button size="small" @click="dialogPvVisible = false">取 消</el-button>
+        <el-button
+          size="small"
+          @click="dialogPvVisible = false"
+        >取 消</el-button>
       </div>
     </el-dialog>
     <!-- <el-dialog :visible.sync="dialogPermissionVisible" :close-on-click-modal="false">
