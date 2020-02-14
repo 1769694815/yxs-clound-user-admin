@@ -2,7 +2,7 @@
  * @Date: 2020-02-11 19:09:58
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-13 20:24:53
+ * @LastEditTime : 2020-02-14 11:50:17
  * @Description: 用户管理
  -->
 <template>
@@ -297,6 +297,12 @@
           @click="create"
         >保 存</el-button>
         <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改</el-button>
+        <el-button
           size="small"
           @click="dialogPvVisible = false"
         >取 消</el-button>
@@ -418,7 +424,6 @@ export default {
           value: '9'
         }
       ],
-      role: [],
       roleList: [],
       rolesOptions: []
     }
@@ -511,6 +516,13 @@ export default {
       this.dialogPvVisible = true
       this.form = row
       this.form.password = undefined
+      this.form.role = []
+      for (let i = 0; i < this.form.roleList.length; i++) {
+        this.form.role[i] = this.form.roleList[i].roleId
+      }
+      deptRoleList().then(res => {
+        this.rolesOptions = res.data.data
+      })
     },
     handleDelete(row, index) {
       this.$confirm(
@@ -546,10 +558,51 @@ export default {
     },
     handleCreate() {
       this.operationStatus = 0
-      console.log(this.operationStatus)
       this.dialogPvVisible = true
+      this.form = {}
     },
-    create() {}
+    create() {
+      this.dialogPvVisible = false
+      this.listLoading = true
+      if (this.form.phone.indexOf('*') > 0) {
+        this.form.phone = undefined
+      }
+      addObj(this.form)
+        .then(() => {
+          this.getList()
+          this.$notify({
+            title: '成功',
+            message: '创建成功',
+            type: 'success',
+            duration: 2000
+          })
+          this.listLoading = false
+        })
+        .catch(() => {
+          this.listLoading = false
+        })
+    },
+    update() {
+      this.dialogPvVisible = false
+      this.listLoading = true
+      if (this.form.phone && this.form.phone.indexOf('*') > 0) {
+        this.form.phone = undefined
+      }
+      putObj(this.form)
+        .then(() => {
+          this.getList()
+          this.listLoading = false
+          this.$notify({
+            title: '成功',
+            message: '修改成功',
+            type: 'success',
+            duration: 2000
+          })
+        })
+        .catch(() => {
+          this.listLoading = false
+        })
+    }
   }
 }
 </script>

@@ -2,7 +2,7 @@
  * @Date: 2020-02-12 13:45:09
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-13 20:24:11
+ * @LastEditTime : 2020-02-14 11:42:04
  * @Description: 角色管理
  -->
 <template>
@@ -418,6 +418,7 @@ export default {
     },
     create() {
       this.dialogPvVisible = false
+      this.listLoading = true
       if (this.form.dsType === 1) {
         this.form.dsScope = this.$refs.scopeTree.getCheckedKeys().join(',')
       }
