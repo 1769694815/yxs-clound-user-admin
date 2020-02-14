@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 18:25:44
+ * @LastEditTime : 2020-02-14 18:35:44
  * @Description: 租户管理
  -->
 <template>
@@ -125,7 +125,7 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag>{{ scope.row.status | statusFilter(statusList) }}</el-tag>
+          <el-tag :type="scope.row.status === '0' ? '' : 'danger'">{{ scope.row.status | statusFilter(statusList) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -228,7 +228,6 @@
             >
               <el-input
                 v-model="form.code"
-                type="number"
                 autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入租户编号"
