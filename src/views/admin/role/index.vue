@@ -2,20 +2,22 @@
  * @Date: 2020-02-12 13:45:09
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 11:42:04
+ * @LastEditTime : 2020-02-14 17:37:22
  * @Description: 角色管理
  -->
 <template>
   <div class="app-container calendar-list-container">
     <!-- 表格操作 -->
     <div class="x__menu">
-      <el-button
-        v-if="roleManager_btn_add"
-        type="primary"
-        icon="el-icon-edit"
-        size="medium"
-        @click="handleCreate"
-      >添 加</el-button>
+      <div class="x__menu__left">
+        <el-button
+          v-if="roleManager_btn_add"
+          type="primary"
+          icon="el-icon-plus"
+          size="medium"
+          @click="handleCreate"
+        >新 增</el-button>
+      </div>
     </div>
     <!-- 表格 -->
     <el-table
@@ -106,7 +108,7 @@
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="dialogPvVisible"
-      :title="dialogTitle(operationStatus)"
+      :title="operationStatus | dialogTitle"
     >
       <el-row
         v-if="operationStatus !== 4"
@@ -288,6 +290,18 @@ export default {
   components: {
     Pagination
   },
+  filters: {
+    dialogTitle(type) {
+      const titleMap = {
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除',
+        4: '分配权限'
+      }
+      return titleMap[type]
+    }
+  },
   data() {
     return {
       roleManager_btn_add: false,
@@ -358,32 +372,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions']),
-    dialogTitle() {
-      return function(status) {
-        let value = ''
-        switch (status) {
-          case 0:
-            value = '新 增'
-            break
-          case 1:
-            value = '查 看'
-            break
-          case 2:
-            value = '编 辑'
-            break
-          case 3:
-            value = '删 除'
-            break
-          case 4:
-            value = '分配权限'
-            break
-          default:
-            value = ''
-        }
-        return value
-      }
-    }
+    ...mapGetters(['permissions'])
   },
   created() {
     this.roleManager_btn_add = this.permissions['sys_role_add']

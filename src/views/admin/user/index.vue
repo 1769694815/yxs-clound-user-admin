@@ -2,7 +2,7 @@
  * @Date: 2020-02-11 19:09:58
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 11:50:17
+ * @LastEditTime : 2020-02-14 17:37:42
  * @Description: 用户管理
  -->
 <template>
@@ -64,13 +64,15 @@
         </el-form>
         <!-- 表格操作 -->
         <div class="x__menu">
-          <el-button
-            v-if="sys_user_add"
-            type="primary"
-            icon="el-icon-edit"
-            size="mini"
-            @click="handleCreate"
-          >添 加</el-button>
+          <div class="x__menu__left">
+            <el-button
+              v-if="sys_user_add"
+              type="primary"
+              icon="el-icon-edit"
+              size="mini"
+              @click="handleCreate"
+            >添 加</el-button>
+          </div>
         </div>
         <!-- 表格 -->
         <el-table
@@ -160,7 +162,7 @@
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="dialogPvVisible"
-      :title="dialogTitle(operationStatus)"
+      :title="operationStatus | dialogTitle"
     >
       <el-row
         style="padding: 0 20px;"
@@ -326,6 +328,17 @@ export default {
     Tree,
     InputTree
   },
+  filters: {
+    dialogTitle(type) {
+      const titleMap = {
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
+    }
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       getDetails(value).then(response => {
@@ -430,28 +443,6 @@ export default {
   },
   computed: {
     ...mapGetters(['permissions']),
-    dialogTitle() {
-      return function(status) {
-        let value = ''
-        switch (status) {
-          case 0:
-            value = '新 增'
-            break
-          case 1:
-            value = '查 看'
-            break
-          case 2:
-            value = '编 辑'
-            break
-          case 3:
-            value = '删 除'
-            break
-          default:
-            value = ''
-        }
-        return value
-      }
-    },
     lockFlag() {
       return function(flag) {
         if (flag === '0') {
