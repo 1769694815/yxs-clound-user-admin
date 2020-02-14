@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 17:38:24
+ * @LastEditTime : 2020-02-14 18:19:07
  * @Description: 租户管理
  -->
 <template>
@@ -312,16 +312,10 @@
       :visible.sync="hideVisible"
       title="多选"
     >
-      <el-checkbox-group
-        v-model="checkList"
-        @change="checkChange"
-      >
-        <el-checkbox
-          v-for="(item, index) in tableOption"
-          :key="index"
-          :label="item.prop"
-        >{{ item.label }}</el-checkbox>
-      </el-checkbox-group>
+      <hide-dialog
+        :tableOption="tableOption"
+        @check-change="checkChange"
+      />
     </el-dialog>
   </div>
 </template>
@@ -330,11 +324,13 @@
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
 import { remote } from '@/api/admin/dict'
 import Pagination from '@/components/Pagination/index'
+import HideDialog from '@/components/HideDialog/index'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Tenant',
   components: {
-    Pagination
+    Pagination,
+    HideDialog
   },
   computed: {
     ...mapGetters(['permissions'])
@@ -444,18 +440,11 @@ export default {
     this.admin_systenant_edit = this.permissions['admin_systenant_edit']
     this.getList()
     this.getStatusList()
-    for (let i = 0; i < this.tableOption.length; i++) {
-      if (!this.tableOption[i].hide) {
-        this.checkList.push(this.tableOption[i].prop)
-      }
-    }
   },
   methods: {
-    checkChange(val) {
-      this.tableOption = this.tableOption.map(ele => {
-        ele.hide = !this.checkList.includes(ele.prop)
-        return ele
-      })
+    checkChange(list) {
+      this.tableOption = list
+      console.log(this.tableOption)
     },
     getList() {
       this.tableLoading = true
