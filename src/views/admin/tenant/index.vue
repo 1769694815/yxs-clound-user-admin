@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 18:19:07
+ * @LastEditTime : 2020-02-14 18:25:44
  * @Description: 租户管理
  -->
 <template>
@@ -29,12 +29,18 @@
         label="状态:"
         label-width="80px"
       >
-        <el-input
+        <el-select
           v-model="listQuery.status"
-          type="text"
           size="small"
           placeholder="请选择状态"
-        />
+        >
+          <el-option
+            v-for="item in statusList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
