@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 18:35:44
+ * @LastEditTime : 2020-02-14 18:41:53
  * @Description: 租户管理
  -->
 <template>
@@ -71,18 +71,29 @@
         >新 增</el-button>
       </div>
       <div class="x__menu__right">
-        <el-button
-          icon="el-icon-refresh"
-          size="small"
-          circle
-          @click="handleFilter"
-        />
-        <el-button
-          icon="el-icon-menu"
-          size="small"
-          circle
-          @click="hideVisible = true"
-        />
+        <el-tooltip
+          placement="top"
+          content="刷新"
+        >
+          <el-button
+            icon="el-icon-refresh"
+            size="small"
+            circle
+            @click="handleFilter"
+          />
+        </el-tooltip>
+        <el-tooltip
+          placement="top"
+          content="显隐"
+        >
+          <el-button
+            icon="el-icon-menu"
+            size="small"
+            tooltip
+            circle
+            @click="hideVisible = true"
+          />
+        </el-tooltip>
       </div>
     </div>
     <!-- 表格 -->
