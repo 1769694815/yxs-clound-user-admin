@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 18:41:53
+ * @LastEditTime : 2020-02-15 16:12:36
  * @Description: 租户管理
  -->
 <template>
@@ -111,34 +111,23 @@
         align="center"
         width="50"
       />
-      <el-table-column
-        prop="name"
-        label="租户名称"
-        align="center"
-      />
-      <el-table-column
-        prop="code"
-        label="租户编号"
-        align="center"
-      />
-      <el-table-column
-        prop="startTime"
-        label="开始时间"
-        align="center"
-      />
-      <el-table-column
-        prop="endTime"
-        label="结束时间"
-        align="center"
-      />
-      <el-table-column
-        label="状态"
-        align="center"
-      >
-        <template slot-scope="scope">
-          <el-tag :type="scope.row.status === '0' ? '' : 'danger'">{{ scope.row.status | statusFilter(statusList) }}</el-tag>
-        </template>
-      </el-table-column>
+      <template v-for="(item, index) in tableOption">
+        <el-table-column
+          v-if="!item.hide"
+          :key="index"
+          :property="item.prop"
+          :label="item.label"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <el-tag
+              v-if="item.slot"
+              :type="scope.row.status === '0' ? '' : 'danger'"
+            >{{ scope.row.status | statusFilter(statusList) }}</el-tag>
+            <span v-else>{{ scope.row[scope.column.property] }}</span>
+          </template>
+        </el-table-column>
+      </template>
       <el-table-column
         label="操作"
         align="center"
@@ -168,7 +157,6 @@
           >删除
           </el-button>
         </template>
-
       </el-table-column>
     </el-table>
     <template
@@ -399,7 +387,8 @@ export default {
         },
         {
           label: '状态',
-          prop: 'status'
+          prop: 'status',
+          slot: true
         }
       ],
       searchForm: {},
