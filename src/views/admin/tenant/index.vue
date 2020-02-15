@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors  : xw
  * @Author: xw
- * @LastEditTime : 2020-02-15 16:12:36
+ * @LastEditTime : 2020-02-15 16:21:03
  * @Description: 租户管理
  -->
 <template>
@@ -362,7 +362,6 @@ export default {
   data() {
     return {
       hideVisible: false,
-      checkList: [],
       tableOption: [
         {
           label: '租户id',
