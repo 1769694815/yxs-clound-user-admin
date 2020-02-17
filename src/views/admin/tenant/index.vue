@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors  : xw
+ * @LastEditors: xw
  * @Author: xw
  * @LastEditTime : 2020-02-15 16:21:03
  * @Description: 租户管理
@@ -19,7 +19,7 @@
         label-width="80px"
       >
         <el-input
-          v-model="listQuery.name"
+          v-model="searchForm.name"
           type="text"
           size="small"
           placeholder="请输入租户名称"
@@ -30,7 +30,7 @@
         label-width="80px"
       >
         <el-select
-          v-model="listQuery.status"
+          v-model="searchForm.status"
           size="small"
           placeholder="请选择状态"
         >
@@ -59,120 +59,52 @@
         >清 空</el-button>
       </el-form-item>
     </el-form>
-    <!-- 表格操作 -->
-    <div class="x__menu">
-      <div class="x__menu__left">
-        <el-button
-          v-if="admin_systenant_add"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleCreate"
-        >新 增</el-button>
-      </div>
-      <div class="x__menu__right">
-        <el-tooltip
-          placement="top"
-          content="刷新"
-        >
-          <el-button
-            icon="el-icon-refresh"
-            size="small"
-            circle
-            @click="handleFilter"
-          />
-        </el-tooltip>
-        <el-tooltip
-          placement="top"
-          content="显隐"
-        >
-          <el-button
-            icon="el-icon-menu"
-            size="small"
-            tooltip
-            circle
-            @click="hideVisible = true"
-          />
-        </el-tooltip>
-      </div>
-    </div>
     <!-- 表格 -->
-    <el-table
-      :key="tableKey"
-      v-loading="tableLoading"
-      :data="tableData"
-      border
-      stripe
-      highlight-current-row
+    <Xtable
+      :tableKey="tableKey"
+      :tableLoading="tableLoading"
+      :tableData="tableData"
+      :page="page"
+      :tableOption.sync="tableOption"
+      @handle-create="handleCreate"
+      @refresh-change="handleFilter"
+      @page-change="getList"
     >
-      <el-table-column
-        type="index"
-        label="序号"
-        align="center"
-        width="50"
-      />
-      <template v-for="(item, index) in tableOption">
-        <el-table-column
-          v-if="!item.hide"
-          :key="index"
-          :property="item.prop"
-          :label="item.label"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-tag
-              v-if="item.slot"
-              :type="scope.row.status === '0' ? '' : 'danger'"
-            >{{ scope.row.status | statusFilter(statusList) }}</el-tag>
-            <span v-else>{{ scope.row[scope.column.property] }}</span>
-          </template>
-        </el-table-column>
-      </template>
-      <el-table-column
-        label="操作"
-        align="center"
+      <template
+        slot="status"
+        slot-scope="scope"
       >
-        <template slot-scope="scope">
-          <el-button
-            type="text"
-            icon="el-icon-view"
-            size="mini"
-            @click="handleView(scope.row)"
-          >查看
-          </el-button>
-          <el-button
-            v-if="admin_systenant_edit"
-            type="text"
-            icon="el-icon-edit"
-            size="mini"
-            @click="handleUpdate(scope.row)"
-          >编辑
-          </el-button>
-          <el-button
-            v-if="admin_systenant_del"
-            type="text"
-            icon="el-icon-delete"
-            size="mini"
-            @click="handleDelete(scope.row, scope.$index)"
-          >删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <template
-      slot="status"
-      slot-scope="scope"
-    >
-      <el-tag>{{ scope.row.status | statusFilter(statusList) }}</el-tag>
-    </template>
-    <!-- 分页器 -->
-    <Pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
+        <el-tag :type="scope.row.status === '0' ? '' : 'danger'">{{ scope.row.status | statusFilter(statusList) }}</el-tag>
+      </template>
+      <template
+        slot="menu"
+        slot-scope="scope"
+      >
+        <el-button
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >查看
+        </el-button>
+        <el-button
+          v-if="admin_systenant_edit"
+          type="text"
+          icon="el-icon-edit"
+          size="mini"
+          @click="handleUpdate(scope.row)"
+        >编辑
+        </el-button>
+        <el-button
+          v-if="admin_systenant_del"
+          type="text"
+          icon="el-icon-delete"
+          size="mini"
+          @click="handleDelete(scope.row, scope.$index)"
+        >删除
+        </el-button>
+      </template>
+    </Xtable>
 
     <!-- 弹窗 -->
     <el-dialog
@@ -311,31 +243,15 @@
         >取 消</el-button>
       </div>
     </el-dialog>
-    <!-- 显隐 -->
-    <el-dialog
-      :visible.sync="hideVisible"
-      title="多选"
-    >
-      <hide-dialog
-        :tableOption="tableOption"
-        @check-change="checkChange"
-      />
-    </el-dialog>
   </div>
 </template>
 
 <script>
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
 import { remote } from '@/api/admin/dict'
-import Pagination from '@/components/Pagination/index'
-import HideDialog from '@/components/HideDialog/index'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Tenant',
-  components: {
-    Pagination,
-    HideDialog
-  },
   computed: {
     ...mapGetters(['permissions'])
   },
@@ -392,10 +308,12 @@ export default {
       ],
       searchForm: {},
       tableData: [],
-      total: 0, // 总页数
-      listQuery: {
-        page: 1, // 当前页数
-        limit: 10, // 每页显示多少条
+      page: {
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      searchForm: {
         name: undefined,
         status: undefined
       },
@@ -446,16 +364,17 @@ export default {
     this.getStatusList()
   },
   methods: {
-    checkChange(list) {
-      this.tableOption = list
-      console.log(this.tableOption)
-    },
     getList() {
       this.tableLoading = true
-      fetchList(this.listQuery)
+      fetchList(
+        Object.assign(
+          { current: this.page.current, size: this.page.size },
+          this.searchForm
+        )
+      )
         .then(res => {
           this.tableData = res.data.data.records
-          this.total = res.data.data.total
+          this.page.total = res.data.data.total
           this.tableLoading = false
         })
         .catch(() => {
@@ -471,8 +390,9 @@ export default {
       this.getList()
     },
     handleEmpty() {
-      this.listQuery.name = undefined
-      this.listQuery.status = undefined
+      this.searchForm.name = undefined
+      this.searchForm.status = undefined
+      this.getList()
     },
     handleView(row) {
       this.form = row

@@ -1,12 +1,48 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors  : xw
+ * @LastEditors: xw
  * @Author: xw
  * @LastEditTime : 2020-02-15 19:27:21
  * @Description: 文件管理
  -->
 <template>
   <div class="app-container calendar-list-container">
+    <!-- 头部菜单 -->
+    <el-form
+      :inline="true"
+      ref="search"
+      class="search"
+      size="medium"
+    >
+
+      <el-form-item
+        label="文件名:"
+        label-width="80px"
+      >
+        <el-input
+          v-model="searchForm.fileName"
+          type="text"
+          size="small"
+          placeholder="请输入文件名"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          icon="el-icon-search"
+          size="small"
+          @click="handleFilter"
+        >搜 索</el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="default"
+          icon="el-icon-delete"
+          size="small"
+          @click="handleEmpty"
+        >清 空</el-button>
+      </el-form-item>
+    </el-form>
     <Xtable
       :tableKey="tableKey"
       :tableLoading="tableLoading"
@@ -29,22 +65,94 @@
       >
         <el-button
           type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >查看
+        </el-button>
+        <el-button
+          type="text"
+          size="mini"
+          icon="el-icon-delete"
+          @click="handleDelete(scope.row, scope.index)"
+        >删除
+        </el-button>
+        <el-button
+          type="text"
           size="mini"
           icon="el-icon-download"
-          @click="download(scope.row,scope.index)"
+          @click="download(scope.row)"
         >下载
         </el-button>
       </template>
     </Xtable>
+    <!-- 弹窗 -->
+    <el-dialog
+      :visible.sync="dialogPvVisible"
+      :title="operationStatus | dialogTitle"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
+      >
+        <el-form
+          ref="dataForm"
+          :model="form"
+        >
+          <el-col
+            :span="12"
+            v-if="operationStatus === 0"
+          >
+            <el-form-item label="附近上传:">
+              <el-button
+                type="primary"
+                size="small"
+              >点击上传</el-button>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          size="small"
+          @click="dialogPvVisible = false"
+        >取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { delObj, fetchList } from '@/api/admin/sys-file'
-import Xtable from '@/components/Xtable/index'
+import { handleDown } from '@/utils/index'
+import { mapGetters } from 'vuex'
 export default {
-  components: {
-    Xtable
+  computed: {
+    ...mapGetters(['permissions'])
+  },
+  filters: {
+    statusFilter(type, list) {
+      let result
+      list.map(ele => {
+        if (type === ele.value) {
+          result = ele.label
+        }
+      })
+      return result
+    },
+    dialogTitle(type) {
+      const titleMap = {
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
+    }
   },
   data() {
     return {
@@ -64,7 +172,8 @@ export default {
         {
           label: '空间',
           prop: 'bucketName',
-          overHidden: true
+          overHidden: true,
+          width: '120'
         },
         {
           label: '文件名',
@@ -78,11 +187,13 @@ export default {
         },
         {
           label: '文件类型',
-          prop: 'type'
+          prop: 'type',
+          width: '80'
         },
         {
           label: '文件大小',
-          prop: 'fileSize'
+          prop: 'fileSize',
+          width: '100'
         },
         {
           label: '上传人',
@@ -100,7 +211,10 @@ export default {
         current: 1,
         size: 10
       },
-      searchForm: {}
+      searchForm: {},
+      dialogPvVisible: false,
+      operationStatus: 0,
+      form: {}
     }
   },
   created() {
@@ -128,9 +242,41 @@ export default {
           this.tableLoading = false
         })
     },
-    handleFilter() {},
-    download() {},
-    handleCreate() {}
+    handleFilter() {
+      this.getList()
+    },
+    handleEmpty() {
+      this.searchForm = {}
+      this.getList()
+    },
+    handleView(row) {
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
+    },
+    handleDelete(row, index) {
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return delObj(row.id)
+        })
+        .then(data => {
+          _this.$message.success('删除成功')
+          this.getList()
+        })
+    },
+    download(row) {
+      handleDown(row.fileName, row.bucketName)
+    },
+    handleCreate() {
+      this.dialogPvVisible = true
+      this.operationStatus = 0
+      this.form = {}
+    }
   }
 }
 </script>

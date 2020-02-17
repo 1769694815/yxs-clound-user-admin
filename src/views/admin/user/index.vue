@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-11 19:09:58
- * @LastEditors  : xw
+ * @LastEditors: xw
  * @Author: xw
- * @LastEditTime : 2020-02-14 17:37:42
+ * @LastEditTime : 2020-02-15 16:40:35
  * @Description: 用户管理
  -->
 <template>
@@ -39,7 +39,7 @@
             label-width="80px"
           >
             <el-input
-              v-model="listQuery.username"
+              v-model="searchForm.username"
               type="text"
               size="small"
               placeholder="请输入用户名"
@@ -62,107 +62,63 @@
             >清 空</el-button>
           </el-form-item>
         </el-form>
-        <!-- 表格操作 -->
-        <div class="x__menu">
-          <div class="x__menu__left">
+        <!-- 表格 -->
+        <Xtable
+          :tableKey="tableKey"
+          :tableLoading="tableLoading"
+          :tableData="list"
+          :page="page"
+          :tableOption.sync="tableOption"
+          @handle-create="handleCreate"
+          @refresh-change="handleFilter"
+          @page-change="getList"
+        >
+          <template
+            slot="roleList"
+            slot-scope="scope"
+          >
+            <span
+              v-for="(role,index) in scope.row.roleList"
+              :key="index"
+            >
+              <el-tag>{{ role.roleName }} </el-tag>&nbsp;&nbsp;
+            </span>
+          </template>
+          <template
+            slot="lockFlag"
+            slot-scope="scope"
+          >
+            <el-tag>{{ lockFlag(scope.row.lockFlag) }}</el-tag>
+          </template>
+          <template
+            slot="menu"
+            slot-scope="scope"
+          >
             <el-button
-              v-if="sys_user_add"
-              type="primary"
+              v-if="sys_user_edit"
+              type="text"
               icon="el-icon-edit"
               size="mini"
-              @click="handleCreate"
-            >添 加</el-button>
-          </div>
-        </div>
-        <!-- 表格 -->
-        <el-table
-          :key="tableKey"
-          v-loading="listLoading"
-          :data="list"
-          border
-          stripe
-          highlight-current-row
-        >
-          <el-table-column
-            type="index"
-            label="序号"
-            align="center"
-            width="50"
-          />
-          <el-table-column
-            prop="username"
-            label="用户名"
-            align="center"
-          />
-          <el-table-column
-            prop="phone"
-            label="手机号"
-            align="center"
-          />
-          <el-table-column
-            label="角色"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <span
-                v-for="(role,index) in scope.row.roleList"
-                :key="index"
-              >
-                <el-tag>{{ role.roleName }} </el-tag>&nbsp;&nbsp;
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="状态"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <el-tag>{{ lockFlag(scope.row.lockFlag)  }}</el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="createTime"
-            label="创建时间"
-            align="center"
-          />
-          <el-table-column
-            label="操作"
-            align="center"
-          >
-            <template slot-scope="scope">
-              <el-button
-                v-if="sys_user_edit"
-                type="text"
-                icon="el-icon-edit"
-                size="mini"
-                @click="handleUpdate(scope.row)"
-              >编辑
-              </el-button>
-              <el-button
-                v-if="sys_user_del"
-                type="text"
-                icon="el-icon-delete"
-                size="mini"
-                @click="handleDelete(scope.row, scope.$index)"
-              >删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!-- 分页器 -->
-        <Pagination
-          v-show="total>0"
-          :total="total"
-          :page.sync="listQuery.page"
-          :limit.sync="listQuery.limit"
-          @pagination="getList"
-        />
+              @click="handleUpdate(scope.row)"
+            >编辑
+            </el-button>
+            <el-button
+              v-if="sys_user_del"
+              type="text"
+              icon="el-icon-delete"
+              size="mini"
+              @click="handleDelete(scope.row, scope.$index)"
+            >删除
+            </el-button>
+          </template>
+        </Xtable>
       </el-col>
     </el-row>
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
+      :destroy-on-close="true"
     >
       <el-row
         style="padding: 0 20px;"
@@ -318,13 +274,11 @@ import { addObj, delObj, fetchList, putObj, getDetails } from '@/api/admin/user'
 import { deptRoleList } from '@/api/admin/role'
 import { fetchTree } from '@/api/admin/dept'
 import { mapGetters } from 'vuex'
-import Pagination from '@/components/Pagination/index'
 import Tree from '@/components/Tree/index'
 import InputTree from '@/components/InputTree/index'
 export default {
   name: 'SysUser',
   components: {
-    Pagination,
     Tree,
     InputTree
   },
@@ -353,11 +307,39 @@ export default {
     }
     return {
       tableKey: 0,
-      listLoading: true,
+      tableLoading: false,
+      hideVisible: false,
+      tableOption: [
+        {
+          label: '用户名',
+          prop: 'username'
+        },
+        {
+          label: '手机号',
+          prop: 'phone'
+        },
+        {
+          label: '角色',
+          prop: 'roleList',
+          slot: true
+        },
+        {
+          label: '状态',
+          prop: 'lockFlag',
+          slot: true
+        },
+        {
+          label: '创建时间',
+          prop: 'createTime'
+        }
+      ],
       list: [],
-      listQuery: {
-        page: 1,
-        limit: 10,
+      page: {
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      searchForm: {
         username: undefined,
         deptId: undefined
       },
@@ -468,17 +450,28 @@ export default {
       })
     },
     getList() {
-      this.listLoading = true
-      fetchList(this.listQuery).then(res => {
+      this.tableLoading = true
+      fetchList(
+        Object.assign(
+          {
+            current: this.page.current,
+            size: this.page.size
+          },
+          this.searchForm
+        )
+      ).then(res => {
         this.list = res.data.data.records
-        this.total = res.data.data.total
-        this.listLoading = false
+        this.page.total = res.data.data.total
+        this.tableLoading = false
       })
+    },
+    checkChange(list) {
+      this.tableOption = list
     },
     nodeClick(data) {
       console.log(data)
-      this.listQuery.page = 1
-      this.listQuery.deptId = data.id
+      this.searchForm.page = 1
+      this.searchForm.deptId = data.id
       this.getList()
     },
     handleDept() {
@@ -497,8 +490,8 @@ export default {
       this.getList()
     },
     handleEmpty() {
-      this.listQuery.username = undefined
-      this.listQuery.deptId = undefined
+      this.searchForm.username = undefined
+      this.searchForm.deptId = undefined
       this.getList()
     },
     handleUpdate(row) {
@@ -551,10 +544,11 @@ export default {
       this.operationStatus = 0
       this.dialogPvVisible = true
       this.form = {}
+      this.rolesOptions = []
     },
     create() {
       this.dialogPvVisible = false
-      this.listLoading = true
+      this.tableLoading = true
       if (this.form.phone.indexOf('*') > 0) {
         this.form.phone = undefined
       }
@@ -567,22 +561,22 @@ export default {
             type: 'success',
             duration: 2000
           })
-          this.listLoading = false
+          this.tableLoading = false
         })
         .catch(() => {
-          this.listLoading = false
+          this.tableLoading = false
         })
     },
     update() {
       this.dialogPvVisible = false
-      this.listLoading = true
+      this.tableLoading = true
       if (this.form.phone && this.form.phone.indexOf('*') > 0) {
         this.form.phone = undefined
       }
       putObj(this.form)
         .then(() => {
           this.getList()
-          this.listLoading = false
+          this.tableLoading = false
           this.$notify({
             title: '成功',
             message: '修改成功',
@@ -591,7 +585,7 @@ export default {
           })
         })
         .catch(() => {
-          this.listLoading = false
+          this.tableLoading = false
         })
     }
   }

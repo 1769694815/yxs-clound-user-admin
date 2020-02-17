@@ -1,110 +1,61 @@
 <!--
  * @Date: 2020-02-12 13:45:09
- * @LastEditors  : xw
+ * @LastEditors: xw
  * @Author: xw
  * @LastEditTime : 2020-02-14 17:37:22
  * @Description: 角色管理
  -->
 <template>
   <div class="app-container calendar-list-container">
-    <!-- 表格操作 -->
-    <div class="x__menu">
-      <div class="x__menu__left">
-        <el-button
-          v-if="roleManager_btn_add"
-          type="primary"
-          icon="el-icon-plus"
-          size="medium"
-          @click="handleCreate"
-        >新 增</el-button>
-      </div>
-    </div>
     <!-- 表格 -->
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      stripe
-      highlight-current-row
+    <Xtable
+      :tableKey="tableKey"
+      :tableLoading="tableLoading"
+      :tableData="tableData"
+      :page="page"
+      :tableOption.sync="tableOption"
+      @handle-create="handleCreate"
+      @page-change="getList"
     >
-      <el-table-column
-        type="index"
-        label="序号"
-        align="center"
-        width="50"
-      />
-      <el-table-column
-        prop="roleName"
-        label="角色名称"
-        align="center"
-      />
-      <el-table-column
-        prop="roleCode"
-        label="角色标识"
-        align="center"
-        width="120"
-      />
-      <el-table-column
-        prop="roleDesc"
-        label="角色描述"
-        align="center"
-        width="150"
-      />
-      <el-table-column
-        prop="dsType"
-        label="数据权限"
-        align="center"
-        width="180"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-        align="center"
-      />
-      <el-table-column
-        label="操作"
-        align="center"
+      <template
+        slot="dsType"
+        slot-scope="scope"
       >
-        <template slot-scope="scope">
-          <el-button
-            type="text"
-            icon="el-icon-view"
-            size="mini"
-            @click="handleView(scope.row)"
-          >查看</el-button>
-          <el-button
-            v-if="roleManager_btn_edit"
-            type="text"
-            icon="el-icon-edit"
-            size="mini"
-            @click="handleUpdate(scope.row)"
-          >编辑</el-button>
-          <el-button
-            v-if="roleManager_btn_del"
-            type="text"
-            icon="el-icon-delete"
-            size="mini"
-            @click="handleDelete(scope.row)"
-          >删除</el-button>
-          <el-button
-            v-if="roleManager_btn_perm"
-            type="text"
-            icon="el-icon-plus"
-            size="mini"
-            @click="handlePermission(scope.row)"
-          >权限</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页器 -->
-    <Pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
+        <span>{{ scope.row.dsType | dsTypeFilter(dsTypeList) }}</span>
+      </template>
+      <template
+        slot="menu"
+        slot-scope="scope"
+      >
+        <el-button
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >查看</el-button>
+        <el-button
+          v-if="roleManager_btn_edit"
+          type="text"
+          icon="el-icon-edit"
+          size="mini"
+          @click="handleUpdate(scope.row)"
+        >编辑</el-button>
+        <el-button
+          v-if="roleManager_btn_del"
+          type="text"
+          icon="el-icon-delete"
+          size="mini"
+          @click="handleDelete(scope.row)"
+        >删除</el-button>
+        <el-button
+          v-if="roleManager_btn_perm"
+          type="text"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handlePermission(scope.row)"
+        >权限</el-button>
+      </template>
+    </Xtable>
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="dialogPvVisible"
@@ -265,9 +216,6 @@
         >取 消</el-button>
       </div>
     </el-dialog>
-    <!-- <el-dialog :visible.sync="dialogPermissionVisible" :close-on-click-modal="false">
-
-    </el-dialog>-->
   </div>
 </template>
 
@@ -283,14 +231,19 @@ import {
 import { fetchTree } from '@/api/admin/dept'
 import { fetchMenuTree } from '@/api/admin/menu'
 import { mapGetters } from 'vuex'
-import Pagination from '@/components/Pagination/index'
 import { rule } from '@/utils/validateRules'
 export default {
   name: 'TableRole',
-  components: {
-    Pagination
-  },
   filters: {
+    dsTypeFilter(type, list) {
+      let result
+      list.map(ele => {
+        if (type === ele.value) {
+          result = ele.label
+        }
+      })
+      return result
+    },
     dialogTitle(type) {
       const titleMap = {
         0: '新 增',
@@ -309,13 +262,41 @@ export default {
       roleManager_btn_del: false,
       roleManager_btn_perm: false,
       tableKey: 0,
-      listLoading: true,
-      list: [],
-      total: 3,
-      listQuery: {
-        page: 1,
-        limit: 10
+      tableLoading: false,
+      tableOption: [
+        {
+          label: '角色名称',
+          prop: 'roleName'
+        },
+        {
+          label: '角色标识',
+          prop: 'roleCode',
+          width: '120'
+        },
+        {
+          label: '角色描述',
+          prop: 'roleDesc',
+          overHidden: true,
+          width: '150'
+        },
+        {
+          label: '数据权限',
+          prop: 'dsType',
+          width: '180',
+          slot: true
+        },
+        {
+          label: '创建时间',
+          prop: 'createTime'
+        }
+      ],
+      tableData: [],
+      page: {
+        total: 0,
+        current: 1,
+        size: 10
       },
+      searchForm: {},
       dialogPvVisible: false,
       form: {},
       formLabelWidth: '90px',
@@ -384,15 +365,23 @@ export default {
   },
   methods: {
     getList() {
-      this.listLoading = true
-      fetchList(this.listQuery)
+      this.tableLoading = true
+      fetchList(
+        Object.assign(
+          {
+            current: this.page.current,
+            size: this.page.size
+          },
+          this.searchForm
+        )
+      )
         .then(res => {
-          this.list = res.data.data.records
-          this.total = res.data.data.total
-          this.listLoading = false
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.listLoading = false
+          this.tableLoading = false
         })
     },
     handleOpenBefore() {
@@ -407,7 +396,7 @@ export default {
     },
     create() {
       this.dialogPvVisible = false
-      this.listLoading = true
+      this.tableLoading = true
       if (this.form.dsType === 1) {
         this.form.dsScope = this.$refs.scopeTree.getCheckedKeys().join(',')
       }
@@ -415,10 +404,10 @@ export default {
         .then(() => {
           this.getList()
           this.$notify.success('创建成功')
-          this.listLoading = false
+          this.tableLoading = false
         })
         .catch(() => {
-          this.listLoading = false
+          this.tableLoading = false
         })
     },
     handleCreate() {
@@ -438,7 +427,7 @@ export default {
     },
     update() {
       this.dialogPvVisible = false
-      this.listLoading = true
+      this.tableLoading = true
       console.log(this.form)
       if (this.form.dsType === 1) {
         this.form.dsScope = this.$refs.scopeTree.getCheckedKeys().join(',')
@@ -446,10 +435,10 @@ export default {
       putObj(this.form)
         .then(() => {
           this.getList()
-          this.listLoading = false
+          this.tableLoading = false
         })
         .catch(() => {
-          this.listLoading = false
+          this.tableLoading = false
         })
     },
     handleDelete(row) {

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 17:09:18
- * @LastEditors  : xw
+ * @LastEditors: xw
  * @Author: xw
- * @LastEditTime : 2020-02-15 19:35:01
+ * @LastEditTime : 2020-02-16 21:32:47
  * @Description: 表格组件
  -->
 <template>
@@ -74,6 +74,7 @@
           :key="index"
           :prop="item.prop"
           :label="item.label"
+          :width="item.width"
           :align="item.align || 'center'"
           :show-overflow-tooltip="item.overHidden || true"
         >
