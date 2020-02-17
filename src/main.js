@@ -29,6 +29,10 @@ import '@/permission' // permission control
 //   mockXHR()
 // }
 
+// 全局注册Xtable组件
+import Xtable from '@/components/Xtable/index'
+Vue.component('Xtable', Xtable)
+
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
