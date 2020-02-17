@@ -105,10 +105,41 @@
             v-if="operationStatus === 0"
           >
             <el-form-item label="附近上传:">
-              <el-button
-                type="primary"
-                size="small"
-              >点击上传</el-button>
+              <el-upload
+                v-show="!imageUrl"
+                :data="dataObj"
+                :action="upload_qiniu_url"
+                :before-upload="beforeUpload"
+                :on-success="handleSuccess"
+                ref="upload"
+                class="upload-demo"
+              >
+                <el-button
+                  type="primary"
+                  size="small"
+                >点击上传</el-button>
+                <div
+                  slot="tip"
+                  class="el-upload__tip"
+                >上传同步至文件服务器</div>
+              </el-upload>
+              <div
+                v-show="imageUrl.length>0"
+                class="image-preview"
+              >
+                <div
+                  v-show="imageUrl.length>1"
+                  class="image-preview-wrapper"
+                >
+                  <img :src="imageUrl">
+                  <div class="image-preview-action">
+                    <i
+                      class="el-icon-delete"
+                      @click="handleRemove"
+                    />
+                  </div>
+                </div>
+              </div>
             </el-form-item>
           </el-col>
         </el-form>
@@ -130,6 +161,7 @@
 import { delObj, fetchList } from '@/api/admin/sys-file'
 import { handleDown } from '@/utils/index'
 import { mapGetters } from 'vuex'
+import { getToken } from '@/api/qiniu'
 export default {
   computed: {
     ...mapGetters(['permissions'])
@@ -214,7 +246,10 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
-      form: {}
+      form: {},
+      upload_qiniu_url: this.$upload_qiniu_url,
+      dataObj: { token: '', key: '' },
+      imageUrl: ''
     }
   },
   created() {
@@ -276,7 +311,28 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
-    }
+    },
+    beforeUpload() {
+      const _self = this
+      return new Promise((resolve, reject) => {
+        getToken()
+          .then(response => {
+            const key = getRandomString(32)
+            const token = response.data
+            _self._data.dataObj.token = token
+            _self._data.dataObj.key = 'upload2/' + key + '.jpg'
+            resolve(true)
+          })
+          .catch(() => {
+            reject(false)
+          })
+      })
+    },
+    handleSuccess(res, file) {
+      console.log('res', res)
+      const imgUrl = this.$qiniuAddr + res.key
+    },
+    handleRemove() {}
   }
 }
 </script>
