@@ -2,7 +2,7 @@
  * Created by PanJiaChen on 16/11/18.
  */
 import * as CryptoJS from 'crypto-js'
-import request from './request'
+// const request = require('./request')
 
 
 /**
@@ -185,20 +185,20 @@ export const randomLenNum = (len, date) => {
 }
 
 export function handleDown (filename, bucket) {
-  return request({
-    url: '/admin/sys-file/' + bucket + '/' + filename,
-    method: 'get',
-    responseType: 'blob'
-  }).then((response) => { // 处理返回的文件流
-    const blob = response.data
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    window.setTimeout(function () {
-      URL.revokeObjectURL(blob)
-      document.body.removeChild(link)
-    }, 0)
-  })
+  // return request({
+  //   url: '/admin/sys-file/' + bucket + '/' + filename,
+  //   method: 'get',
+  //   responseType: 'blob'
+  // }).then((response) => { // 处理返回的文件流
+  //   const blob = response.data
+  //   const link = document.createElement('a')
+  //   link.href = URL.createObjectURL(blob)
+  //   link.download = filename
+  //   document.body.appendChild(link)
+  //   link.click()
+  //   window.setTimeout(function () {
+  //     URL.revokeObjectURL(blob)
+  //     document.body.removeChild(link)
+  //   }, 0)
+  // })
 }
