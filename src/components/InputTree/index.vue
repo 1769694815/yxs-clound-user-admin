@@ -22,8 +22,8 @@
       @focus="onFocus"
     />
     <Tree
-      class="tree"
       v-if="showTree"
+      class="tree"
       :option="treeOption"
       :data="treeData"
       @node-click="nodeClick"
@@ -36,6 +36,10 @@ import Tree from '@/components/Tree/index'
 export default {
   components: {
     Tree
+  },
+  model: {
+    prop: 'value',
+    event: 'input'
   },
   props: {
     value: {
@@ -62,10 +66,6 @@ export default {
         return ''
       }
     }
-  },
-  model: {
-    prop: 'value',
-    event: 'input'
   },
   data() {
     return {

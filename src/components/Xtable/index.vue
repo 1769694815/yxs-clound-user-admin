@@ -183,18 +183,18 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      hideVisible: false,
+      checkList: []
+    }
+  },
   created() {
     this.tableOption.forEach(ele => {
       if (!ele.hide) {
         this.checkList.push(ele.prop)
       }
     })
-  },
-  data() {
-    return {
-      hideVisible: false,
-      checkList: []
-    }
   },
   methods: {
     checkChange(val) {

@@ -1,16 +1,16 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-15 19:27:21
+ * @LastEditTime: 2020-02-20 10:52:43
  * @Description: 文件管理
  -->
 <template>
   <div class="app-container calendar-list-container">
     <!-- 头部菜单 -->
     <el-form
-      :inline="true"
       ref="search"
+      :inline="true"
       class="search"
       size="medium"
     >
@@ -44,11 +44,11 @@
       </el-form-item>
     </el-form>
     <Xtable
-      :tableKey="tableKey"
-      :tableLoading="tableLoading"
-      :tableData="tableData"
+      :table-key="tableKey"
+      :table-loading="tableLoading"
+      :table-data="tableData"
       :page="page"
-      :tableOption.sync="tableOption"
+      :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
@@ -101,17 +101,17 @@
           :model="form"
         >
           <el-col
-            :span="12"
             v-if="operationStatus === 0"
+            :span="12"
           >
             <el-form-item label="附近上传:">
               <el-upload
                 v-show="!imageUrl"
+                ref="upload"
                 :data="dataObj"
                 :action="upload_qiniu_url"
                 :before-upload="beforeUpload"
                 :on-success="handleSuccess"
-                ref="upload"
                 class="upload-demo"
               >
                 <el-button
@@ -159,13 +159,10 @@
 
 <script>
 import { delObj, fetchList } from '@/api/admin/sys-file'
-import { handleDown } from '@/utils/index'
+import { handleDown, randomLenNum } from '@/utils/index'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 export default {
-  computed: {
-    ...mapGetters(['permissions'])
-  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -252,6 +249,9 @@ export default {
       imageUrl: ''
     }
   },
+  computed: {
+    ...mapGetters(['permissions'])
+  },
   created() {
     this.getList()
   },
@@ -317,7 +317,7 @@ export default {
       return new Promise((resolve, reject) => {
         getToken()
           .then(response => {
-            const key = getRandomString(32)
+            const key = randomLenNum(32)
             const token = response.data
             _self._data.dataObj.token = token
             _self._data.dataObj.key = 'upload2/' + key + '.jpg'

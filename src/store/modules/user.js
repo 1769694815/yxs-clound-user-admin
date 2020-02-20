@@ -181,7 +181,7 @@ const mutations = {
     state.permissions = list
   },
   SET_ROUTES: (state, params = {}) => {
-    let { type, asyncRoutes } = params
+    const { type, asyncRoutes } = params
     if (type !== false) {
       state.addRoutes = asyncRoutes
       state.routes = asyncRoutes
@@ -239,7 +239,7 @@ const actions = {
         menu.forEach(ele => {
           addPath(ele)
         })
-        let type = obj.type
+        const type = obj.type
         const asyncRoutes = constantRoutes.concat(formatRoutes(menu))
         commit('SET_ROUTES', { type, asyncRoutes })
         resolve(asyncRoutes)

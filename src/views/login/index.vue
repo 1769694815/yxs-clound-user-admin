@@ -45,15 +45,17 @@
         <el-row :span="24">
           <el-col :span="16">
             <el-input
-              :maxlength="code.len"
               v-model="loginForm.code"
+              :maxlength="code.len"
               size="small"
               auto-complete="off"
               placeholder="请输入验证码"
-              @keyup.enter.native="handleLogin">
+              @keyup.enter.native="handleLogin"
+            >
               <i
                 slot="prefix"
-                class="icon-yanzhengma"/>
+                class="icon-yanzhengma"
+              />
             </el-input>
           </el-col>
           <el-col :span="8">
@@ -61,12 +63,14 @@
               <span
                 v-if="code.type == 'text'"
                 class="login-code-img"
-                @click="refreshCode">{{ code.value }}</span>
+                @click="refreshCode"
+              >{{ code.value }}</span>
               <img
                 v-else
                 :src="code.src"
                 class="login-code-img"
-                @click="refreshCode">
+                @click="refreshCode"
+              >
             </div>
           </el-col>
         </el-row>

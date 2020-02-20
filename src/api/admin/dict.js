@@ -7,7 +7,7 @@
  */
 import request from '@/utils/request'
 
-export function fetchList (query) {
+export function fetchList(query) {
   return request({
     url: '/admin/dict/page',
     method: 'get',
@@ -15,7 +15,7 @@ export function fetchList (query) {
   })
 }
 
-export function fetchItemList (query) {
+export function fetchItemList(query) {
   return request({
     url: '/admin/dict/item/page',
     method: 'get',
@@ -23,7 +23,7 @@ export function fetchItemList (query) {
   })
 }
 
-export function addItemObj (obj) {
+export function addItemObj(obj) {
   return request({
     url: '/admin/dict/item',
     method: 'post',
@@ -31,21 +31,21 @@ export function addItemObj (obj) {
   })
 }
 
-export function getItemObj (id) {
+export function getItemObj(id) {
   return request({
     url: '/admin/dict/item/' + id,
     method: 'get'
   })
 }
 
-export function delItemObj (id) {
+export function delItemObj(id) {
   return request({
     url: '/admin/dict/item/' + id,
     method: 'delete'
   })
 }
 
-export function putItemObj (obj) {
+export function putItemObj(obj) {
   return request({
     url: '/admin/dict/item',
     method: 'put',
@@ -53,7 +53,7 @@ export function putItemObj (obj) {
   })
 }
 
-export function addObj (obj) {
+export function addObj(obj) {
   return request({
     url: '/admin/dict/',
     method: 'post',
@@ -61,21 +61,21 @@ export function addObj (obj) {
   })
 }
 
-export function getObj (id) {
+export function getObj(id) {
   return request({
     url: '/admin/dict/' + id,
     method: 'get'
   })
 }
 
-export function delObj (row) {
+export function delObj(row) {
   return request({
     url: '/admin/dict/' + row.id,
     method: 'delete'
   })
 }
 
-export function putObj (obj) {
+export function putObj(obj) {
   return request({
     url: '/admin/dict/',
     method: 'put',
@@ -83,7 +83,7 @@ export function putObj (obj) {
   })
 }
 
-export function remote (type) {
+export function remote(type) {
   return request({
     url: '/admin/dict/type/' + type,
     method: 'get'
