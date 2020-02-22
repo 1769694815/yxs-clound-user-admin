@@ -146,9 +146,9 @@ export const encryption = (params) => {
   const {
     data,
     type,
-    param,
-    key
+    param
   } = params
+  let { key } = params
   const result = JSON.parse(JSON.stringify(data))
   if (type === 'Base64') {
     param.forEach(ele => {
@@ -157,7 +157,8 @@ export const encryption = (params) => {
   } else {
     param.forEach(ele => {
       var data = result[ele]
-      var iv = CryptoJS.enc.Latin1.parse(key)
+      key = CryptoJS.enc.Latin1.parse(key)
+      var iv = key
       // 加密
       var encrypted = CryptoJS.AES.encrypt(
         data,
