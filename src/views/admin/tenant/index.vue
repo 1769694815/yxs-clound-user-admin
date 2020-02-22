@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-22 11:15:41
+ * @LastEditTime: 2020-02-22 11:48:59
  * @Description: 租户管理
  -->
 <template>
@@ -29,18 +29,12 @@
         label="状态:"
         label-width="80px"
       >
-        <el-select
-          v-model="searchForm.status"
-          size="small"
-          placeholder="请选择状态"
-        >
-          <el-option
-            v-for="item in statusList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="form.status"
+          :operation-status="operationStatus"
+          status-type="status_type"
+          type="select"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -205,18 +199,12 @@
               label="状态:"
               :label-width="formLabelWidth"
             >
-              <el-radio-group
+              <single-change
                 v-model="form.status"
-                :disabled="operationStatus === 1"
-              >
-                <el-radio
-                  v-for="item in statusList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+                :operation-status="operationStatus"
+                status-type="status_type"
+                type="radio"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -248,20 +236,14 @@
 
 <script>
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
-import { remote } from '@/api/admin/dict'
+import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Tenant',
+  components: {
+    SingleChange
+  },
   filters: {
-    statusFilter(type, list) {
-      let result
-      list.map(ele => {
-        if (type === ele.value) {
-          result = ele.label
-        }
-      })
-      return result
-    },
     dialogTitle(type) {
       const titleMap = {
         0: '新 增',
@@ -315,7 +297,6 @@ export default {
       },
       tableKey: 0,
       tableLoading: false,
-      statusList: [],
       dialogPvVisible: false,
       operationStatus: 0,
       formRules: {
@@ -360,7 +341,6 @@ export default {
     this.admin_systenant_del = this.permissions['admin_systenant_del']
     this.admin_systenant_edit = this.permissions['admin_systenant_edit']
     this.getList()
-    this.getStatusList()
   },
   methods: {
     getList() {
@@ -379,11 +359,6 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
-    },
-    getStatusList() {
-      remote('status_type').then(res => {
-        this.statusList = res.data.data
-      })
     },
     handleFilter() {
       this.getList()
