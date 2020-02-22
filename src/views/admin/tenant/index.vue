@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:53:52
+ * @LastEditTime: 2020-02-22 11:15:41
  * @Description: 租户管理
  -->
 <template>
@@ -300,7 +300,7 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          slot: true
+          dicUrl: 'status_type'
         }
       ],
       tableData: [],
