@@ -157,8 +157,7 @@ export const encryption = (params) => {
   } else {
     param.forEach(ele => {
       var data = result[ele]
-      key = CryptoJS.enc.Latin1.parse(key)
-      var iv = key
+      var iv = CryptoJS.enc.Latin1.parse(key)
       // 加密
       var encrypted = CryptoJS.AES.encrypt(
         data,
