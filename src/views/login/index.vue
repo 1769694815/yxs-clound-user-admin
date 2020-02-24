@@ -1,6 +1,14 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form
+      v-show="show"
+      ref="loginForm"
+      :model="loginForm"
+      :rules="loginRules"
+      class="login-form animated bounceInDown"
+      auto-complete="on"
+      label-position="left"
+    >
 
       <div class="title-container">
         <h3 class="title">益小书APP管理平台</h3>
@@ -13,7 +21,7 @@
         <el-input
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -30,7 +38,7 @@
           ref="password"
           v-model="loginForm.password"
           :type="passwordType"
-          placeholder="Password"
+          placeholder="密码"
           name="password"
           tabindex="2"
           auto-complete="on"
@@ -77,6 +85,9 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登 录</el-button>
+      <div class="title-container">
+        <h3 class="titleMini">南昌云端科技有限公司</h3>
+      </div>
     </el-form>
   </div>
 </template>
@@ -115,7 +126,8 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      show: true
     }
   },
   watch: {
@@ -197,9 +209,10 @@ $cursor: #fff;
       -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      // color: $light_gray;
+      color: #000;
       height: 47px;
-      caret-color: $cursor;
+      // caret-color: $cursor;
 
       &:-webkit-autofill {
         box-shadow: 0 0 0px 1000px $bg inset !important;
@@ -209,8 +222,8 @@ $cursor: #fff;
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid rgb(220, 222, 224);
+    // background: rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     color: #454545;
   }
@@ -232,15 +245,25 @@ $light_gray:#eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  // background-color: $bg;
+  background: url('/bg.jpg') center center / cover no-repeat;
   overflow: hidden;
 
   .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    // position: relative;
+    // width: 520px;
+    // max-width: 100%;
+    // padding: 160px 35px 0;
+    // margin: 0 auto;
+    // overflow: hidden;
+    min-height: 420px;
+    max-width: 520px;
+    box-sizing: border-box;
+    box-shadow: rgb(144, 144, 144) 0px 0px 10px;
+    margin: 150px auto 0px;
+    padding: 70px 40px 40px;
+    border-radius: 8px;
+    background: center 24px no-repeat rgb(255, 255, 255);
     overflow: hidden;
   }
 
@@ -269,8 +292,14 @@ $light_gray:#eee;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
+      // color: $light_gray;
       margin: 0px auto 40px auto;
+      text-align: center;
+      font-weight: bold;
+    }
+    .titleMini {
+      font-size: 22px;
+      margin: 0 auto;
       text-align: center;
       font-weight: bold;
     }
