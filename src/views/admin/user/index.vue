@@ -64,11 +64,11 @@
         </el-form>
         <!-- 表格 -->
         <Xtable
-          :tableKey="tableKey"
-          :tableLoading="tableLoading"
-          :tableData="list"
+          :table-key="tableKey"
+          :table-loading="tableLoading"
+          :table-data="list"
           :page="page"
-          :tableOption.sync="tableOption"
+          :table-option.sync="tableOption"
           @handle-create="handleCreate"
           @refresh-change="handleFilter"
           @page-change="getList"
@@ -165,10 +165,10 @@
             >
               <Input-tree
                 v-model="form.deptId"
-                :treeData="treeDeptData"
-                :operationStatus="operationStatus"
-                @node-click="getNodeData"
+                :tree-data="treeDeptData"
+                :operation-status="operationStatus"
                 placeholder="请选择所属部门"
+                @node-click="getNodeData"
               />
             </el-form-item>
           </el-col>

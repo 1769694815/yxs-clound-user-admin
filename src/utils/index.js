@@ -4,14 +4,13 @@
 import * as CryptoJS from 'crypto-js'
 // const request = require('./request')
 
-
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
  * @param {string} cFormat
  * @returns {string | null}
  */
-export function parseTime (time, cFormat) {
+export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null
   }
@@ -51,7 +50,7 @@ export function parseTime (time, cFormat) {
  * @param {string} option
  * @returns {string}
  */
-export function formatTime (time, option) {
+export function formatTime(time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000
   } else {
@@ -93,7 +92,7 @@ export function formatTime (time, option) {
  * @param {string} url
  * @returns {Object}
  */
-export function param2Obj (url) {
+export function param2Obj(url) {
   const search = url.split('?')[1]
   if (!search) {
     return {}
@@ -116,7 +115,7 @@ export function param2Obj (url) {
  * @param {Object} source
  * @returns {Object}
  */
-export function deepClone (source) {
+export function deepClone(source) {
   if (!source && typeof source !== 'object') {
     throw new Error('error arguments', 'deepClone')
   }
@@ -144,12 +143,12 @@ export const serialize = data => {
  *加密处理
  */
 export const encryption = (params) => {
-  let {
+  const {
     data,
     type,
-    param,
-    key
+    param
   } = params
+  let { key } = params
   const result = JSON.parse(JSON.stringify(data))
   if (type === 'Base64') {
     param.forEach(ele => {
@@ -164,10 +163,10 @@ export const encryption = (params) => {
       var encrypted = CryptoJS.AES.encrypt(
         data,
         key, {
-        iv: iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.ZeroPadding
-      })
+          iv: iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.ZeroPadding
+        })
       result[ele] = encrypted.toString()
     })
   }
@@ -184,7 +183,7 @@ export const randomLenNum = (len, date) => {
   return random
 }
 
-export function handleDown (filename, bucket) {
+export function handleDown(filename, bucket) {
   // return request({
   //   url: '/admin/sys-file/' + bucket + '/' + filename,
   //   method: 'get',

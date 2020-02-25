@@ -9,11 +9,11 @@
   <div class="app-container calendar-list-container">
     <!-- 表格 -->
     <Xtable
-      :tableKey="tableKey"
-      :tableLoading="tableLoading"
-      :tableData="tableData"
+      :table-key="tableKey"
+      :table-loading="tableLoading"
+      :table-data="tableData"
       :page="page"
-      :tableOption.sync="tableOption"
+      :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @page-change="getList"
     >
@@ -82,7 +82,7 @@
                 autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入角色名称"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
           <el-col>
@@ -96,7 +96,7 @@
                 autocomplete="off"
                 :disabled="operationStatus === 1 || operationStatus === 2"
                 placeholder="请输入角色标识"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
           <el-col>
@@ -111,7 +111,7 @@
                 autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入角色描述"
-              ></el-input>
+              />
             </el-form-item>
           </el-col>
           <el-col>
@@ -161,7 +161,7 @@
                 placeholder="请选择日期时间"
                 :disabled="operationStatus !== 0"
                 style="width: 100%!important;"
-              ></el-date-picker>
+              />
             </el-form-item>
           </el-col>
         </el-form>

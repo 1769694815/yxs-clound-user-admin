@@ -1,16 +1,16 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors: xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-15 16:21:03
+ * @LastEditTime: 2020-02-22 11:48:59
  * @Description: 租户管理
  -->
 <template>
   <div class="execution app-container calendar-list-container">
     <!-- 头部菜单 -->
     <el-form
-      :inline="true"
       ref="search"
+      :inline="true"
       class="search"
       size="medium"
     >
@@ -29,18 +29,12 @@
         label="状态:"
         label-width="80px"
       >
-        <el-select
-          v-model="searchForm.status"
-          size="small"
-          placeholder="请选择状态"
-        >
-          <el-option
-            v-for="item in statusList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="form.status"
+          :operation-status="operationStatus"
+          status-type="status_type"
+          type="select"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -61,11 +55,11 @@
     </el-form>
     <!-- 表格 -->
     <Xtable
-      :tableKey="tableKey"
-      :tableLoading="tableLoading"
-      :tableData="tableData"
+      :table-key="tableKey"
+      :table-loading="tableLoading"
+      :table-data="tableData"
       :page="page"
-      :tableOption.sync="tableOption"
+      :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
@@ -122,8 +116,8 @@
           :model="form"
         >
           <el-col
-            :span="12"
             v-if="operationStatus === 1"
+            :span="12"
           >
             <el-form-item
               prop="id"
@@ -205,18 +199,12 @@
               label="状态:"
               :label-width="formLabelWidth"
             >
-              <el-radio-group
+              <single-change
                 v-model="form.status"
-                :disabled="operationStatus === 1"
-              >
-                <el-radio
-                  v-for="item in statusList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+                :operation-status="operationStatus"
+                status-type="status_type"
+                type="radio"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -248,23 +236,14 @@
 
 <script>
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
-import { remote } from '@/api/admin/dict'
+import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Tenant',
-  computed: {
-    ...mapGetters(['permissions'])
+  components: {
+    SingleChange
   },
   filters: {
-    statusFilter(type, list) {
-      let result
-      list.map(ele => {
-        if (type === ele.value) {
-          result = ele.label
-        }
-      })
-      return result
-    },
     dialogTitle(type) {
       const titleMap = {
         0: '新 增',
@@ -303,10 +282,9 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          slot: true
+          dicUrl: 'status_type'
         }
       ],
-      searchForm: {},
       tableData: [],
       page: {
         total: 0,
@@ -319,7 +297,6 @@ export default {
       },
       tableKey: 0,
       tableLoading: false,
-      statusList: [],
       dialogPvVisible: false,
       operationStatus: 0,
       formRules: {
@@ -356,12 +333,14 @@ export default {
       admin_systenant_edit: false
     }
   },
+  computed: {
+    ...mapGetters(['permissions'])
+  },
   created() {
     this.admin_systenant_add = this.permissions['admin_systenant_add']
     this.admin_systenant_del = this.permissions['admin_systenant_del']
     this.admin_systenant_edit = this.permissions['admin_systenant_edit']
     this.getList()
-    this.getStatusList()
   },
   methods: {
     getList() {
@@ -380,11 +359,6 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
-    },
-    getStatusList() {
-      remote('status_type').then(res => {
-        this.statusList = res.data.data
-      })
     },
     handleFilter() {
       this.getList()
@@ -431,12 +405,12 @@ export default {
       putObj(this.form)
         .then(res => {
           this.tableLoading = false
-          this.tableData.splice(index, 1, Object.assign({}, this.form))
           this.$message({
             showClose: true,
             message: '修改成功',
             type: 'success'
           })
+          this.getList()
         })
         .catch(() => {
           this.tableLoading = false

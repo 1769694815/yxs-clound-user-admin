@@ -3,7 +3,7 @@
  * @LastEditors  : xw
  * @Author: xw
  * @LastEditTime : 2020-02-12 18:30:20
- * @Description: 获取部门api 
+ * @Description: 获取部门api
  */
 import request from '@/utils/request'
 
