@@ -17,7 +17,6 @@ import plugins from './plugins'
 import toolbar from './toolbar'
 import load from './dynamicLoadScript'
 import { getToken } from '@/api/qiniu'
-import { getRandomString } from '@/utils/index'
 
 // why use this cdn, detail see https://github.com/PanJiaChen/tinymce-all-in-one
 const tinymceCDN = 'https://cdn.jsdelivr.net/npm/tinymce-all-in-one@4.9.3/tinymce.min.js'
@@ -168,12 +167,26 @@ export default {
         // },
         images_upload_handler(blobInfo, success, failure, progress) {
           progress(0)
-          getToken().then(response => {
-            const url = _this.$upload_qiniu_addr
-            const key = getRandomString(32)
+          console.log('blobInfo', blobInfo)
+          // const param = new FormData()
+          // param.append('fileName', 'file')
+          // const config = {
+          //   headers: { 'Content-Type': 'multipart/form-data' }
+          // }
+          // axios.post('/admin/api/upload/token', param, config).then(res => {
+          //   console.log(res)
+          // })
+          getToken({
+            fileName: blobInfo.name() + '.png',
+            fileSize: 213,
+            type: 2
+          }).then(response => {
+            console.log('七牛云获取token', response)
+            const url = response.data.data.domain + '/'
+            const key = response.data.data.fileKey
             const formData = new FormData()
-            formData.append('token', response.data)
-            formData.append('key', 'upload2/' + key + '.jpg')
+            formData.append('token', response.data.data.token)
+            formData.append('key', key)
             formData.append('file', blobInfo.blob(), url)
             // 直传七牛方法
             var xhr = new XMLHttpRequest()

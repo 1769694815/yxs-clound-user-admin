@@ -35,7 +35,6 @@
 
 <script>
 import { getToken } from '@/api/qiniu'
-import { getRandomString } from '@/utils/index'
 
 export default {
   name: 'EditorSlideUpload',
@@ -48,6 +47,7 @@ export default {
   data() {
     return {
       upload_qiniu_url: this.$upload_qiniu_url,
+      upload_qiniu_addr: '',
       dialogVisible: false,
       listObj: {},
       fileList: [],
@@ -77,7 +77,7 @@ export default {
       for (let i = 0, len = objKeyArr.length; i < len; i++) {
         if (this.listObj[objKeyArr[i]].uid === uid) {
           // this.listObj[objKeyArr[i]].url = response.files.file
-          this.listObj[objKeyArr[i]].url = this.$upload_qiniu_addr + response.key
+          this.listObj[objKeyArr[i]].url = this.upload_qiniu_addr + response.key
           this.listObj[objKeyArr[i]].hasSuccess = true
           return
         }
@@ -96,14 +96,23 @@ export default {
     beforeUpload(file) {
       const _self = this
       // const _URL = window.URL || window.webkitURL
+      console.log('file', file)
       const fileName = file.uid
       this.listObj[fileName] = {}
       return new Promise((resolve, reject) => {
-        getToken().then(response => {
-          const key = getRandomString(32)
-          const token = response.data
+        const params = {
+          fileName: file.name,
+          fileSize: file.size,
+          type: 2
+        }
+        getToken(params).then(response => {
+          console.log(response)
+          const key = response.data.data.fileKey
+          const token = response.data.data.token
+          _self._data.upload_qiniu_addr = response.data.data.domain + '/'
           _self._data.dataObj.token = token
-          _self._data.dataObj.key = 'upload2/' + key + '.jpg'
+          // _self._data.dataObj.key = 'upload2/' + key + '.jpg'
+          _self._data.dataObj.key = key
           _self.listObj[fileName] = { hasSuccess: false, uid: file.uid }
           resolve(true)
         })

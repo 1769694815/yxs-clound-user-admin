@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-22 11:48:59
+ * @LastEditTime: 2020-02-25 15:21:56
  * @Description: 租户管理
  -->
 <template>
@@ -207,6 +207,9 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <tinymce v-model="form.content" :height="300" />
+          </el-col>
         </el-form>
       </el-row>
       <div
@@ -238,10 +241,12 @@
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
+import Tinymce from '@/components/Tinymce/index'
 export default {
   name: 'Tenant',
   components: {
-    SingleChange
+    SingleChange,
+    Tinymce
   },
   filters: {
     dialogTitle(type) {

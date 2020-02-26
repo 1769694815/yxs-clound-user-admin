@@ -39,8 +39,7 @@ Vue.component('Xtable', Xtable)
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 Vue.use(ElementUI)
-Vue.prototype.$upload_qiniu_url = 'https://upload-z2.qiniup.com/'
-Vue.prototype.$upload_qiniu_addr = 'https://jdzimage.chengyanzaixian.cn/'
+Vue.prototype.$upload_qiniu_url = 'https://up-z0.qiniup.com/'
 
 // 加载相关url地址
 Object.keys(urls).forEach(key => {
