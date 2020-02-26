@@ -1,10 +1,3 @@
-<!--
- * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
- * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
- * @Description: 文件管理
- -->
 <template>
   <div class="app-container calendar-list-container">
     <!-- 头部菜单 -->
@@ -84,10 +77,16 @@
       @page-change="getList"
     >
       <template
-        slot="role"
+        slot="newwinFlag"
         slot-scope="scope"
       >
-        <el-tag>{{ scope.row.role }}</el-tag>
+        <el-tag>{{ scope.row.newwinFlag | statusFilter(typeList) }}</el-tag>
+      </template>
+      <template
+        slot="openFlag"
+        slot-scope="scope"
+      >
+        <el-tag>{{ scope.row.openFlag | statusFilter(typeList) }}</el-tag>
       </template>
       <template
         slot="menu"
@@ -98,7 +97,7 @@
           icon="el-icon-view"
           size="mini"
           @click="handleView(scope.row)"
-        >查看
+        >编辑
         </el-button>
         <el-button
           type="text"
@@ -173,7 +172,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="图片上传:" prop="img">
+            <el-form-item label="图片上传:" prop="pic">
               <el-upload
                 :headers="headers"
                 class="avatar-uploader"
@@ -182,7 +181,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="navigation-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -217,11 +216,13 @@
 </template>
 
 <script>
-import { delObj, fetchList, dictType } from '@/api/news/navigation/navigation'
+import { delObj, fetchList, dictType, addObj, putObj } from '@/api/news/navigation/navigation'
+import { tableOption, typeList, rules } from '@/const/crud/news/navigation/navigation'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getQiNiuYunDomain } from '@/api/qiniu'
 
 export default {
+  name: 'Index',
   filters: {
     statusFilter(type, list) {
       let result
@@ -245,74 +246,12 @@ export default {
   data() {
     return {
       tableKey: 0,
-      headers: {
-        'Authorization': 'Bearer ' + getToken
-      },
+      headers: {},
       tableLoading: false,
       navigationTypeList: [],
-      typeList: [
-        {
-          'value': 0,
-          'label': '否'
-        },
-        {
-          'value': 1,
-          'label': '是'
-        }
-      ],
-      tableOption: [
-        {
-          label: '编号',
-          prop: 'id',
-          hide: true
-        },
-        {
-          label: '导航名称',
-          prop: 'name',
-          overHidden: true,
-          width: '120'
-        },
-        {
-          label: '链接地址',
-          prop: 'url',
-          hide: true
-        },
-        {
-          label: '类型',
-          prop: 'code',
-          overHidden: true
-        },
-        {
-          label: '图片',
-          prop: 'pic',
-          hide: true
-        },
-        {
-          label: '是否启用',
-          prop: 'openFlag',
-          overHidden: true
-        },
-        {
-          label: '是否打开新窗口',
-          prop: 'newwinFlag',
-          width: '180'
-        },
-        {
-          label: '显示顺序',
-          prop: 'sequence',
-          width: '100'
-        },
-        {
-          label: '创建时间',
-          prop: 'createTime'
-        },
-        {
-          width: 180,
-          label: '修改时间',
-          prop: 'updateTime'
-        }
-      ],
       tableData: [],
+      tableOption: tableOption,
+      typeList: typeList,
       page: {
         total: 0,
         current: 1,
@@ -322,33 +261,18 @@ export default {
       dialogPvVisible: false,
       operationStatus: 0,
       form: {}, // 新增 编辑 数据源
-      rules: { // 表单校验
-        name: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请选择类型', trigger: 'change' }
-        ],
-        openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
-        ],
-        newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
-        ],
-        img: [
-          { required: true, message: '请上传图片', trigger: 'change' }
-        ]
-      },
+      rules: rules,
       dataObj: { token: '', key: '' },
       imageUrl: '' // 图片地址
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
     this.dictTypeList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
@@ -356,7 +280,6 @@ export default {
       fetchList(
         Object.assign(
           {
-            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -380,13 +303,18 @@ export default {
     },
     /**
      * 创建方法
-     * @param form
+     * @param formName
      * @returns
      */
-    create(form) {
-      this.$refs[form].validate(valid => {
+    create(formName) {
+      console.log(this.form)
+      this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(1111)
+          addObj(this.form).then(data => {
+            this.$message.success('添加成功')
+            this.getList(this.page)
+            this.dialogPvVisible = false
+          })
         } else {
           return false
         }
@@ -394,10 +322,11 @@ export default {
     },
     /**
      * 重置
-     * @param form
+     * @param formName
      * @returns
      */
     resetForm(formName) {
+      this.imageUrl = ''
       this.$refs[formName].resetFields()
     },
     handleFilter() {
@@ -408,9 +337,10 @@ export default {
       this.getList()
     },
     handleView(row) {
+      row.pic = getQiNiuYunDomain() + '/' + row.pic
       this.form = row
       this.dialogPvVisible = true
-      this.operationStatus = 1
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
       var _this = this
@@ -430,6 +360,7 @@ export default {
     handleClose(form) {
       this.dialogPvVisible = false
       this.form = {}
+      this.imageUrl = ''
       this.$refs[form].resetFields()
     },
     handleCreate() {
@@ -457,7 +388,9 @@ export default {
      */
     handleSuccess(res, file) {
       console.log('res', res)
-      // this.$qiniuAddr + res.key
+      this.form.pic = res.fileKey
+      this.imageUrl = res.url
+      console.log(this.form.pic)
     },
     handleRemove() {
     }
