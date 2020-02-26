@@ -19,6 +19,17 @@ export function getToken(params) {
   })
 }
 
+/**
+ * 获取七牛云域名
+ * @returns {AxiosPromise}
+ */
+export function getQiNiuYunDomain() {
+  return request({
+    url: '/admin/sys-file/getQiNiuYunDomain',
+    method: 'get'
+  })
+}
+
 export function upload(params) {
   return request({
     url: '',
