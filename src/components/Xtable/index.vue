@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-22 11:15:48
+ * @LastEditTime: 2020-02-26 11:25:06
  * @Description: 表格组件
  -->
 <template>
@@ -85,6 +85,9 @@
               :row="scope.row"
               :$index="scope.$index"
             />
+            <span v-else-if="item.dicData">
+              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
+            </span>
             <span
               v-else-if="item.dicUrl"
             >
