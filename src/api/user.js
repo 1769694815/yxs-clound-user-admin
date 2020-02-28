@@ -34,3 +34,10 @@ export function logout() {
     method: 'delete'
   })
 }
+
+export function getTeacherList() {
+  return request({
+    url: '/admin/user/getTeacherList',
+    method: 'get'
+  })
+}
