@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-25 15:21:56
+ * @LastEditTime: 2020-02-28 11:46:14
  * @Description: 租户管理
  -->
 <template>
@@ -208,7 +208,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <tinymce v-model="form.content" :height="300" />
+            <tinymce ref="tinymce" v-model="form.content" :height="300" />
           </el-col>
         </el-form>
       </el-row>
@@ -346,6 +346,10 @@ export default {
     this.admin_systenant_del = this.permissions['admin_systenant_del']
     this.admin_systenant_edit = this.permissions['admin_systenant_edit']
     this.getList()
+    // 初始化富文本编辑器
+    this.$nextTick(() => {
+      this.$$refs.Tinymce.init()
+    })
   },
   methods: {
     getList() {
