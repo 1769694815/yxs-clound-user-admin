@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-11 17:07:24
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-12 18:04:24
+ * @LastEditTime: 2020-02-28 16:56:58
  * @Description: 菜单api
  */
 import request from '@/utils/request'
@@ -49,6 +49,9 @@ export function putObj(obj) {
   return request({
     url: '/admin/menu',
     method: 'put',
-    data: obj
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data: JSON.stringify(obj)
   })
 }
