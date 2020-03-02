@@ -15,6 +15,7 @@
       class="filter"
     />
     <el-tree
+      ref="tree"
       class="filter-tree"
       :data="data"
       :props="defaultProps"
@@ -23,7 +24,6 @@
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
       @node-click="getNodeData"
-      ref="tree"
     />
   </div>
 </template>
@@ -44,11 +44,6 @@ export default {
       }
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree.filter(val)
-    }
-  },
   data() {
     return {
       filterText: '',
@@ -57,6 +52,11 @@ export default {
         label: this.option.props.label,
         value: this.option.props.value
       }
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
     }
   },
   methods: {

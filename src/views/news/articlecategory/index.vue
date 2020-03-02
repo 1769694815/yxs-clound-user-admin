@@ -108,8 +108,7 @@
           ref="dataForm"
           :model="form"
           :rules="rules"
-        >
-        </el-form>
+        />
       </el-row>
       <div
         slot="footer"
