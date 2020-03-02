@@ -168,7 +168,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar" />
+                <img v-if="form.pic" :src="form.pic" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="comment-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -192,98 +192,98 @@ import {
   addObj,
   putObj,
   delObj
-} from "@/api/course/coursecomment";
-import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
+} from '@/api/course/coursecomment'
+import { mapGetters } from 'vuex'
+import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
     return {
       tableKey: 0,
       headers: {
-        Authorization: "Bearer " + getToken
+        Authorization: 'Bearer ' + getToken
       },
       tableLoading: false,
       commentTypeList: [],
       typeList: [
         {
           value: 0,
-          label: "否"
+          label: '否'
         },
         {
           value: 1,
-          label: "是"
+          label: '是'
         }
       ],
       auditStatus: [
         {
           value: 0,
-          label: "待审核"
+          label: '待审核'
         },
         {
           value: 1,
-          label: "通过"
+          label: '通过'
         },
         {
           value: 2,
-          label: "不通过"
+          label: '不通过'
         }
       ],
       tableOption: [
         {
-          label: "评论对象ID",
-          prop: "courseId"
+          label: '评论对象ID',
+          prop: 'courseId'
         },
         {
-          label: "评论内容",
-          prop: "content"
+          label: '评论内容',
+          prop: 'content'
         },
         {
-          label: "状态",
-          prop: "status"
+          label: '状态',
+          prop: 'status'
         },
         {
-          type: "input",
-          label: "父节点",
-          prop: "parentId"
+          type: 'input',
+          label: '父节点',
+          prop: 'parentId'
         },
         {
-          label: "删除标志",
-          prop: "delFlag"
+          label: '删除标志',
+          prop: 'delFlag'
         },
         {
-          type: "input",
-          label: "用户ID",
-          prop: "createUserId"
+          type: 'input',
+          label: '用户ID',
+          prop: 'createUserId'
         },
         {
-          type: "input",
-          label: "创建时间",
-          prop: "createTime"
+          type: 'input',
+          label: '创建时间',
+          prop: 'createTime'
         },
         {
-          label: "是否置顶",
-          prop: "topFlag"
+          label: '是否置顶',
+          prop: 'topFlag'
         }
       ],
       tableData: [],
@@ -299,34 +299,34 @@ export default {
       rules: {
         // 表单校验
         name: [
-          { required: true, message: "导航名称不能为空", trigger: "blur" }
+          { required: true, message: '导航名称不能为空', trigger: 'blur' }
         ],
-        code: [{ required: true, message: "请选择类型", trigger: "change" }],
+        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
         openFlag: [
-          { required: true, message: "请选择是否启用", trigger: "change" }
+          { required: true, message: '请选择是否启用', trigger: 'change' }
         ],
         newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
+          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
         ],
-        img: [{ required: true, message: "请上传图片", trigger: "change" }]
+        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
       },
-      dataObj: { token: "", key: "" },
-      imageUrl: "" // 图片地址
-    };
+      dataObj: { token: '', key: '' },
+      imageUrl: '' // 图片地址
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions'])
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -334,13 +334,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -350,11 +350,11 @@ export default {
     create(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          console.log(1111);
+          console.log(1111)
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -362,48 +362,48 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
-      this.form = {};
+      this.dialogPvVisible = true
+      this.form = {}
     },
     /**
      * 文件上传方法
@@ -411,13 +411,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     /**
      * 文件上传成功后方法
@@ -425,12 +425,12 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log("res", res);
+      console.log('res', res)
       // this.$qiniuAddr + res.key
     },
     handleRemove() {}
   }
-};
+}
 </script>
 <style>
 .comment-input {

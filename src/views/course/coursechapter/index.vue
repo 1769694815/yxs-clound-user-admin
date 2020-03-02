@@ -89,76 +89,76 @@ import {
   addObj,
   putObj,
   delObj
-} from "@/api/course/coursechapter";
-import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
+} from '@/api/course/coursechapter'
+import { mapGetters } from 'vuex'
+import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
     return {
       tableKey: 0,
       headers: {
-        Authorization: "Bearer " + getToken
+        Authorization: 'Bearer ' + getToken
       },
       tableLoading: false,
       typeList: [
         {
           value: 0,
-          label: "否"
+          label: '否'
         },
         {
           value: 1,
-          label: "是"
+          label: '是'
         }
       ],
       tableOption: [
         {
-          label: "章节名称",
-          prop: "title"
+          label: '章节名称',
+          prop: 'title'
         },
         {
-          label: "父类章节",
-          prop: "parentId"
+          label: '父类章节',
+          prop: 'parentId'
         },
         {
-          label: "所属课程",
-          prop: "courseId"
+          label: '所属课程',
+          prop: 'courseId'
         },
         {
-          label: "章节类型",
-          prop: "type"
+          label: '章节类型',
+          prop: 'type'
         },
         {
-          label: "排序",
-          prop: "sort"
+          label: '排序',
+          prop: 'sort'
         },
         {
-          label: "用户id",
-          prop: "createUserId"
+          label: '用户id',
+          prop: 'createUserId'
         },
         {
-          label: "创建时间",
-          prop: "createTime"
+          label: '创建时间',
+          prop: 'createTime'
         }
       ],
       tableData: [],
@@ -174,28 +174,28 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: "章节名称不能为空", trigger: "blur" }
+          { required: true, message: '章节名称不能为空', trigger: 'blur' }
         ]
       },
-      dataObj: { token: "", key: "" }
-    };
+      dataObj: { token: '', key: '' }
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions'])
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getList() {
-      this.tableLoading = true;
-      let params = {
+      this.tableLoading = true
+      const params = {
         courseId: this.$route.query.courseId
-      };
+      }
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -204,13 +204,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -220,11 +220,11 @@ export default {
     create(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          console.log(1111);
+          console.log(1111)
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -232,57 +232,57 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleLessonList(row, index) {
       this.$router.push({
-        path: "/course/courselesson/index",
+        path: '/course/courselesson/index',
         query: {
           chapterId: row.id,
           courseId: row.courseId
         }
-      });
+      })
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
-      this.form = {};
+      this.dialogPvVisible = true
+      this.form = {}
     },
     /**
      * 文件上传方法
@@ -290,13 +290,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     /**
      * 文件上传成功后方法
@@ -304,12 +304,12 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log("res", res);
+      console.log('res', res)
       // this.$qiniuAddr + res.key
     },
     handleRemove() {}
   }
-};
+}
 </script>
 <style>
 .chapter-input {
