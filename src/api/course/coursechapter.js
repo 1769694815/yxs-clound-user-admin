@@ -12,6 +12,9 @@ export function addObj(obj) {
   return request({
     url: '/course/coursechapter',
     method: 'post',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
     data: obj
   })
 }
@@ -34,6 +37,9 @@ export function putObj(obj) {
   return request({
     url: '/course/coursechapter',
     method: 'put',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
     data: obj
   })
 }
