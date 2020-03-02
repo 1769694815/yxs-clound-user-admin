@@ -2,8 +2,8 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
- * @Description: 文件管理
+ * @LastEditTime: 2020-03-02 14:14:32
+ * @Description: 题目表管理
  -->
 <template>
   <div class="app-container calendar-list-container">
@@ -64,9 +64,6 @@
       @refresh-change="handleFilter"
       @page-change="getList"
     >
-      <template slot="role" slot-scope="scope">
-        <el-tag>{{ scope.row.role }}</el-tag>
-      </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -91,7 +88,7 @@
       :title="operationStatus | dialogTitle"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
-        <el-form ref="dataForm" :model="form" :rules="rules">
+        <el-form ref="dataForm" :model="form" :rules="rules" :label-width="labelWidth">
           <!--课程标题-->
           <el-col :span="12">
             <el-form-item label="课程标题" prop="title">
@@ -160,7 +157,8 @@
                 <el-radio
                   v-for="item in DIC.courseStatus"
                   :key="item.value"
-                  :label="item.value"
+                  :label="item.label"
+                  :value="item.value"
                   border
                   size="medium"
                 />
@@ -170,15 +168,19 @@
           <!--连载状态-->
           <el-col :span="12">
             <el-form-item label="连载状态" prop="serialStatus">
-              <el-radio-group v-model="form.serialStatus">
-                <el-radio
+              <el-select
+                v-model="form.serialStatus"
+                clearable
+                class="course-input"
+                placeholder="请选择连载状态"
+              >
+                <el-option
                   v-for="item in DIC.serialStatusList"
                   :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
+                  :label="item.label"
+                  :value="item.value"
                 />
-              </el-radio-group>
+              </el-select>
             </el-form-item>
           </el-col>
           <!--是否推荐-->
@@ -188,7 +190,8 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.value"
+                  :label="item.label"
+                  :value="item.value"
                   border
                   size="medium"
                 />
@@ -202,7 +205,8 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.value"
+                  :label="item.label"
+                  :value="item.value"
                   border
                   size="medium"
                 />
@@ -216,7 +220,8 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.value"
+                  :label="item.label"
+                  :value="item.value"
                   border
                   size="medium"
                 />
@@ -230,7 +235,8 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.value"
+                  :label="item.label"
+                  :value="item.value"
                   border
                   size="medium"
                 />
@@ -271,16 +277,25 @@
             <el-form-item label="课程简叙" prop="subtitle">
               <el-input
                 v-model="form.subtitle"
+                :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入课程简叙"
                 clearable
                 class="course-input"
+                type="textarea"
               />
             </el-form-item>
           </el-col>
           <!--课程简介-->
           <el-col :span="24">
             <el-form-item label="课程简介" prop="about">
-              <el-input v-model="form.about" placeholder="请输入课程简介" clearable class="course-input" />
+              <el-input
+                v-model="form.about"
+                :autosize="{ minRows: 2, maxRows: 4}"
+                placeholder="请输入课程简介"
+                clearable
+                class="course-input"
+                type="textarea"
+              />
             </el-form-item>
           </el-col>
 
@@ -328,6 +343,9 @@ import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
 
 export default {
+  components: {
+    InputTree
+  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -505,6 +523,7 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
+      labelWidth: '90px',
       form: {}, // 新增 编辑 数据源
       rules: {
         // 表单校验
@@ -675,7 +694,7 @@ export default {
 </script>
 <style>
 .course-input {
-  width: 250px;
+  width: 100%;
 }
 
 .course-upload__tip {
