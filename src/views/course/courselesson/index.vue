@@ -121,7 +121,7 @@
           <!--课时类型-->
           <el-col :span="12">
             <el-form-item label="课时类型" prop="type">
-              <el-select v-model="form.type" clearable class="course-input" placeholder="请选择课时类型">
+              <el-select v-model="form.type" clearable class="lesson-input" placeholder="请选择课时类型">
                 <el-option
                   v-for="item in DIC.fileType"
                   :key="item.label"
@@ -380,9 +380,36 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111);
+          this.getList();
+          if (this.form.id != null) {
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "修改成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          } else {
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "创建成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          }
         } else {
           return false;
         }

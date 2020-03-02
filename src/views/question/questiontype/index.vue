@@ -10,42 +10,9 @@
     <!-- 头部菜单 -->
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
-      <!--课程标题-->
-      <el-form-item label="课程标题:" label-width="80px">
-        <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入课程标题" />
-      </el-form-item>
-      <!--是否推荐-->
-      <el-form-item label="是否推荐:" label-width="80px">
-        <el-select v-model="searchForm.recommend" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--开售标志-->
-      <el-form-item label="开售标志:" label-width="130px">
-        <el-select v-model="searchForm.buyFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--课程类型-->
-      <el-form-item label="课程类型:" label-width="80px">
-        <el-select v-model="searchForm.type" clearable>
-          <el-option
-            v-for="item in DIC.courseTypeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+      <!--题型名称-->
+      <el-form-item label="题型名称:" label-width="80px">
+        <el-input v-model="searchForm.name" type="text" size="small" placeholder="请输入题型名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -72,12 +39,6 @@
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
           type="text"
-          icon="el-icon-edit"
-          size="mini"
-          @click="handleChapterList(scope.row,scope.index)"
-        >章节列表</el-button>
-        <el-button
-          type="text"
           size="mini"
           icon="el-icon-delete"
           @click="handleDelete(scope.row, scope.index)"
@@ -92,213 +53,59 @@
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
-          <!--课程标题-->
+          <!--题型名称-->
           <el-col :span="12">
-            <el-form-item label="课程标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入课程标题" clearable class="course-input" />
-            </el-form-item>
-          </el-col>
-          <!--副标题-->
-          <el-col :span="12">
-            <el-form-item label="副标题" prop="brife">
-              <el-input v-model="form.brife" placeholder="请输入副标题" clearable class="course-input" />
-            </el-form-item>
-          </el-col>
-          <!--课程类型-->
-          <el-col :span="12">
-            <el-form-item label="课程类型" prop="type">
-              <el-select v-model="form.type" clearable class="course-input" placeholder="请选择课程类型">
-                <el-option
-                  v-for="item in DIC.courseTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--课程分类-->
-          <el-col :span="12">
-            <el-form-item label="课程分类" prop="categoryIds">
-              <Input-tree
-                v-model="form.categoryIds"
-                :tree-data="treeData"
-                :operation-status="operationStatus"
-                placeholder="请选择课程分类"
-                @node-click="getNodeData"
-              />
-            </el-form-item>
-          </el-col>
-          <!--课程讲师-->
-          <el-col :span="12">
-            <el-form-item label="课程讲师" prop="teacherId">
-              <el-select
-                v-model="form.teacherId"
-                clearable
-                class="course-input"
-                placeholder="请选择课程讲师"
-              >
-                <el-option
-                  v-for="item in tearcherList"
-                  :key="item.username"
-                  :label="item.username"
-                  :value="item.userId"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--课程价格-->
-          <el-col :span="12">
-            <el-form-item label="课程价格" prop="price">
-              <el-input v-model="form.price" placeholder="请输入课程价格" clearable class="course-input" />
-            </el-form-item>
-          </el-col>
-          <!--课程状态-->
-          <el-col :span="12">
-            <el-form-item label="课程状态" prop="status">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="item in DIC.courseStatus"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--连载状态-->
-          <el-col :span="12">
-            <el-form-item label="连载状态" prop="serialStatus">
-              <el-radio-group v-model="form.serialStatus">
-                <el-radio
-                  v-for="item in DIC.serialStatusList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--是否推荐-->
-          <el-col :span="12">
-            <el-form-item label="是否推荐" prop="recommend">
-              <el-radio-group v-model="form.recommend">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--开售标志-->
-          <el-col :span="12">
-            <el-form-item label="开售标志" prop="buyFlag">
-              <el-radio-group v-model="form.buyFlag">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--视频拖动-->
-          <el-col :span="12">
-            <el-form-item label="视频拖动" prop="drag">
-              <el-radio-group v-model="form.drag">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--倍速播放-->
-          <el-col :span="12">
-            <el-form-item label="倍速播放" prop="doubleSpeed">
-              <el-radio-group v-model="form.doubleSpeed">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                ></el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--有效天数-->
-          <el-col :span="12">
-            <el-form-item label="有效天数" prop="effectiveDays">
+            <el-form-item label="题型名称" prop="name">
               <el-input
-                v-model="form.effectiveDays"
-                placeholder="请输入有效天数"
+                v-model="form.name"
+                placeholder="请输入题型名称"
                 clearable
-                class="course-input"
+                class="question-type-input"
               />
             </el-form-item>
           </el-col>
-          <!--课程排序-->
+          <!--题型分值-->
           <el-col :span="12">
-            <el-form-item label="课程排序" prop="sort">
-              <el-input v-model="form.sort" placeholder="请输入课程排序" clearable class="course-input" />
+            <el-form-item label="题型分值" prop="score">
+              <el-input
+                v-model="form.score"
+                placeholder="请输入题型分值"
+                clearable
+                class="question-type-input"
+              />
             </el-form-item>
           </el-col>
-          <!--填写人数-->
+          <!--漏选分值-->
           <el-col :span="12">
-            <el-form-item label="填写人数" prop="learnNum">
+            <el-form-item label="漏选分值" prop="missScore">
               <el-input
-                v-model="form.learnNum"
-                placeholder="请输入填写人数"
+                v-model="form.missScore"
+                placeholder="请输入漏选分值"
                 clearable
-                class="course-input"
+                class="question-type-input"
               />
             </el-form-item>
           </el-col>
-
-          <!--课程简叙-->
-          <el-col :span="24">
-            <el-form-item label="课程简叙" prop="subtitle">
+          <!--题型排序-->
+          <el-col :span="12">
+            <el-form-item label="题型排序" prop="sort">
               <el-input
-                v-model="form.subtitle"
-                placeholder="请输入课程简叙"
+                v-model="form.sort"
+                placeholder="请输入题型排序"
                 clearable
-                class="course-input"
+                class="question-type-input"
               />
             </el-form-item>
           </el-col>
-          <!--课程简介-->
-          <el-col :span="24">
-            <el-form-item label="课程简介" prop="about">
-              <el-input v-model="form.about" placeholder="请输入课程简介" clearable class="course-input" />
-            </el-form-item>
-          </el-col>
-
-          <!--图片上传-->
-          <el-col :span="24">
-            <el-form-item label="图片上传:" prop="smallPicture">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
-                action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img v-if="form.smallPicture" :src="form.smallPicture" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+          <!--题型描述-->
+          <el-col :span="12">
+            <el-form-item label="题型描述" prop="description">
+              <el-input
+                v-model="form.description"
+                placeholder="请输入题型描述"
+                clearable
+                class="question-type-input"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -318,14 +125,9 @@ import {
   getObj,
   addObj,
   putObj,
-  delObj,
-  getCategoryTree
-} from "@/api/course/course";
-import { getTeacherList } from "@/api/user";
-import { getAllCategoryType } from "@/api/course/category";
+  delObj
+} from "@/api/question/questiontype";
 import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
-import InputTree from "@/components/InputTree/index";
 
 export default {
   filters: {
@@ -349,151 +151,31 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      typeList: [
-        {
-          value: 0,
-          label: "否"
-        },
-        {
-          value: 1,
-          label: "是"
-        }
-      ],
-      courseTypeList: [
-        {
-          label: "普通课程",
-          value: 1
-        },
-        {
-          label: "直播课程",
-          value: 2
-        },
-        {
-          label: "录播公开课",
-          value: 3
-        },
-        {
-          label: "直播公开课",
-          value: 4
-        }
-      ],
-      courseStatus: [
-        {
-          label: "未发布",
-          value: 0
-        },
-        {
-          label: "发布",
-          value: 1
-        }
-      ],
-      serialStatusList: [
-        {
-          label: "非连载课程",
-          value: 1
-        },
-        {
-          label: "更新中",
-          value: 2
-        },
-        {
-          label: "已完结",
-          value: 3
-        }
-      ]
-    };
     return {
-      DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: "Bearer " + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],
       tableOption: [
         {
-          label: "课程标题",
-          prop: "title",
-          width: "160"
+          label: "题型名称",
+          prop: "name"
         },
         {
-          label: "课程类型",
-          prop: "type",
-          width: "80"
+          label: "分值",
+          prop: "score"
         },
         {
-          label: "课程分类",
-          prop: "categoryName",
-          width: "160"
-        },
-        {
-          label: "课程状态",
-          prop: "status",
-          width: "80",
-          dicData: DIC.courseStatus
-        },
-        {
-          label: "连载状态",
-          prop: "serialStatus",
-          width: "100",
-          dicData: DIC.serialStatusList
-        },
-        {
-          label: "是否推荐",
-          prop: "recommend",
-          width: "80",
-          dicData: DIC.typeList
-        },
-        {
-          label: "开售标志",
-          prop: "buyFlag",
-          width: "80",
-          dicData: DIC.typeList
-        },
-        {
-          label: "价格",
-          prop: "price",
-          width: "80"
-        },
-        {
-          label: "删除标记",
-          prop: "delFlag",
-          width: "80",
-          dicData: DIC.typeList
-        },
-        {
-          label: "有效天数",
-          prop: "effectiveDays",
-          width: "80"
+          label: "漏选分值",
+          prop: "missScore"
         },
         {
           label: "排序",
-          prop: "sort",
-          width: "60"
-        },
-        {
-          label: "教师",
-          prop: "teacherName",
-          width: "80"
-        },
-        {
-          label: "视频拖动",
-          prop: "drag",
-          width: "80",
-          dicData: DIC.typeList
-        },
-        {
-          label: "倍速播放",
-          prop: "doubleSpeed",
-          width: "80",
-          dicData: DIC.typeList
+          prop: "sort"
         },
         {
           label: "创建时间",
-          prop: "createTime",
-          width: "160"
+          prop: "createTime"
         }
       ],
       tableData: [],
@@ -508,20 +190,13 @@ export default {
       form: {}, // 新增 编辑 数据源
       rules: {
         // 表单校验
-        title: [
-          { required: true, message: "导航名称不能为空", trigger: "blur" }
+        name: [
+          { required: true, message: "题型名称不能为空", trigger: "blur" }
         ],
-        code: [{ required: true, message: "请选择类型", trigger: "change" }],
-        openFlag: [
-          { required: true, message: "请选择是否启用", trigger: "change" }
-        ],
-        newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
-        ],
-        img: [{ required: true, message: "请上传图片", trigger: "change" }]
-      },
-      dataObj: { token: "", key: "" },
-      imageUrl: "" // 图片地址
+        score: [
+          { required: true, message: "题型分值不能为空", trigger: "blur" }
+        ]
+      }
     };
   },
   computed: {
@@ -529,22 +204,8 @@ export default {
   },
   created() {
     this.getList();
-    this.getTeacherList();
-    this.getCategoryTree();
   },
   methods: {
-    getCategoryTree() {
-      getAllCategoryType(1).then(res => {
-        this.treeData = res.data.data;
-        console.log("treeData", res.data.data);
-        // this.form.parentId = res.data.id;
-      });
-    },
-    getTeacherList() {
-      getTeacherList().then(res => {
-        this.tearcherList = res.data.data;
-      });
-    },
     getList() {
       this.tableLoading = true;
       fetchList(
@@ -572,9 +233,36 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111);
+          this.getList();
+          if (this.form.id != null) {
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "修改成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          } else {
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "创建成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          }
         } else {
           return false;
         }
@@ -605,14 +293,6 @@ export default {
       this.dialogPvVisible = true;
       this.operationStatus = 2;
     },
-    handleChapterList(row, index) {
-      this.$router.push({
-        path: "/course/coursechapter/index",
-        query: {
-          courseId: row.id
-        }
-      });
-    },
     handleDelete(row, index) {
       var _this = this;
       this.$confirm("是否确认删除ID为" + row.id, "提示", {
@@ -635,38 +315,7 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true;
-      this.form = {
-        type: 1,
-        status: 0,
-        serialStatus: 1,
-        recommend: 0,
-        buyFlag: 0,
-        doubleSpeed: 0,
-        drag: 0
-      };
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      console.log("res", res);
-      // this.$qiniuAddr + res.key
+      this.form = {};
     },
     handleRemove() {},
     getNodeData() {}
@@ -674,7 +323,7 @@ export default {
 };
 </script>
 <style>
-.course-input {
+.question-type-input {
   width: 250px;
 }
 
