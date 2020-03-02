@@ -221,7 +221,7 @@
           <!--字体颜色-->
           <el-col :span="12">
             <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor"></el-color-picker>
+              <el-color-picker v-model="form.fontColor" />
             </el-form-item>
           </el-col>
           <!--显示顺序-->
@@ -245,7 +245,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar" />
+                <img v-if="form.pic" :src="form.pic" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="category-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -270,10 +270,10 @@ import {
   putObj,
   delObj,
   getAllCategoryType
-} from "@/api/course/category";
-import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
-import InputTree from "@/components/InputTree/index";
+} from '@/api/course/category'
+import { mapGetters } from 'vuex'
+import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import InputTree from '@/components/InputTree/index'
 
 export default {
   components: {
@@ -281,22 +281,22 @@ export default {
   },
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
@@ -304,103 +304,103 @@ export default {
       typeList: [
         {
           value: 0,
-          label: "否"
+          label: '否'
         },
         {
           value: 1,
-          label: "是"
+          label: '是'
         }
       ],
       classificationTypeList: [
         {
           value: 1,
-          label: "班级"
+          label: '班级'
         },
         {
           value: 2,
-          label: "课程"
+          label: '课程'
         }
       ]
-    };
+    }
     return {
       DIC: DIC,
       tableKey: 0,
       headers: {
-        Authorization: "Bearer " + getToken
+        Authorization: 'Bearer ' + getToken
       },
       tableLoading: false,
       tableOption: [
         {
-          label: "编号",
-          prop: "id",
+          label: '编号',
+          prop: 'id',
           hide: true
         },
         {
-          label: "分类名称",
-          prop: "name",
+          label: '分类名称',
+          prop: 'name',
           overHidden: true,
-          width: "120"
+          width: '120'
         },
         {
-          label: "分类编码",
+          label: '分类编码',
           overHidden: true,
-          prop: "code",
-          width: "100"
+          prop: 'code',
+          width: '100'
         },
         {
-          label: "是否最热",
-          prop: "hotFlag",
+          label: '是否最热',
+          prop: 'hotFlag',
           overHidden: true,
-          width: "100",
+          width: '100',
           dicData: DIC.typeList
         },
         {
-          label: "是否置顶",
-          prop: "topFlag",
+          label: '是否置顶',
+          prop: 'topFlag',
           overHidden: true,
-          width: "100",
+          width: '100',
           dicData: DIC.typeList
         },
         {
-          label: "是否推荐首页",
-          prop: "recommendedFlag",
+          label: '是否推荐首页',
+          prop: 'recommendedFlag',
           overHidden: true,
-          width: "120",
+          width: '120',
           dicData: DIC.typeList
         },
         {
-          label: "是否栏目推荐",
-          prop: "columnFlag",
+          label: '是否栏目推荐',
+          prop: 'columnFlag',
           overHidden: true,
-          width: "120",
+          width: '120',
           dicData: DIC.typeList
         },
         {
-          label: "删除标记",
-          prop: "delFlag",
+          label: '删除标记',
+          prop: 'delFlag',
           overHidden: true,
-          width: "100",
+          width: '100',
           dicData: DIC.typeList
         },
         {
-          label: "是否展示",
-          prop: "showFlag",
-          width: "100",
+          label: '是否展示',
+          prop: 'showFlag',
+          width: '100',
           dicData: DIC.typeList
         },
         {
-          label: "分类类型",
-          prop: "groupType",
+          label: '分类类型',
+          prop: 'groupType',
           dicData: DIC.classificationTypeList
         },
         {
-          label: "排序",
-          prop: "sort",
-          width: "60"
+          label: '排序',
+          prop: 'sort',
+          width: '60'
         },
         {
-          label: "字体颜色",
-          prop: "fontColor"
+          label: '字体颜色',
+          prop: 'fontColor'
         }
       ],
       tableData: [],
@@ -418,60 +418,60 @@ export default {
       rules: {
         // 表单校验
         name: [
-          { required: true, message: "分类名称不能为空", trigger: "blur" }
+          { required: true, message: '分类名称不能为空', trigger: 'blur' }
         ],
         code: [
-          { required: true, message: "分类编码不能为空", trigger: "blur" }
+          { required: true, message: '分类编码不能为空', trigger: 'blur' }
         ],
         hotFlag: [
-          { required: true, message: "请选择是否最热", trigger: "change" }
+          { required: true, message: '请选择是否最热', trigger: 'change' }
         ],
         topFlag: [
-          { required: true, message: "请选择是否置顶", trigger: "change" }
+          { required: true, message: '请选择是否置顶', trigger: 'change' }
         ],
         columnFlag: [
-          { required: true, message: "请选择是否推荐栏目", trigger: "change" }
+          { required: true, message: '请选择是否推荐栏目', trigger: 'change' }
         ],
         recommendedFlag: [
-          { required: true, message: "请选择是否首页推荐", trigger: "change" }
+          { required: true, message: '请选择是否首页推荐', trigger: 'change' }
         ],
         showFlag: [
-          { required: true, message: "请选择是否展示", trigger: "change" }
+          { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
         groupType: [
-          { required: true, message: "请选择分类类型", trigger: "change" }
+          { required: true, message: '请选择分类类型', trigger: 'change' }
         ],
-        img: [{ required: true, message: "请上传图标", trigger: "change" }]
+        img: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
-      dataObj: { token: "", key: "" },
-      imageUrl: "", // 图片地址
+      dataObj: { token: '', key: '' },
+      imageUrl: '', // 图片地址
       treeData: [],
       defaultProps: {
-        children: "children",
-        label: "name"
+        children: 'children',
+        label: 'name'
       }
-    };
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions'])
   },
   created() {
-    this.getList();
+    this.getList()
   },
   methods: {
     getAllCategoryType(type) {
       getAllCategoryType(rype).then(res => {
-        this.treeData = res.data.data;
-        console.log("treeData", res.data.data);
+        this.treeData = res.data.data
+        console.log('treeData', res.data.data)
         // this.form.parentId = res.data.id;
-      });
+      })
     },
     getList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       fetchList(
         Object.assign(
           {
-            descs: "id",
+            descs: 'id',
             current: this.page.current,
             size: this.page.size
           },
@@ -479,13 +479,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -495,38 +495,38 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.getList();
+          this.getList()
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "修改成功",
-                  type: "success",
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           } else {
             addObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "创建成功",
-                  type: "success",
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -534,47 +534,47 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
+      this.dialogPvVisible = true
       this.form = {
         groupType: 1,
         hotFlag: 0,
@@ -582,8 +582,8 @@ export default {
         columnFlag: 0,
         topFlag: 0,
         showFlag: 0,
-        fontColor: "#000000"
-      };
+        fontColor: '#000000'
+      }
     },
     /**
      * 文件上传方法
@@ -591,13 +591,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     /**
      * 文件上传成功后方法
@@ -605,13 +605,13 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log("res", res);
+      console.log('res', res)
       // this.$qiniuAddr + res.key
     },
     handleRemove() {},
     getNodeData() {}
   }
-};
+}
 </script>
 <style>
 .category-input {
