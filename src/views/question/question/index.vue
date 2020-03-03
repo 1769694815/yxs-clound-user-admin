@@ -436,33 +436,33 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.getList();
+          this.getList()
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "修改成功",
-                  type: "success",
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           } else {
             addObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "创建成功",
-                  type: "success",
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           }
         } else {
           return false
