@@ -313,7 +313,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.smallPicture" :src="form.smallPicture" class="avatar">
+                <img v-if="form.smallPicture" :src="form.smallPicture" class="avatar" />
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -338,12 +338,12 @@ import {
   putObj,
   delObj,
   getCategoryTree
-} from '@/api/course/course'
-import { getTeacherList } from '@/api/user'
-import { getAllCategoryType } from '@/api/course/category'
-import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
-import InputTree from '@/components/InputTree/index'
+} from "@/api/course/course";
+import { getTeacherList } from "@/api/user";
+import { getAllCategoryType } from "@/api/course/category";
+import { mapGetters } from "vuex";
+import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
+import InputTree from "@/components/InputTree/index";
 
 export default {
   components: {
@@ -351,22 +351,22 @@ export default {
   },
   filters: {
     statusFilter(type, list) {
-      let result
+      let result;
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label
+          result = ele.label;
         }
-      })
-      return result
+      });
+      return result;
     },
     dialogTitle(type) {
       const titleMap = {
-        0: '新 增',
-        1: '查 看',
-        2: '编 辑',
-        3: '删 除'
-      }
-      return titleMap[type]
+        0: "新 增",
+        1: "查 看",
+        2: "编 辑",
+        3: "删 除"
+      };
+      return titleMap[type];
     }
   },
   data() {
@@ -374,147 +374,147 @@ export default {
       typeList: [
         {
           value: 0,
-          label: '否'
+          label: "否"
         },
         {
           value: 1,
-          label: '是'
+          label: "是"
         }
       ],
       courseTypeList: [
         {
-          label: '普通课程',
+          label: "普通课程",
           value: 1
         },
         {
-          label: '直播课程',
+          label: "直播课程",
           value: 2
         },
         {
-          label: '录播公开课',
+          label: "录播公开课",
           value: 3
         },
         {
-          label: '直播公开课',
+          label: "直播公开课",
           value: 4
         }
       ],
       courseStatus: [
         {
-          label: '未发布',
+          label: "未发布",
           value: 0
         },
         {
-          label: '发布',
+          label: "发布",
           value: 1
         }
       ],
       serialStatusList: [
         {
-          label: '非连载课程',
+          label: "非连载课程",
           value: 1
         },
         {
-          label: '更新中',
+          label: "更新中",
           value: 2
         },
         {
-          label: '已完结',
+          label: "已完结",
           value: 3
         }
       ]
-    }
+    };
     return {
       DIC: DIC,
       tableKey: 0,
       headers: {
-        Authorization: 'Bearer ' + getToken
+        Authorization: "Bearer " + getToken
       },
       tableLoading: false,
       tearcherList: [],
       treeData: [],
       tableOption: [
         {
-          label: '课程标题',
-          prop: 'title',
-          width: '160'
+          label: "课程标题",
+          prop: "title",
+          width: "160"
         },
         {
-          label: '课程类型',
-          prop: 'type',
-          width: '80'
+          label: "课程类型",
+          prop: "type",
+          width: "80"
         },
         {
-          label: '课程分类',
-          prop: 'categoryName',
-          width: '160'
+          label: "课程分类",
+          prop: "categoryName",
+          width: "160"
         },
         {
-          label: '课程状态',
-          prop: 'status',
-          width: '80',
+          label: "课程状态",
+          prop: "status",
+          width: "80",
           dicData: DIC.courseStatus
         },
         {
-          label: '连载状态',
-          prop: 'serialStatus',
-          width: '100',
+          label: "连载状态",
+          prop: "serialStatus",
+          width: "100",
           dicData: DIC.serialStatusList
         },
         {
-          label: '是否推荐',
-          prop: 'recommend',
-          width: '80',
+          label: "是否推荐",
+          prop: "recommend",
+          width: "80",
           dicData: DIC.typeList
         },
         {
-          label: '开售标志',
-          prop: 'buyFlag',
-          width: '80',
+          label: "开售标志",
+          prop: "buyFlag",
+          width: "80",
           dicData: DIC.typeList
         },
         {
-          label: '价格',
-          prop: 'price',
-          width: '80'
+          label: "价格",
+          prop: "price",
+          width: "80"
         },
         {
-          label: '删除标记',
-          prop: 'delFlag',
-          width: '80',
+          label: "删除标记",
+          prop: "delFlag",
+          width: "80",
           dicData: DIC.typeList
         },
         {
-          label: '有效天数',
-          prop: 'effectiveDays',
-          width: '80'
+          label: "有效天数",
+          prop: "effectiveDays",
+          width: "80"
         },
         {
-          label: '排序',
-          prop: 'sort',
-          width: '60'
+          label: "排序",
+          prop: "sort",
+          width: "60"
         },
         {
-          label: '教师',
-          prop: 'teacherName',
-          width: '80'
+          label: "教师",
+          prop: "teacherName",
+          width: "80"
         },
         {
-          label: '视频拖动',
-          prop: 'drag',
-          width: '80',
+          label: "视频拖动",
+          prop: "drag",
+          width: "80",
           dicData: DIC.typeList
         },
         {
-          label: '倍速播放',
-          prop: 'doubleSpeed',
-          width: '80',
+          label: "倍速播放",
+          prop: "doubleSpeed",
+          width: "80",
           dicData: DIC.typeList
         },
         {
-          label: '创建时间',
-          prop: 'createTime',
-          width: '160'
+          label: "创建时间",
+          prop: "createTime",
+          width: "160"
         }
       ],
       tableData: [],
@@ -531,48 +531,48 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
+          { required: true, message: "导航名称不能为空", trigger: "blur" }
         ],
-        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
+        code: [{ required: true, message: "请选择类型", trigger: "change" }],
         openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
+          { required: true, message: "请选择是否启用", trigger: "change" }
         ],
         newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
+          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
         ],
-        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
+        img: [{ required: true, message: "请上传图片", trigger: "change" }]
       },
-      dataObj: { token: '', key: '' },
-      imageUrl: '' // 图片地址
-    }
+      dataObj: { token: "", key: "" },
+      imageUrl: "" // 图片地址
+    };
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(["permissions"])
   },
   created() {
-    this.getList()
-    this.getTeacherList()
-    this.getCategoryTree()
+    this.getList();
+    this.getTeacherList();
+    this.getCategoryTree();
   },
   methods: {
     getCategoryTree() {
       getAllCategoryType(1).then(res => {
-        this.treeData = res.data.data
-        console.log('treeData', res.data.data)
+        this.treeData = res.data.data;
+        console.log("treeData", res.data.data);
         // this.form.parentId = res.data.id;
-      })
+      });
     },
     getTeacherList() {
       getTeacherList().then(res => {
-        this.tearcherList = res.data.data
-      })
+        this.tearcherList = res.data.data;
+      });
     },
     getList() {
-      this.tableLoading = true
+      this.tableLoading = true;
       fetchList(
         Object.assign(
           {
-            descs: 'create_time',
+            descs: "create_time",
             current: this.page.current,
             size: this.page.size
           },
@@ -580,13 +580,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records
-          this.page.total = res.data.data.total
-          this.tableLoading = false
+          this.tableData = res.data.data.records;
+          this.page.total = res.data.data.total;
+          this.tableLoading = false;
         })
         .catch(() => {
-          this.tableLoading = false
-        })
+          this.tableLoading = false;
+        });
     },
     /**
      * 创建方法
@@ -594,13 +594,40 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111)
+          this.getList();
+          if (this.form.id != null) {
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "修改成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          } else {
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "创建成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          }
         } else {
-          return false
+          return false;
         }
-      })
+      });
     },
     /**
      * 重置
@@ -608,55 +635,55 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields()
+      this.$refs[formName].resetFields();
     },
     handleFilter() {
-      this.getList()
+      this.getList();
     },
     handleEmpty() {
-      this.searchForm = {}
-      this.getList()
+      this.searchForm = {};
+      this.getList();
     },
     handleView(row) {
-      this.form = row
-      this.dialogPvVisible = true
-      this.operationStatus = 1
+      this.form = row;
+      this.dialogPvVisible = true;
+      this.operationStatus = 1;
     },
     handleUpdate(row) {
-      this.form = row
-      this.dialogPvVisible = true
-      this.operationStatus = 2
+      this.form = row;
+      this.dialogPvVisible = true;
+      this.operationStatus = 2;
     },
     handleChapterList(row, index) {
       this.$router.push({
-        path: '/course/coursechapter/index',
+        path: "/course/coursechapter/index",
         query: {
           courseId: row.id
         }
-      })
+      });
     },
     handleDelete(row, index) {
-      var _this = this
-      this.$confirm('是否确认删除ID为' + row.id, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
+      var _this = this;
+      this.$confirm("是否确认删除ID为" + row.id, "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
       })
         .then(function() {
-          return delObj(row.id)
+          return delObj(row.id);
         })
         .then(data => {
-          _this.$message.success('删除成功')
-          this.getList()
-        })
+          _this.$message.success("删除成功");
+          this.getList();
+        });
     },
     handleClose(form) {
-      this.dialogPvVisible = false
-      this.form = {}
-      this.$refs[form].resetFields()
+      this.dialogPvVisible = false;
+      this.form = {};
+      this.$refs[form].resetFields();
     },
     handleCreate() {
-      this.dialogPvVisible = true
+      this.dialogPvVisible = true;
       this.form = {
         type: 1,
         status: 0,
@@ -665,7 +692,7 @@ export default {
         buyFlag: 0,
         doubleSpeed: 0,
         drag: 0
-      }
+      };
     },
     /**
      * 文件上传方法
@@ -673,13 +700,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
 
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error("上传头像图片大小不能超过 2MB!");
       }
-      return isJPG && isLt2M
+      return isJPG && isLt2M;
     },
     /**
      * 文件上传成功后方法
@@ -687,13 +714,13 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log('res', res)
+      console.log("res", res);
       // this.$qiniuAddr + res.key
     },
     handleRemove() {},
     getNodeData() {}
   }
-}
+};
 </script>
 <style>
 .course-input {
