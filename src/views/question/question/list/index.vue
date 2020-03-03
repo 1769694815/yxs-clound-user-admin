@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 09:03:17
  * @Description: 文件管理
  -->
 <template>
@@ -270,7 +270,6 @@ import {
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
 import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
-import InputTree from '@/components/InputTree/index'
 
 export default {
   filters: {
