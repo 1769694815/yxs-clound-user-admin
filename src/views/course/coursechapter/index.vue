@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 16:13:27
  * @Description: 文件管理
  -->
 <template>
@@ -85,13 +85,12 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj
 } from '@/api/course/coursechapter'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -231,10 +230,8 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
           } else {
+            this.form.courseId = this.$route.query.courseId
             addObj(this.form)
               .then(() => {
                 this.$notify({
@@ -243,9 +240,6 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
-              })
-              .catch(() => {
-                loading()
               })
           }
         } else {

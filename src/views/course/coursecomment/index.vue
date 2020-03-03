@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-02 18:05:35
+ * @LastEditTime: 2020-03-03 16:16:56
  * @Description: 文件管理
  -->
 <template>
@@ -10,37 +10,26 @@
     <!-- 头部菜单 -->
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
-      <!--导航名称-->
-      <el-form-item label="导航名称:" label-width="80px">
-        <el-input v-model="searchForm.name" type="text" size="small" placeholder="请输入导航名称" />
+      <!--评论内容-->
+      <el-form-item label="评论内容:" label-width="80px">
+        <el-input v-model="searchForm.content" type="text" size="small" placeholder="请输入评论内容" />
       </el-form-item>
-      <!--是否启用-->
-      <el-form-item label="是否启用:" label-width="80px">
-        <el-select v-model="searchForm.openFlag" clearable>
+      <!--审核状态-->
+      <el-form-item label="审核状态:" label-width="80px">
+        <el-select v-model="searchForm.status" clearable>
           <el-option
-            v-for="item in typeList"
+            v-for="item in DIC.typeList"
             :key="item.label"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
       </el-form-item>
-      <!--是否打开新窗口-->
-      <el-form-item label="是否打开新窗口:" label-width="130px">
-        <el-select v-model="searchForm.newwinFlag" clearable>
+      <!--是否置顶-->
+      <el-form-item label="是否置顶:" label-width="130px">
+        <el-select v-model="searchForm.topFlag" clearable>
           <el-option
-            v-for="item in typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--类型-->
-      <el-form-item label="类型:" label-width="80px">
-        <el-select v-model="searchForm.code" clearable>
-          <el-option
-            v-for="item in commentTypeList"
+            v-for="item in DIC.typeList"
             :key="item.label"
             :label="item.label"
             :value="item.value"
@@ -69,7 +58,6 @@
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
-        <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
           type="text"
           size="mini"
@@ -86,92 +74,62 @@
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
-          <!--导航名称-->
+          <!--评论内容-->
           <el-col :span="12">
-            <el-form-item label="导航名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入导航名称" clearable class="comment-input" />
-            </el-form-item>
-          </el-col>
-          <!--类型-->
-          <el-col :span="12">
-            <el-form-item label="类型" prop="code">
-              <el-select v-model="form.code" clearable placeholder="请选择类型" class="comment-input">
-                <el-option
-                  v-for="item in commentTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否启用-->
-          <el-col :span="12">
-            <el-form-item label="是否启用" prop="openFlag">
-              <el-select
-                v-model="form.openFlag"
-                clearable
-                class="comment-input"
-                placeholder="请选择是否启用"
-              >
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--链接地址-->
-          <el-col :span="12">
-            <el-form-item label="外链" prop="url">
-              <el-input v-model="form.url" placeholder="请输入链接地址" clearable class="comment-input" />
-            </el-form-item>
-          </el-col>
-          <!--新窗口-->
-          <el-col :span="12">
-            <el-form-item label="打开窗口" prop="newwinFlag">
-              <el-select
-                v-model="form.newwinFlag"
-                clearable
-                class="comment-input"
-                placeholder="请选择是否打开新窗口"
-              >
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--显示顺序-->
-          <el-col :span="12">
-            <el-form-item label="顺序" prop="sequence">
-              <el-input-number
-                v-model="form.sequence"
-                placeholder="请输入显示顺序"
+            <el-form-item label="评论内容" prop="name">
+              <el-input
+                v-model="form.content"
+                placeholder="请输入评论内容"
                 clearable
                 class="comment-input"
               />
             </el-form-item>
           </el-col>
+          <!--父类id-->
           <el-col :span="12">
-            <el-form-item label="图片上传:" prop="img">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
-                action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
+            <el-form-item label="父类id" prop="parentId">
+              <el-input
+                v-model="form.parentId"
+                placeholder="请输入父类id"
+                clearable
+                class="comment-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--审核状态-->
+          <el-col :span="12">
+            <el-form-item label="审核状态" prop="status">
+              <el-select
+                v-model="form.status"
+                clearable
+                class="comment-input"
+                placeholder="请选择审核状态"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="comment-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+                <el-option
+                  v-for="item in DIC.typeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <!--是否置顶-->
+          <el-col :span="12">
+            <el-form-item label="是否置顶" prop="topFlag">
+              <el-select
+                v-model="form.topFlag"
+                clearable
+                class="comment-input"
+                placeholder="请选择是否置顶"
+              >
+                <el-option
+                  v-for="item in DIC.typeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-form>
@@ -191,6 +149,7 @@ import {
   delObj
 } from '@/api/course/coursecomment'
 import { mapGetters } from 'vuex'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -214,11 +173,7 @@ export default {
     }
   },
   data() {
-    return {
-      tableKey: 0,
-      headers: {},
-      tableLoading: false,
-      commentTypeList: [],
+    const DIC = {
       typeList: [
         {
           value: 0,
@@ -242,19 +197,26 @@ export default {
           value: 2,
           label: '不通过'
         }
-      ],
+      ]
+    }
+    return {
+      DIC: DIC,
+      tableKey: 0,
+      headers: {
+        Authorization: 'Bearer ' + getToken
+      },
+      tableLoading: false,
+      commentTypeList: [],
+
       tableOption: [
-        {
-          label: '评论对象ID',
-          prop: 'courseId'
-        },
         {
           label: '评论内容',
           prop: 'content'
         },
         {
           label: '状态',
-          prop: 'status'
+          prop: 'status',
+          dicData: DIC.auditStatus
         },
         {
           type: 'input',
@@ -263,7 +225,8 @@ export default {
         },
         {
           label: '删除标志',
-          prop: 'delFlag'
+          prop: 'delFlag',
+          dicData: DIC.typeList
         },
         {
           type: 'input',
@@ -277,7 +240,8 @@ export default {
         },
         {
           label: '是否置顶',
-          prop: 'topFlag'
+          prop: 'topFlag',
+          dicData: DIC.typeList
         }
       ],
       tableData: [],
@@ -290,22 +254,8 @@ export default {
       dialogPvVisible: false,
       operationStatus: 0,
       form: {}, // 新增 编辑 数据源
-      rules: {
-        // 表单校验
-        name: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
-        ],
-        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
-        openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
-        ],
-        newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
-      },
-      dataObj: { token: '', key: '' },
-      imageUrl: '' // 图片地址
+      rules: {},
+      dataObj: { token: '', key: '' }
     }
   },
   computed: {
@@ -399,29 +349,6 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {}
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
     },
     handleRemove() {}
   }

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 16:16:40
  * @Description: 文件管理
  -->
 <template>
@@ -30,17 +30,6 @@
         <el-select v-model="searchForm.topFlag" clearable>
           <el-option
             v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--分类类型-->
-      <el-form-item label="分类类型:" label-width="80px">
-        <el-select v-model="searchForm.groupType" clearable>
-          <el-option
-            v-for="item in DIC.classificationTypeList"
             :key="item.label"
             :label="item.label"
             :value="item.value"
@@ -86,157 +75,252 @@
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
-          <!--分类编码-->
+          <!--班级标题-->
           <el-col :span="12">
-            <el-form-item label="分类编码" prop="name">
-              <el-input v-model="form.name" placeholder="请输入分类名称" clearable class="category-input" />
-            </el-form-item>
-          </el-col>
-          <!--分类编码-->
-          <el-col :span="12">
-            <el-form-item label="分类编码" prop="name">
-              <el-input v-model="form.code" placeholder="请输入分类编码" clearable class="category-input" />
-            </el-form-item>
-          </el-col>
-          <!--分类类型-->
-          <el-col :span="12">
-            <el-form-item label="分类类型" prop="groupType">
-              <el-select
-                v-model="form.groupType"
+            <el-form-item label="班级标题" prop="title">
+              <el-input
+                v-model="form.title"
+                placeholder="请输入班级标题"
                 clearable
-                class="category-input"
-                placeholder="请选择分类类型"
+                class="classroom-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--班级状态-->
+          <el-col :span="12">
+            <el-form-item label="课程状态" prop="status">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="item in DIC.courseStatus"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--班主任-->
+          <el-col :span="12">
+            <el-form-item label="班主任" prop="headmasterId">
+              <el-select
+                v-model="form.headmasterId"
+                clearable
+                class="classroom-input"
+                placeholder="请选择班主任"
               >
                 <el-option
-                  v-for="item in DIC.classificationTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
+                  v-for="item in tearcherList"
+                  :key="item.username"
+                  :label="item.username"
+                  :value="item.userId"
                 />
               </el-select>
             </el-form-item>
           </el-col>
-          <!--父类类型-->
+          <!--班级助教-->
           <el-col :span="12">
-            <el-form-item label="父类类型" prop="parentId" label-width="90">
+            <el-form-item label="班级助教" prop="assistantId">
+              <el-select
+                v-model="form.assistantId"
+                clearable
+                class="classroom-input"
+                placeholder="请选择班级助教"
+              >
+                <el-option
+                  v-for="item in tearcherList"
+                  :key="item.username"
+                  :label="item.username"
+                  :value="item.userId"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <!--班级分类-->
+          <el-col :span="12">
+            <el-form-item label="班级分类" prop="categoryIds">
               <Input-tree
-                v-model="form.deptId"
+                v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
-                placeholder="请选择父类类型"
+                placeholder="请选择班级分类"
                 @node-click="getNodeData"
               />
             </el-form-item>
           </el-col>
-          <!--是否最热-->
+          <!--授课方式-->
           <el-col :span="12">
-            <el-form-item label="是否最热" prop="hotFlag">
+            <el-form-item label="授课方式" prop="teachingMethod">
               <el-select
-                v-model="form.hotFlag"
+                v-model="form.teachingMethod"
                 clearable
-                class="category-input"
-                placeholder="请选择是否最热"
+                class="classroom-input"
+                placeholder="请选择授课方式"
               >
                 <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
+                  v-for="item in DIC.teachingMethodList"
+                  :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 />
               </el-select>
             </el-form-item>
           </el-col>
-          <!--是否置顶-->
+          <!--班级价格-->
           <el-col :span="12">
-            <el-form-item label="是否置顶" prop="topFlag">
-              <el-select
-                v-model="form.topFlag"
+            <el-form-item label="班级价格" prop="price">
+              <el-input
+                v-model="form.price"
+                placeholder="请输入班级价格"
                 clearable
-                class="category-input"
-                placeholder="请选择是否置顶"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否展示-->
-          <el-col :span="12">
-            <el-form-item label="是否展示" prop="showFlag">
-              <el-select
-                v-model="form.showFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否展示"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否栏目推荐-->
-          <el-col :span="12">
-            <el-form-item label="是否栏目推荐" prop="columnFlag">
-              <el-select
-                v-model="form.columnFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否栏目推荐"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否首页分类推荐-->
-          <el-col :span="12">
-            <el-form-item label="是否首页分类推荐" prop="recommendedFlag">
-              <el-select
-                v-model="form.recommendedFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否首页分类推荐"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--字体颜色-->
-          <el-col :span="12">
-            <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor" />
-            </el-form-item>
-          </el-col>
-          <!--显示顺序-->
-          <el-col :span="12">
-            <el-form-item label="显示顺序" prop="sort">
-              <el-input-number
-                v-model="form.sequence"
-                placeholder="请输入显示顺序"
-                clearable
-                class="category-input"
+                class="classroom-input"
               />
             </el-form-item>
           </el-col>
+          <!--填写人数-->
           <el-col :span="12">
-            <el-form-item label="图片上传:" prop="img">
+            <el-form-item label="填写人数" prop="learnNum">
+              <el-input
+                v-model="form.learnNum"
+                placeholder="请输入填写人数"
+                clearable
+                class="classroom-input"
+                type="number"
+                min="0"
+              />
+            </el-form-item>
+          </el-col>
+          <!--推荐序号-->
+          <el-col :span="12">
+            <el-form-item label="推荐序号" prop="recommendedSeq">
+              <el-input
+                v-model="form.recommendedSeq"
+                placeholder="请输入推荐序号"
+                clearable
+                class="classroom-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--是否封闭班级-->
+          <el-col :span="12">
+            <el-form-item label="是否封闭班级" prop="privateFlag">
+              <el-radio-group v-model="form.privateFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--是否为推荐班级-->
+          <el-col :span="12">
+            <el-form-item label="是否为推荐班级" prop="recommendedFlag">
+              <el-radio-group v-model="form.recommendedFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--是否开放购买-->
+          <el-col :span="12">
+            <el-form-item label="是否开放购买" prop="buyFlag">
+              <el-radio-group v-model="form.buyFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--是否开放展示-->
+          <el-col :span="12">
+            <el-form-item label="是否开放展示" prop="showFlag">
+              <el-radio-group v-model="form.showFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--学习有效期模式-->
+          <el-col :span="12">
+            <el-form-item label="学习有效期模式" prop="expiryMode">
+              <el-radio-group v-model="form.expiryMode">
+                <el-radio
+                  v-for="item in DIC.expiryModeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--有效天数-->
+          <el-col :span="12">
+            <el-form-item label="有效天数" prop="expiryDays">
+              <el-input
+                v-model="form.expiryDays"
+                placeholder="请输入有效天数"
+                clearable
+                class="classroom-input"
+                type="number"
+                min="0"
+              />
+            </el-form-item>
+          </el-col>
+          <!--报名截止日期-->
+          <el-col :span="12">
+            <el-form-item label="报名截止日期" prop="closeDate">
+              <el-date-picker
+                v-model="form.closeDate"
+                type="date"
+                placeholder="请输入报名截止日期"
+                clearable
+                class="classroom-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--班级简介-->
+          <el-col :span="12">
+            <el-form-item label="班级简介" prop="about">
+              <el-input
+                v-model="form.about"
+                placeholder="请输入班级简介"
+                clearable
+                class="classroom-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--班级说明-->
+          <el-col :span="12">
+            <el-form-item label="班级说明" prop="description">
+              <el-input
+                v-model="form.description"
+                placeholder="请输入班级说明"
+                clearable
+                class="classroom-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!-- 图片上传 -->
+          <el-col :span="12">
+            <el-form-item label="图片上传:" prop="smallPicture">
               <el-upload
                 :headers="headers"
                 class="avatar-uploader"
@@ -245,7 +329,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="category-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -263,16 +347,12 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  getObj,
-  addObj,
-  putObj,
-  delObj
-} from '@/api/classroom/classroom'
+import { fetchList, addObj, putObj, delObj } from '@/api/classroom/classroom'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
+import { getTeacherList } from '@/api/user'
 import InputTree from '@/components/InputTree/index'
+import { getAllCategoryType } from '@/api/course/category'
 
 export default {
   components: {
@@ -300,6 +380,16 @@ export default {
   },
   data() {
     const DIC = {
+      expiryModeList: [
+        {
+          label: '永久有效',
+          value: 0
+        },
+        {
+          label: '有效天数',
+          value: 1
+        }
+      ],
       typeList: [
         {
           value: 0,
@@ -310,14 +400,28 @@ export default {
           label: '是'
         }
       ],
-      classificationTypeList: [
+      courseStatus: [
         {
-          value: 1,
-          label: '班级'
+          label: '未发布',
+          value: 0
         },
         {
-          value: 2,
-          label: '课程'
+          label: '发布',
+          value: 1
+        }
+      ],
+      teachingMethodList: [
+        {
+          label: '线上',
+          value: 0
+        },
+        {
+          label: '线下',
+          value: 1
+        },
+        {
+          label: '线上线下',
+          value: 2
         }
       ]
     }
@@ -328,6 +432,7 @@ export default {
         Authorization: 'Bearer ' + getToken
       },
       tableLoading: false,
+      tearcherList: [],
       tableOption: [
         {
           label: '标题',
@@ -339,7 +444,8 @@ export default {
         },
         {
           label: '授课方式',
-          prop: 'teachingMethod'
+          prop: 'teachingMethod',
+          dicData: DIC.teachingMethodList
         },
         {
           label: '价格',
@@ -360,31 +466,26 @@ export default {
         {
           width: 110,
           label: '是否封闭班级',
-          prop: 'privateFlag'
+          prop: 'privateFlag',
+          dicData: DIC.typeList
         },
         {
           width: 120,
           label: '是否为推荐班级',
-          prop: 'recommendedFlag'
+          prop: 'recommendedFlag',
+          dicData: DIC.typeList
         },
         {
           label: '是否开放展示',
           width: 110,
-          prop: 'showFlag'
+          prop: 'showFlag',
+          dicData: DIC.typeList
         },
         {
           label: '是否开放购买',
           width: 110,
-          prop: 'radio'
-        },
-        {
-          width: 110,
-          label: '报名截止日期',
-          prop: 'closeDate'
-        },
-        {
-          label: '创建人',
-          prop: 'createUserId'
+          prop: 'radio',
+          dicData: DIC.typeList
         },
         {
           label: '创建时间',
@@ -441,17 +542,29 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
+    this.getTeacherList()
+    this.getCategoryTree()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
-    getAllCategoryType(type) {
-      getAllCategoryType(rype).then(res => {
+    /**
+     * 班级分类
+     */
+    getCategoryTree() {
+      getAllCategoryType(2).then(res => {
         this.treeData = res.data.data
-        console.log('treeData', res.data.data)
-        // this.form.parentId = res.data.id;
+      })
+    },
+    /**
+     * 教师
+     */
+    getTeacherList() {
+      getTeacherList().then(res => {
+        this.tearcherList = res.data.data
       })
     },
     getList() {
@@ -485,31 +598,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
-              .catch(() => {
-                loading()
-              })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
-              .catch(() => {
-                loading()
-              })
+            })
           }
         } else {
           return false
@@ -564,13 +669,12 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {
-        groupType: 1,
-        hotFlag: 0,
+        privateFlag: 0,
+        expiryMode: 0,
+        buyFlag: 0,
         recommendedFlag: 0,
-        columnFlag: 0,
-        topFlag: 0,
         showFlag: 0,
-        fontColor: '#000000'
+        teachingMethod: 0
       }
     },
     /**
@@ -593,8 +697,8 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
+      this.form.smallPicture = res.fileKey
+      this.imageUrl = res.url
     },
     handleRemove() {},
     getNodeData() {}
@@ -602,7 +706,7 @@ export default {
 }
 </script>
 <style>
-.category-input {
+.classroom-input {
   width: 250px;
 }
 

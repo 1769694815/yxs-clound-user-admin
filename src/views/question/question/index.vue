@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-02 17:53:50
+ * @LastEditTime: 2020-03-03 16:15:30
  * @Description: 题目表管理
  -->
 <template>
@@ -226,7 +226,6 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj,
@@ -235,13 +234,9 @@ import {
   getAllQuestion
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
-import InputTree from '@/components/InputTree/index'
+import { getToken } from '@/api/qiniu'
 
 export default {
-  components: {
-    InputTree
-  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -447,9 +442,6 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
           } else {
             addObj(this.form)
               .then(() => {
@@ -459,9 +451,6 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
-              })
-              .catch(() => {
-                loading()
               })
           }
         } else {
