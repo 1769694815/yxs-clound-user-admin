@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 17:59:00
+ * @LastEditTime: 2020-03-03 18:01:08
  * @Description: 课程管理
  -->
 <template>
@@ -114,13 +114,13 @@
             </el-form-item>
           </el-col>
           <!--课程分类-->
+          <!-- TODO: 注释树形组件多选 multiline -->
           <el-col :span="12">
             <el-form-item label="课程分类" prop="categoryIds">
               <Input-tree
                 v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
-                multiline
                 placeholder="请选择课程分类"
                 @node-click="getNodeData"
               />
