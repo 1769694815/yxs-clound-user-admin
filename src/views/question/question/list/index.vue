@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-02 18:05:20
  * @Description: 文件管理
  -->
 <template>
@@ -87,11 +87,11 @@
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
           <el-row>
-            <el-col :span="24" v-if="form.typeId != 7">
+            <el-col v-if="form.typeId != 7" :span="24">
               <el-form-item label="题目内容" prop="stem">
                 <el-input
-                  :autosize="{ minRows: 2, maxRows: 6}"
                   v-model="form.stem"
+                  :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
               </el-form-item>
@@ -117,7 +117,7 @@
                     :key="item.id"
                     :label="item.name"
                     :value="item.id"
-                  ></el-option>
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -148,7 +148,7 @@
                     :key="item.id"
                     :label="item.title"
                     :value="item.id"
-                  ></el-option>
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -161,21 +161,21 @@
                     :key="item.id"
                     :label="item.title"
                     :value="item.id"
-                  ></el-option>
+                  />
                 </el-select>
               </el-form-item>
             </el-col>
           </el-row>
           <el-row
             v-for="(item, index) in singleArray"
-            v-if="form.typeId === 1 || form.typeId ===  2 || form.typeId ===  3"
+            v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3"
             :key="index"
           >
             <el-col :span="20">
               <el-form-item :label="'选项'+ letterArray[index]">
                 <el-input
-                  :autosize="{ minRows: 2, maxRows: 6}"
                   v-model="singleArray[index]"
+                  :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
               </el-form-item>
@@ -197,8 +197,8 @@
                 <!-- 非选择 -->
                 <el-input
                   v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
-                  :autosize="{ minRows: 2, maxRows: 6}"
                   v-model="form.answer"
+                  :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
                 <!-- 选择题 -->
@@ -233,8 +233,8 @@
             <el-col :span="24">
               <el-form-item label="题目解析" prop="analysis">
                 <el-input
-                  :autosize="{ minRows: 2, maxRows: 6}"
                   v-model="form.analysis"
+                  :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
               </el-form-item>
@@ -243,7 +243,7 @@
           <el-row>
             <el-col :span="24" style="color: red">
               提示文字：1.需填空内容请用下划线____或括弧（）表示，示例：七夕节又叫____？年三十又叫____？
-              <br />2.同个填空多个参考答案用竖线 “| ” 分隔，不同填空答案用 “ $” 分隔，示例：乞巧节|情人节$除夕
+              <br>2.同个填空多个参考答案用竖线 “| ” 分隔，不同填空答案用 “ $” 分隔，示例：乞巧节|情人节$除夕
             </el-col>
           </el-row>
         </el-form>
@@ -267,76 +267,74 @@ import {
   getCourseList,
   getLessonList,
   getAllQuestion
-} from "@/api/question/question";
-import { mapGetters } from "vuex";
+} from '@/api/question/question'
+import { mapGetters } from 'vuex'
 import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
 import InputTree from "@/components/InputTree/index";
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
     const DIC = {
       questionTypeList: [
         {
-          label: "练习题",
+          label: '练习题',
           value: 1
         },
         {
-          label: "历年真题",
+          label: '历年真题',
           value: 2
         }
       ],
       difficultyList: [
         {
-          label: "简单",
+          label: '简单',
           value: 1
         },
         {
-          label: "中等",
+          label: '中等',
           value: 2
         },
         {
-          label: "复杂",
+          label: '复杂',
           value: 3
         },
         {
-          label: "极难",
+          label: '极难',
           value: 4
         }
       ]
-    };
+    }
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: "Bearer " + getToken
-      },
+      headers: {},
       tableLoading: false,
       tearcherList: [],
       treeData: [],
       tableOption: [
         {
-          label: "题型",
-          prop: "typeId",
+          label: '题型',
+          prop: 'typeId',
           // dicUrl: `/question/questiontype/getAllQuestion`,
           // dicData: "typeId",
           // props: {
@@ -346,49 +344,49 @@ export default {
           width: 100
         },
         {
-          label: "题目内容",
-          prop: "stem"
+          label: '题目内容',
+          prop: 'stem'
         },
         {
-          label: "题目类型",
-          prop: "questionType",
+          label: '题目类型',
+          prop: 'questionType',
           dicData: DIC.questionTypeList,
           width: 100
         },
         {
-          label: "年份",
-          prop: "year",
+          label: '年份',
+          prop: 'year',
           width: 60
         },
         {
-          label: "参考答案",
-          prop: "answer",
+          label: '参考答案',
+          prop: 'answer',
           width: 120
         },
         {
-          label: "难度",
-          prop: "difficulty",
+          label: '难度',
+          prop: 'difficulty',
           dicData: DIC.difficultyList,
           width: 60
         },
         {
-          label: "课程",
-          prop: "courseId",
+          label: '课程',
+          prop: 'courseId',
           width: 120
         },
         {
-          label: "课时",
-          prop: "lessonId",
+          label: '课时',
+          prop: 'lessonId',
           width: 120
         },
         {
-          label: "创建时间",
-          prop: "createTime",
+          label: '创建时间',
+          prop: 'createTime',
           width: 160
         },
         {
-          label: "分值",
-          prop: "score",
+          label: '分值',
+          prop: 'score',
           width: 60
         }
       ],
@@ -405,36 +403,37 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: "导航名称不能为空", trigger: "blur" }
+          { required: true, message: '导航名称不能为空', trigger: 'blur' }
         ],
-        code: [{ required: true, message: "请选择类型", trigger: "change" }],
+        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
         openFlag: [
-          { required: true, message: "请选择是否启用", trigger: "change" }
+          { required: true, message: '请选择是否启用', trigger: 'change' }
         ],
         newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
+          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
         ],
-        img: [{ required: true, message: "请上传图片", trigger: "change" }]
+        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
       },
-      dataObj: { token: "", key: "" },
-      imageUrl: "" // 图片地址
-    };
+      dataObj: { token: '', key: '' },
+      imageUrl: '' // 图片地址
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getList();
-    this.getQuestionType();
+    this.getList()
+    this.getQuestionType()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
-      this.tableLoading = true;
-      let param = { parentId: this.$route.query.parentId };
+      this.tableLoading = true
+      const param = { parentId: this.$route.query.parentId }
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -443,13 +442,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -459,11 +458,11 @@ export default {
     create(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          console.log(1111);
+          console.log(1111)
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
 
     /**
@@ -471,8 +470,8 @@ export default {
      */
     getQuestionType() {
       getAllQuestion().then(res => {
-        this.questionTypeList = res.data;
-      });
+        this.questionTypeList = res.data
+      })
     },
     /**
      * 重置
@@ -480,55 +479,55 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleAnalysisList(row, index) {
       this.$router.push({
-        path: "/question/question/list/index",
+        path: '/question/question/list/index',
         query: {
           courseId: row.id
         }
-      });
+      })
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
+      this.dialogPvVisible = true
       this.form = {
         type: 1,
         status: 0,
@@ -537,7 +536,7 @@ export default {
         buyFlag: 0,
         doubleSpeed: 0,
         drag: 0
-      };
+      }
     },
     /**
      * 文件上传方法
@@ -545,13 +544,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     /**
      * 文件上传成功后方法
@@ -559,13 +558,13 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log("res", res);
+      console.log('res', res)
       // this.$qiniuAddr + res.key
     },
     handleRemove() {},
     getNodeData() {}
   }
-};
+}
 </script>
 <style>
 .question-input {

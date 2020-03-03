@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-02 18:03:51
  * @Description: 文件管理
  -->
 <template>
@@ -126,28 +126,28 @@ import {
   addObj,
   putObj,
   delObj
-} from "@/api/question/questiontype";
-import { mapGetters } from "vuex";
+} from '@/api/question/questiontype'
+import { mapGetters } from 'vuex'
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
@@ -158,24 +158,24 @@ export default {
       treeData: [],
       tableOption: [
         {
-          label: "题型名称",
-          prop: "name"
+          label: '题型名称',
+          prop: 'name'
         },
         {
-          label: "分值",
-          prop: "score"
+          label: '分值',
+          prop: 'score'
         },
         {
-          label: "漏选分值",
-          prop: "missScore"
+          label: '漏选分值',
+          prop: 'missScore'
         },
         {
-          label: "排序",
-          prop: "sort"
+          label: '排序',
+          prop: 'sort'
         },
         {
-          label: "创建时间",
-          prop: "createTime"
+          label: '创建时间',
+          prop: 'createTime'
         }
       ],
       tableData: [],
@@ -191,27 +191,28 @@ export default {
       rules: {
         // 表单校验
         name: [
-          { required: true, message: "题型名称不能为空", trigger: "blur" }
+          { required: true, message: '题型名称不能为空', trigger: 'blur' }
         ],
         score: [
-          { required: true, message: "题型分值不能为空", trigger: "blur" }
+          { required: true, message: '题型分值不能为空', trigger: 'blur' }
         ]
       }
-    };
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getList();
+    this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -219,13 +220,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -235,38 +236,38 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.getList();
+          this.getList()
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "修改成功",
-                  type: "success",
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           } else {
             addObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "创建成功",
-                  type: "success",
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
               .catch(() => {
-                loading();
-              });
+                loading()
+              })
           }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -274,53 +275,53 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
-      this.form = {};
+      this.dialogPvVisible = true
+      this.form = {}
     },
     handleRemove() {},
     getNodeData() {}
   }
-};
+}
 </script>
 <style>
 .question-type-input {

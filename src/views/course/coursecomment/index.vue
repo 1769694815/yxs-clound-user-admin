@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-02 18:05:35
  * @Description: 文件管理
  -->
 <template>
@@ -188,13 +188,9 @@
 <script>
 import {
   fetchList,
-  getObj,
-  addObj,
-  putObj,
   delObj
 } from '@/api/course/coursecomment'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -220,9 +216,7 @@ export default {
   data() {
     return {
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
+      headers: {},
       tableLoading: false,
       commentTypeList: [],
       typeList: [
@@ -315,10 +309,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {

@@ -1,8 +1,8 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-02-22 11:47:30
- * @LastEditors: xwen
+ * @LastEditTime: 2020-03-03 11:28:36
+ * @LastEditors: Donkey
  * @Description: 数据字典单选组件
  -->
 
@@ -17,7 +17,9 @@
       v-if="type === 'select'"
       v-model="status"
       size="small"
+      clearable
       placeholder="请选择状态"
+      @change="singleChange"
     >
       <el-option
         v-for="item in statusList"

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-02 18:15:20
  * @Description: 文件管理
  -->
 <template>
@@ -406,9 +406,7 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
+      headers: {},
       tableLoading: false,
       tearcherList: [],
       treeData: [],
@@ -525,12 +523,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
     this.getTeacherList()
     this.getCategoryTree()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getCategoryTree() {
@@ -667,6 +666,9 @@ export default {
     handleSuccess(res, file) {
       console.log('res', res)
       // this.$qiniuAddr + res.key
+      this.form.smallPicture = res.url
+      this.imageUrl = res.url
+      console.log(this.form)
     },
     handleRemove() {},
     getNodeData() {}

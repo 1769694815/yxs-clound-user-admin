@@ -1,3 +1,10 @@
+/*
+ * @Author: Donkey
+ * @Date: 2020-02-13 12:00:41
+ * @LastEditTime: 2020-03-03 09:48:43
+ * @LastEditors: Donkey
+ * @Description:
+ */
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -34,7 +41,8 @@ import '@/permission' // permission control
 // 全局注册Xtable组件
 import Xtable from '@/components/Xtable/index'
 Vue.component('Xtable', Xtable)
-
+import SingleChange from '@/components/DictItem/SingleChange'
+Vue.component('SingleChange', SingleChange)
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明

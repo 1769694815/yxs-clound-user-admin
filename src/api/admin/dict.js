@@ -1,13 +1,18 @@
 /*
  * @Date: 2020-02-14 13:33:11
- * @LastEditors  : xw
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime : 2020-02-14 13:34:05
+ * @LastEditTime: 2020-03-03 10:24:39
  * @Description: 字典api
  */
 import request from '@/utils/request'
 
 export function fetchList(query) {
+  for (const key in query) {
+    if (query[key] == null || query[key] === '') {
+      delete query[key]
+    }
+  }
   return request({
     url: '/admin/dict/page',
     method: 'get',

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-02-28 11:46:14
+ * @LastEditTime: 2020-03-03 11:07:39
  * @Description: 租户管理
  -->
 <template>
@@ -373,8 +373,8 @@ export default {
       this.getList()
     },
     handleEmpty() {
-      this.searchForm.name = undefined
-      this.searchForm.status = undefined
+      this.searchForm.type = undefined
+      this.searchForm.system = undefined
       this.getList()
     },
     handleView(row) {
