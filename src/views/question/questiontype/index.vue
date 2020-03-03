@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-02 18:03:51
+ * @LastEditTime: 2020-02-20 10:52:43
  * @Description: 文件管理
  -->
 <template>
@@ -200,11 +200,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {

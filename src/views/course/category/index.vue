@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-02 18:00:02
+ * @LastEditTime: 2020-03-03 09:35:21
  * @Description: 文件管理
  -->
 <template>
@@ -85,7 +85,7 @@
       :title="operationStatus | dialogTitle"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
-        <el-form ref="dataForm" :model="form" :rules="rules">
+        <el-form ref="dataForm" :model="form" :rules="rules" label-width="90px">
           <!--分类编码-->
           <el-col :span="12">
             <el-form-item label="分类编码" prop="name">
@@ -118,7 +118,7 @@
           </el-col>
           <!--父类类型-->
           <el-col :span="12">
-            <el-form-item label="父类类型" prop="parentId" label-width="90">
+            <el-form-item label="父类类型" prop="parentId">
               <Input-tree
                 v-model="form.deptId"
                 :tree-data="treeData"
@@ -131,97 +131,82 @@
           <!--是否最热-->
           <el-col :span="12">
             <el-form-item label="是否最热" prop="hotFlag">
-              <el-select
-                v-model="form.hotFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否最热"
-              >
-                <el-option
+              <el-radio-group v-model="form.hotFlag">
+                <el-radio
                   v-for="item in DIC.typeList"
-                  :key="item.label"
+                  :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                  border
+                  size="medium"
                 />
-              </el-select>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <!--是否置顶-->
           <el-col :span="12">
             <el-form-item label="是否置顶" prop="topFlag">
-              <el-select
-                v-model="form.topFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否置顶"
-              >
-                <el-option
+              <el-radio-group v-model="form.topFlag">
+                <el-radio
                   v-for="item in DIC.typeList"
-                  :key="item.label"
+                  :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                  border
+                  size="medium"
                 />
-              </el-select>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
-              <el-select
-                v-model="form.showFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否展示"
-              >
-                <el-option
+              <el-radio-group v-model="form.showFlag">
+                <el-radio
                   v-for="item in DIC.typeList"
-                  :key="item.label"
+                  :key="item.value"
                   :label="item.label"
                   :value="item.value"
+                  border
+                  size="medium"
                 />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否栏目推荐-->
-          <el-col :span="12">
-            <el-form-item label="是否栏目推荐" prop="columnFlag">
-              <el-select
-                v-model="form.columnFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否栏目推荐"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否首页分类推荐-->
-          <el-col :span="12">
-            <el-form-item label="是否首页分类推荐" prop="recommendedFlag">
-              <el-select
-                v-model="form.recommendedFlag"
-                clearable
-                class="category-input"
-                placeholder="请选择是否首页分类推荐"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <!--字体颜色-->
           <el-col :span="12">
             <el-form-item label="字体颜色" prop="recommendedFlag">
               <el-color-picker v-model="form.fontColor" />
+            </el-form-item>
+          </el-col>
+          <!--是否栏目推荐-->
+          <el-col :span="12">
+            <el-form-item label="是否栏目推荐" prop="columnFlag" label-width="120px">
+              <el-radio-group v-model="form.columnFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  border
+                  size="medium"
+                />
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--是否首页分类推荐-->
+          <el-col :span="12">
+            <el-form-item label="是否首页分类推荐" prop="recommendedFlag" label-width="140px">
+              <el-radio-group v-model="form.recommendedFlag">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  border
+                  size="medium"
+                />
+              </el-radio-group>
             </el-form-item>
           </el-col>
           <!--显示顺序-->
@@ -325,7 +310,9 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {},
+      headers: {
+        Authorization: 'Bearer ' + getToken
+      },
       tableLoading: false,
       tableOption: [
         {
@@ -451,11 +438,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getAllCategoryType(type) {
@@ -614,7 +600,7 @@ export default {
 </script>
 <style>
 .category-input {
-  width: 250px;
+  width: 100%;
 }
 
 .category-upload__tip {

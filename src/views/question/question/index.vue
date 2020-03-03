@@ -1,9 +1,9 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-02 18:02:41
- * @Description: 文件管理
+ * @LastEditTime: 2020-03-02 17:53:50
+ * @Description: 题目表管理
  -->
 <template>
   <div class="app-container calendar-list-container">
@@ -31,9 +31,6 @@
       @refresh-change="handleFilter"
       @page-change="getList"
     >
-      <template slot="role" slot-scope="scope">
-        <el-tag>{{ scope.row.role }}</el-tag>
-      </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
@@ -242,6 +239,9 @@ import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
 
 export default {
+  components: {
+    InputTree
+  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -296,7 +296,9 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {},
+      headers: {
+        Authorization: 'Bearer ' + getToken
+      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],
@@ -374,6 +376,7 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
+      labelWidth: '90px',
       form: {}, // 新增 编辑 数据源
       rules: {
         // 表单校验
@@ -394,13 +397,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
   },
   created() {
     this.getList()
     this.getCourseList()
     this.getQuestionType()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
@@ -432,9 +434,36 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111)
+          this.getList();
+          if (this.form.id != null) {
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "修改成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          } else {
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: "成功",
+                  message: "创建成功",
+                  type: "success",
+                  duration: 2000
+                });
+              })
+              .catch(() => {
+                loading();
+              });
+          }
         } else {
           return false
         }

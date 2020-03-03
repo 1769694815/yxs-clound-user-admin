@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-02 18:05:20
+ * @LastEditTime: 2020-03-03 10:35:39
  * @Description: 文件管理
  -->
 <template>
@@ -269,8 +269,7 @@ import {
   getAllQuestion
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
-import InputTree from "@/components/InputTree/index";
+import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -327,7 +326,9 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {},
+      headers: {
+        Authorization: 'Bearer ' + getToken
+      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],
@@ -419,12 +420,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
   },
   created() {
     this.getList()
     this.getQuestionType()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
@@ -456,9 +456,36 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111)
+          this.getList()
+          if (this.form.id != null) {
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              })
+              .catch(() => {
+                loading()
+              })
+          } else {
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              })
+              .catch(() => {
+                loading()
+              })
+          }
         } else {
           return false
         }
