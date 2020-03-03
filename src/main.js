@@ -1,8 +1,8 @@
 /*
  * @Author: Donkey
  * @Date: 2020-02-13 12:00:41
- * @LastEditTime: 2020-03-03 09:48:43
- * @LastEditors: Donkey
+ * @LastEditTime: 2020-03-03 14:24:29
+ * @LastEditors: xwen
  * @Description:
  */
 import Vue from 'vue'
@@ -39,10 +39,9 @@ import '@/permission' // permission control
 // }
 
 // 全局注册Xtable组件
-import Xtable from '@/components/Xtable/index'
-Vue.component('Xtable', Xtable)
-import SingleChange from '@/components/DictItem/SingleChange'
-Vue.component('SingleChange', SingleChange)
+import GL_Component from '@/assets/js/globalComponent'
+Vue.use(GL_Component)
+
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
