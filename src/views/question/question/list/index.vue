@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 14:31:17
  * @Description: 文件管理
  -->
 <template>
@@ -260,17 +260,13 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj,
-  getCourseList,
-  getLessonList,
   getAllQuestion
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
-import InputTree from '@/components/InputTree/index'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -459,38 +455,28 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-<<<<<<< HEAD
-          this.getList();
+          this.getList()
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "修改成功",
-                  type: "success",
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
-              .catch(() => {
-                loading();
-              });
           } else {
             addObj(this.form)
               .then(() => {
                 this.$notify({
-                  title: "成功",
-                  message: "创建成功",
-                  type: "success",
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
                   duration: 2000
-                });
+                })
               })
-              .catch(() => {
-                loading();
-              });
           }
-=======
-          console.log(1111)
->>>>>>> 505381c4ea70bcbac1407b1e9d857cd107f558ee
         } else {
           return false
         }

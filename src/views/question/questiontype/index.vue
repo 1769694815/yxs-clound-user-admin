@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 14:31:36
  * @Description: 文件管理
  -->
 <template>
@@ -122,7 +122,6 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj
@@ -246,9 +245,6 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
           } else {
             addObj(this.form)
               .then(() => {
@@ -258,9 +254,6 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
-              })
-              .catch(() => {
-                loading()
               })
           }
         } else {
