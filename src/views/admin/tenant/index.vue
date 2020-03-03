@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 11:07:39
+ * @LastEditTime: 2020-03-03 14:02:17
  * @Description: 租户管理
  -->
 <template>
@@ -287,7 +287,8 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          dicUrl: 'status_type'
+          dicUrl: 'status_type',
+          dicData: []
         }
       ],
       tableData: [],

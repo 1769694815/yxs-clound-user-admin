@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 13:46:04
+ * @LastEditTime: 2020-03-03 14:00:55
  * @Description: 字典管理
  -->
 <template>
@@ -246,7 +246,8 @@ export default {
         prop: 'system',
         type: 'select',
         dicUrl: 'dict_type',
-        search: true
+        search: true,
+        dicData: []
       }, {
         label: '备注信息',
         prop: 'remarks'
