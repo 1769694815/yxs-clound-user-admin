@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 13:56:33
+ * @LastEditTime: 2020-03-03 16:16:56
  * @Description: 文件管理
  -->
 <template>
@@ -146,13 +146,10 @@
 <script>
 import {
   fetchList,
-  getObj,
-  addObj,
-  putObj,
   delObj
 } from '@/api/course/coursecomment'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -262,10 +259,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {

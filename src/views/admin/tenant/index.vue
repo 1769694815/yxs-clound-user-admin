@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-28 11:46:14
+ * @LastEditTime: 2020-03-03 14:02:17
  * @Description: 租户管理
  -->
 <template>
@@ -287,7 +287,8 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          dicUrl: 'status_type'
+          dicUrl: 'status_type',
+          dicData: []
         }
       ],
       tableData: [],
@@ -373,8 +374,8 @@ export default {
       this.getList()
     },
     handleEmpty() {
-      this.searchForm.name = undefined
-      this.searchForm.status = undefined
+      this.searchForm.type = undefined
+      this.searchForm.system = undefined
       this.getList()
     },
     handleView(row) {
