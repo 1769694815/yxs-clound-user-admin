@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-02 14:14:12
+ * @LastEditTime: 2020-03-03 17:44:12
  * @Description: 课程管理
  -->
 <template>
@@ -120,6 +120,7 @@
                 v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
+                multiline
                 placeholder="请选择课程分类"
                 @node-click="getNodeData"
               />
@@ -607,9 +608,7 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
+              .catch(() => {})
           } else {
             addObj(this.form)
               .then(() => {
@@ -620,9 +619,7 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
+              .catch(() => {})
           }
         } else {
           return false
@@ -684,15 +681,8 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {
-        type: 1,
-        status: 0,
-        serialStatus: 1,
-        recommend: 0,
-        buyFlag: 0,
-        doubleSpeed: 0,
-        drag: 0
-      }
+      this.operationStatus = 0
+      this.form = {}
     },
     /**
      * 文件上传方法

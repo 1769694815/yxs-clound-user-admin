@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 15:48:26
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-13 19:59:14
+ * @LastEditTime: 2020-03-03 17:29:28
  * @Description: 可搜索树形组件
  -->
 <template>
@@ -20,10 +20,12 @@
       :data="data"
       :props="defaultProps"
       :node-key="option.nodeKey"
+      :show-checkbox="showCheckbox"
       default-expand-all
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
       @node-click="getNodeData"
+      @check="handleCheckChage"
     />
   </div>
 </template>
@@ -42,6 +44,12 @@ export default {
       default: function() {
         return {}
       }
+    },
+    showCheckbox: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
     }
   },
   data() {
@@ -51,7 +59,8 @@ export default {
         children: 'children',
         label: this.option.props.label,
         value: this.option.props.value
-      }
+      },
+      checkIdList: []
     }
   },
   watch: {
@@ -65,7 +74,35 @@ export default {
       return data[this.defaultProps.label].indexOf(value) !== -1
     },
     getNodeData(data) {
+      if (this.showCheckbox) {
+        return
+      }
       this.$emit('node-click', data)
+    },
+    handleCheckChage(data, checked) {
+      const checkList = []
+      const checkedNodes = checked.checkedNodes
+      const checkedKeys = checked.checkedKeys
+      // 判断id是否为选择
+      if (checkedKeys.includes(data.id)) {
+        // 选择的
+        this.checkIdList.push(data.id)
+      } else {
+        // 取消的
+        for (let i = 0; i < this.checkIdList.length; i++) {
+          if (!checkedKeys.includes(this.checkIdList[i])) {
+            this.checkIdList.splice(i, 1)
+          }
+        }
+      }
+      for (let i = 0; i < checkedNodes.length; i++) {
+        for (let j = 0; j < this.checkIdList.length; j++) {
+          if (this.checkIdList[j] === checkedNodes[i].id) {
+            checkList.push(checkedNodes[i])
+          }
+        }
+      }
+      this.$emit('check-change', checkList)
     }
   }
 }
