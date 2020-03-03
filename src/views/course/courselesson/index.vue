@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 14:29:49
  * @Description: 文件管理
  -->
 <template>
@@ -164,7 +164,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.cover" :src="form.cover" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="lesson-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -184,13 +184,12 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj
 } from '@/api/course/courselesson'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -297,7 +296,8 @@ export default {
         },
         {
           label: '删除标记',
-          prop: 'delFlag'
+          prop: 'delFlag',
+          dicData: DIC.typeList
         },
         {
           label: '创建时间',
@@ -341,10 +341,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
@@ -359,6 +360,7 @@ export default {
             current: this.page.current,
             size: this.page.size
           },
+          params,
           this.searchForm
         )
       )
@@ -381,31 +383,25 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
-              .catch(() => {
-                loading()
-              })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            this.form.chapterId = this.$route.query.chapterId
+            this.form.courseId = this.$route.query.courseId
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
-              .catch(() => {
-                loading()
-              })
+            })
           }
         } else {
           return false
@@ -485,8 +481,8 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
+      this.form.cover = res.fileKey
+      this.imageUrl = res.url
     },
     handleRemove() {}
   }

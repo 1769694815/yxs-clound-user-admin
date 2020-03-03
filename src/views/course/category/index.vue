@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 09:35:21
+ * @LastEditTime: 2020-03-03 14:30:23
  * @Description: 文件管理
  -->
 <template>
@@ -135,11 +135,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -150,11 +149,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -165,11 +163,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -186,11 +183,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -201,11 +197,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -230,7 +225,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="category-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -250,14 +245,13 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj,
   getAllCategoryType
 } from '@/api/course/category'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
 
 export default {
@@ -438,14 +432,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getAllCategoryType(type) {
-      getAllCategoryType(rype).then(res => {
+      getAllCategoryType(type).then(res => {
         this.treeData = res.data.data
         console.log('treeData', res.data.data)
         // this.form.parentId = res.data.id;
@@ -491,9 +486,6 @@ export default {
                   duration: 2000
                 })
               })
-              .catch(() => {
-                loading()
-              })
           } else {
             addObj(this.form)
               .then(() => {
@@ -503,9 +495,6 @@ export default {
                   type: 'success',
                   duration: 2000
                 })
-              })
-              .catch(() => {
-                loading()
               })
           }
         } else {
@@ -590,8 +579,8 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
+      this.form.img = res.fileKey
+      this.imageUrl = res.url
     },
     handleRemove() {},
     getNodeData() {}

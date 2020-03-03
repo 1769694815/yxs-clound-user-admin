@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 17:44:12
+ * @LastEditTime: 2020-03-03 17:59:00
  * @Description: 课程管理
  -->
 <template>
@@ -18,7 +18,7 @@
         <el-select v-model="searchForm.recommend" clearable>
           <el-option
             v-for="item in DIC.typeList"
-            :key="item.label"
+            :key="item.value"
             :label="item.label"
             :value="item.value"
           />
@@ -29,7 +29,7 @@
         <el-select v-model="searchForm.buyFlag" clearable>
           <el-option
             v-for="item in DIC.typeList"
-            :key="item.label"
+            :key="item.value"
             :label="item.label"
             :value="item.value"
           />
@@ -40,7 +40,7 @@
         <el-select v-model="searchForm.type" clearable>
           <el-option
             v-for="item in DIC.courseTypeList"
-            :key="item.label"
+            :key="item.value"
             :label="item.label"
             :value="item.value"
           />
@@ -106,7 +106,7 @@
               <el-select v-model="form.type" clearable class="course-input" placeholder="请选择课程类型">
                 <el-option
                   v-for="item in DIC.courseTypeList"
-                  :key="item.label"
+                  :key="item.value"
                   :label="item.label"
                   :value="item.value"
                 />
@@ -157,11 +157,10 @@
                 <el-radio
                   v-for="item in DIC.courseStatus"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -190,11 +189,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -205,11 +203,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -220,11 +217,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -235,11 +231,10 @@
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :label="item.value"
                   border
                   size="medium"
-                />
+                >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -314,7 +309,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.smallPicture" :src="form.smallPicture" class="avatar">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -332,18 +327,11 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  getObj,
-  addObj,
-  putObj,
-  delObj,
-  getCategoryTree
-} from '@/api/course/course'
+import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
 import { getTeacherList } from '@/api/user'
 import { getAllCategoryType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
-import { getToken, getQiNiuYunDomain } from '@/api/qiniu'
+import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
 
 export default {
@@ -541,26 +529,27 @@ export default {
         newwinFlag: [
           { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
         ],
-        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
+        smallPicture: [
+          { required: true, message: '请上传图片', trigger: 'change' }
+        ]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '' // 图片地址
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
     this.getTeacherList()
     this.getCategoryTree()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getCategoryTree() {
       getAllCategoryType(1).then(res => {
         this.treeData = res.data.data
-        console.log('treeData', res.data.data)
-        // this.form.parentId = res.data.id;
       })
     },
     getTeacherList() {
@@ -598,6 +587,7 @@ export default {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
           this.getList()
+          console.log('form', this.form)
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
@@ -704,8 +694,8 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
+      this.form.smallPicture = res.fileKey
+      this.imageUrl = res.url
     },
     handleRemove() {},
     getNodeData() {}
