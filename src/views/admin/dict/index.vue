@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:24:32
+ * @LastEditTime: 2020-03-03 14:27:24
  * @Description: 字典管理
  -->
 <template>
@@ -123,6 +123,7 @@
               <el-input
                 v-model="form.type"
                 autocomplete="off"
+                placeholder="请输入类型"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -138,6 +139,7 @@
               <el-input
                 v-model="form.description"
                 autocomplete="off"
+                placeholder="请输入描述"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -152,10 +154,10 @@
             >
               <single-change
                 v-model="form.system"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="dict_type"
                 type="select"
-                :disabled="operationStatus === 1"
+                size="medium"
               />
             </el-form-item>
           </el-col>
@@ -170,6 +172,7 @@
               <el-input
                 v-model="form.remarks"
                 autocomplete="off"
+                placeholder="请输入备注"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
