@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 11:34:10
+ * @LastEditTime: 2020-03-03 14:24:32
  * @Description: 字典管理
  -->
 <template>
@@ -92,7 +92,7 @@
           type="text"
           size="mini"
           icon="el-icon-download"
-          @click="dictItem(scope.row)"
+          @click="handleDictItem(scope.row, scope.index)"
         >字典项
         </el-button>
       </template>
@@ -198,14 +198,178 @@
         >取 消</el-button>
       </div>
     </el-dialog>
+    <!--字典项列表弹窗-->
+    <el-dialog
+      :visible.sync="dialogDictItem"
+      title="字典项管理"
+    >
+      <Xtable
+        :table-key="dictItem.tableKey"
+        :table-loading="dictItem.tableLoading"
+        :table-data="dictItem.tableData"
+        :page="dictItem.page"
+        :table-option.sync="dictItem.tableOption"
+        @handle-create="dictItemHandleCreate"
+        @refresh-change="dictItemHandleFilter"
+        @page-change="dictItemGetList"
+      >
+        <template
+          slot="role"
+          slot-scope="scope"
+        >
+          <el-tag>{{ scope.row.role }}</el-tag>
+        </template>
+        <template
+          slot="menu"
+          slot-scope="scope"
+        >
+          <el-button
+            type="text"
+            icon="el-icon-view"
+            size="mini"
+            @click="dictItemHandleUpdate(scope.row)"
+          >编辑
+          </el-button>
+          <el-button
+            type="text"
+            size="mini"
+            icon="el-icon-delete"
+            @click="dictItemHandleDelete(scope.row, scope.index)"
+          >删除
+          </el-button>
+        </template>
+      </Xtable>
+    </el-dialog>
+    <!-- 字典项表单弹窗 -->
+    <el-dialog
+      :visible.sync="dictItem.dialogPvVisible"
+      :title="dictItem.operationStatus | dialogTitle"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
+      >
+        <el-form
+          ref="dictItemDataForm"
+          :rules="dictItem.formRules"
+          :model="dictItem.form"
+        >
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="type"
+              label="类型:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.type"
+                autocomplete="off"
+                :disabled="true"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="value"
+              label="数据值:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.value"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="label"
+              label="标签名:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.label"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="description"
+              label="描述:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.description"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="sort"
+              label="排序:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.sort"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="remarks"
+              label="备注信息:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="dictItem.form.remarks"
+                autocomplete="off"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          v-if="dictItem.operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="dictItemCreate"
+        >保 存</el-button>
+        <el-button
+          v-if="dictItem.operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="dictItemUpdate"
+        >修 改</el-button>
+        <el-button
+          size="small"
+          @click="dictItem.dialogPvVisible = false"
+        >取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { addItemObj, addObj, delItemObj, delObj, fetchItemList, fetchList, putItemObj, putObj } from '@/api/admin/dict'
-import { handleDown, randomLenNum } from '@/utils/index'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 export default {
   filters: {
     statusFilter(type, list) {
@@ -233,8 +397,7 @@ export default {
       tableLoading: false,
       tableOption: [{
         label: '类型',
-        prop: 'type',
-        'search': true
+        prop: 'type'
       }, {
         label: '描述',
         prop: 'description'
@@ -242,8 +405,7 @@ export default {
         label: '字典类型',
         prop: 'system',
         type: 'select',
-        dicUrl: 'dict_type',
-        search: true
+        dicUrl: 'dict_type'
       }, {
         label: '备注信息',
         prop: 'remarks'
@@ -252,8 +414,6 @@ export default {
         label: '创建时间',
         prop: 'createTime',
         type: 'datetime',
-        addDisplay: false,
-        editDisabled: true,
         format: 'yyyy-MM-dd HH:mm',
         valueFormat: 'yyyy-MM-dd HH:mm:ss'
       }],
@@ -282,12 +442,68 @@ export default {
       },
       searchForm: {},
       dialogPvVisible: false,
+      dialogDictItem: false,
       operationStatus: 0,
       form: {},
       formLabelWidth: '90px',
-      upload_qiniu_url: this.$upload_qiniu_url,
-      dataObj: { token: '', key: '' },
-      imageUrl: ''
+      dictItem: {
+        tableKey: 1,
+        tableLoading: false,
+        tableOption: [{
+          label: '类型',
+          prop: 'type'
+        }, {
+          width: 150,
+          label: '数据值',
+          prop: 'value'
+        }, {
+          label: '标签名',
+          prop: 'label'
+        }, {
+          label: '描述',
+          prop: 'description'
+        }, {
+          label: '排序',
+          prop: 'sort',
+          type: 'number'
+        }, {
+          label: '备注信息',
+          prop: 'remarks'
+        }],
+        tableData: [],
+        page: {
+          total: 0,
+          current: 1,
+          size: 10
+        },
+        searchForm: {},
+        dialogPvVisible: false,
+        dialogDictItem: false,
+        operationStatus: 0,
+        form: {},
+        formRules: {
+          value: [{
+            required: true,
+            message: '请输入数据值',
+            trigger: 'blur'
+          }],
+          label: [{
+            required: true,
+            message: '请输入标签名',
+            trigger: 'blur'
+          }],
+          description: [{
+            required: true,
+            message: '请输入字典描述',
+            trigger: 'blur'
+          }],
+          sort: [{
+            required: true,
+            message: '请输入排序',
+            trigger: 'blur'
+          }]
+        }
+      }
     }
   },
   computed: {
@@ -318,6 +534,7 @@ export default {
           this.tableLoading = false
         })
     },
+
     handleFilter() {
       this.getList()
     },
@@ -325,36 +542,15 @@ export default {
       this.searchForm = {}
       this.getList()
     },
-    handleView(row) {
-      this.form = row
+    handleCreate() {
       this.dialogPvVisible = true
-      this.operationStatus = 1
+      this.operationStatus = 0
+      this.form = {}
     },
     handleUpdate(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
-    },
-    update() {
-      this.$refs.dataForm.validate(valid => {
-        if (valid) {
-          this.dialogPvVisible = false
-          this.tableLoading = true
-          putObj(this.form)
-            .then(res => {
-              this.tableLoading = false
-              this.$message({
-                showClose: true,
-                message: '修改成功',
-                type: 'success'
-              })
-              this.getList()
-            })
-            .catch(() => {
-              this.tableLoading = false
-            })
-        }
-      })
     },
     create() {
       this.$refs.dataForm.validate(valid => {
@@ -367,6 +563,27 @@ export default {
               this.$message({
                 showClose: true,
                 message: '添加成功',
+                type: 'success'
+              })
+              this.getList()
+            })
+            .catch(() => {
+              this.tableLoading = false
+            })
+        }
+      })
+    },
+    update() {
+      this.$refs.dataForm.validate(valid => {
+        if (valid) {
+          this.dialogPvVisible = false
+          this.tableLoading = true
+          putObj(this.form)
+            .then(res => {
+              this.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '修改成功',
                 type: 'success'
               })
               this.getList()
@@ -392,10 +609,104 @@ export default {
           this.getList()
         })
     },
-    handleCreate() {
-      this.dialogPvVisible = true
-      this.operationStatus = 0
-      this.form = {}
+    dictItemGetList() {
+      this.dictItem.tableLoading = true
+      this.dictItem.searchForm.dictId = this.form.id
+      fetchItemList(
+        Object.assign(
+          {
+            descs: 'create_time',
+            current: this.dictItem.page.current,
+            size: this.dictItem.page.size
+          },
+          this.dictItem.searchForm
+        )
+      )
+        .then(res => {
+          this.dictItem.tableData = res.data.data.records
+          this.dictItem.page.total = res.data.data.total
+          this.dictItem.tableLoading = false
+        })
+        .catch(() => {
+          this.dictItem.tableLoading = false
+        })
+    },
+    handleDictItem(row, index) {
+      this.dialogDictItem = true
+      this.form = row
+      this.dictItemGetList(row.id, row.type)
+    },
+    dictItemHandleCreate() {
+      this.dictItem.dialogPvVisible = true
+      this.dictItem.operationStatus = 0
+      this.dictItem.form = {}
+      this.dictItem.form.type = this.form.type
+      this.dictItem.form.dictId = this.form.id
+    },
+    dictItemHandleUpdate(row, index) {
+      this.dictItem.dialogPvVisible = true
+      this.dictItem.operationStatus = 2
+      this.dictItem.form = row
+    },
+    dictItemHandleFilter() {
+      this.dictItemGetList()
+    },
+    dictItemUpdate() {
+      this.$refs.dictItemDataForm.validate(valid => {
+        if (valid) {
+          this.dictItem.dialogPvVisible = false
+          this.dictItem.tableLoading = true
+          putItemObj(this.dictItem.form)
+            .then(res => {
+              this.dictItem.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '修改成功',
+                type: 'success'
+              })
+              this.dictItemGetList()
+            })
+            .catch(() => {
+              this.dictItem.tableLoading = false
+            })
+        }
+      })
+    },
+    dictItemCreate() {
+      this.$refs.dictItemDataForm.validate(valid => {
+        if (valid) {
+          this.dictItem.dialogPvVisible = false
+          this.dictItem.tableLoading = true
+          addItemObj(this.dictItem.form)
+            .then(res => {
+              this.dictItem.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+              this.dictItemGetList()
+            })
+            .catch(() => {
+              this.dictItem.tableLoading = false
+            })
+        }
+      })
+    },
+    dictItemHandleDelete(row, index) {
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return delItemObj(row)
+        })
+        .then(data => {
+          _this.$message.success('删除成功')
+          this.dictItemGetList()
+        })
     }
 
   }

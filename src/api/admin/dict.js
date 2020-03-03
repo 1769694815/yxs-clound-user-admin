@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:33:11
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 10:24:39
+ * @LastEditTime: 2020-03-03 14:24:06
  * @Description: 字典api
  */
 import request from '@/utils/request'
@@ -43,9 +43,9 @@ export function getItemObj(id) {
   })
 }
 
-export function delItemObj(id) {
+export function delItemObj(row) {
   return request({
-    url: '/admin/dict/item/' + id,
+    url: '/admin/dict/item/' + row.id,
     method: 'delete'
   })
 }
