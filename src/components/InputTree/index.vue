@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 17:54:11
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-13 19:59:50
+ * @LastEditTime: 2020-03-02 11:38:36
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -15,6 +15,7 @@
     <el-input
       ref="input"
       v-model="text"
+      clearable
       autocomplete="off"
       :disabled="operationStatus === 1"
       readonly
