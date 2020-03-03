@@ -332,9 +332,6 @@ export default {
         status: [
           { required: true, message: "请选择课时发布", trigger: "change" }
         ],
-        newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
-        ],
         cover: [
           { required: true, message: "请上传课时封面", trigger: "change" }
         ]
