@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 16:16:40
+ * @LastEditTime: 2020-03-03 16:31:54
  * @Description: 文件管理
  -->
 <template>
@@ -506,31 +506,22 @@ export default {
       }, // 新增 编辑 数据源
       rules: {
         // 表单校验
-        name: [
-          { required: true, message: '分类名称不能为空', trigger: 'blur' }
+        title: [
+          { required: true, message: '班级名称不能为空', trigger: 'blur' }
         ],
-        code: [
-          { required: true, message: '分类编码不能为空', trigger: 'blur' }
+        buyFlag: [
+          { required: true, message: '请选择是否开放购买', trigger: 'change' }
         ],
-        hotFlag: [
-          { required: true, message: '请选择是否最热', trigger: 'change' }
-        ],
-        topFlag: [
-          { required: true, message: '请选择是否置顶', trigger: 'change' }
-        ],
-        columnFlag: [
-          { required: true, message: '请选择是否推荐栏目', trigger: 'change' }
+        expiryMode: [
+          { required: true, message: '请选择学习有效方式', trigger: 'change' }
         ],
         recommendedFlag: [
-          { required: true, message: '请选择是否首页推荐', trigger: 'change' }
+          { required: true, message: '请选择是否推荐', trigger: 'change' }
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
-        groupType: [
-          { required: true, message: '请选择分类类型', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        smallPicture: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
