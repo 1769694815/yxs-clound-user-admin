@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 15:24:04
+ * @LastEditTime: 2020-03-04 15:38:58
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -136,7 +136,7 @@ export default {
         const params = {
           fileName: file.name,
           fileSize: file.size,
-          type: this.type
+          type: this.status
         }
         getToken(params)
           .then(response => {
