@@ -2,7 +2,7 @@
  * @Date: 2020-02-11 17:07:24
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-28 16:56:58
+ * @LastEditTime: 2020-03-02 14:25:11
  * @Description: 菜单api
  */
 import request from '@/utils/request'
@@ -27,7 +27,10 @@ export function addObj(obj) {
   return request({
     url: '/admin/menu',
     method: 'post',
-    data: obj
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data: JSON.stringify(obj)
   })
 }
 

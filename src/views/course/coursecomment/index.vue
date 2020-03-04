@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 16:16:56
  * @Description: 文件管理
  -->
 <template>
@@ -10,37 +10,26 @@
     <!-- 头部菜单 -->
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
-      <!--导航名称-->
-      <el-form-item label="导航名称:" label-width="80px">
-        <el-input v-model="searchForm.name" type="text" size="small" placeholder="请输入导航名称" />
+      <!--评论内容-->
+      <el-form-item label="评论内容:" label-width="80px">
+        <el-input v-model="searchForm.content" type="text" size="small" placeholder="请输入评论内容" />
       </el-form-item>
-      <!--是否启用-->
-      <el-form-item label="是否启用:" label-width="80px">
-        <el-select v-model="searchForm.openFlag" clearable>
+      <!--审核状态-->
+      <el-form-item label="审核状态:" label-width="80px">
+        <el-select v-model="searchForm.status" clearable>
           <el-option
-            v-for="item in typeList"
+            v-for="item in DIC.typeList"
             :key="item.label"
             :label="item.label"
             :value="item.value"
           />
         </el-select>
       </el-form-item>
-      <!--是否打开新窗口-->
-      <el-form-item label="是否打开新窗口:" label-width="130px">
-        <el-select v-model="searchForm.newwinFlag" clearable>
+      <!--是否置顶-->
+      <el-form-item label="是否置顶:" label-width="130px">
+        <el-select v-model="searchForm.topFlag" clearable>
           <el-option
-            v-for="item in typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--类型-->
-      <el-form-item label="类型:" label-width="80px">
-        <el-select v-model="searchForm.code" clearable>
-          <el-option
-            v-for="item in commentTypeList"
+            v-for="item in DIC.typeList"
             :key="item.label"
             :label="item.label"
             :value="item.value"
@@ -69,7 +58,6 @@
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
-        <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
           type="text"
           size="mini"
@@ -86,92 +74,62 @@
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
-          <!--导航名称-->
+          <!--评论内容-->
           <el-col :span="12">
-            <el-form-item label="导航名称" prop="name">
-              <el-input v-model="form.name" placeholder="请输入导航名称" clearable class="comment-input" />
-            </el-form-item>
-          </el-col>
-          <!--类型-->
-          <el-col :span="12">
-            <el-form-item label="类型" prop="code">
-              <el-select v-model="form.code" clearable placeholder="请选择类型" class="comment-input">
-                <el-option
-                  v-for="item in commentTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--是否启用-->
-          <el-col :span="12">
-            <el-form-item label="是否启用" prop="openFlag">
-              <el-select
-                v-model="form.openFlag"
-                clearable
-                class="comment-input"
-                placeholder="请选择是否启用"
-              >
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--链接地址-->
-          <el-col :span="12">
-            <el-form-item label="外链" prop="url">
-              <el-input v-model="form.url" placeholder="请输入链接地址" clearable class="comment-input" />
-            </el-form-item>
-          </el-col>
-          <!--新窗口-->
-          <el-col :span="12">
-            <el-form-item label="打开窗口" prop="newwinFlag">
-              <el-select
-                v-model="form.newwinFlag"
-                clearable
-                class="comment-input"
-                placeholder="请选择是否打开新窗口"
-              >
-                <el-option
-                  v-for="item in typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <!--显示顺序-->
-          <el-col :span="12">
-            <el-form-item label="顺序" prop="sequence">
-              <el-input-number
-                v-model="form.sequence"
-                placeholder="请输入显示顺序"
+            <el-form-item label="评论内容" prop="name">
+              <el-input
+                v-model="form.content"
+                placeholder="请输入评论内容"
                 clearable
                 class="comment-input"
               />
             </el-form-item>
           </el-col>
+          <!--父类id-->
           <el-col :span="12">
-            <el-form-item label="图片上传:" prop="img">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
-                action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
+            <el-form-item label="父类id" prop="parentId">
+              <el-input
+                v-model="form.parentId"
+                placeholder="请输入父类id"
+                clearable
+                class="comment-input"
+              />
+            </el-form-item>
+          </el-col>
+          <!--审核状态-->
+          <el-col :span="12">
+            <el-form-item label="审核状态" prop="status">
+              <el-select
+                v-model="form.status"
+                clearable
+                class="comment-input"
+                placeholder="请选择审核状态"
               >
-                <img v-if="form.pic" :src="form.pic" class="avatar" />
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="comment-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+                <el-option
+                  v-for="item in DIC.typeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <!--是否置顶-->
+          <el-col :span="12">
+            <el-form-item label="是否置顶" prop="topFlag">
+              <el-select
+                v-model="form.topFlag"
+                clearable
+                class="comment-input"
+                placeholder="请选择是否置顶"
+              >
+                <el-option
+                  v-for="item in DIC.typeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-form>
@@ -188,102 +146,102 @@
 <script>
 import {
   fetchList,
-  getObj,
-  addObj,
-  putObj,
   delObj
-} from "@/api/course/coursecomment";
-import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
+} from '@/api/course/coursecomment'
+import { mapGetters } from 'vuex'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
-    return {
-      tableKey: 0,
-      headers: {
-        Authorization: "Bearer " + getToken
-      },
-      tableLoading: false,
-      commentTypeList: [],
+    const DIC = {
       typeList: [
         {
           value: 0,
-          label: "否"
+          label: '否'
         },
         {
           value: 1,
-          label: "是"
+          label: '是'
         }
       ],
       auditStatus: [
         {
           value: 0,
-          label: "待审核"
+          label: '待审核'
         },
         {
           value: 1,
-          label: "通过"
+          label: '通过'
         },
         {
           value: 2,
-          label: "不通过"
+          label: '不通过'
         }
-      ],
+      ]
+    }
+    return {
+      DIC: DIC,
+      tableKey: 0,
+      headers: {
+        Authorization: 'Bearer ' + getToken
+      },
+      tableLoading: false,
+      commentTypeList: [],
+
       tableOption: [
         {
-          label: "评论对象ID",
-          prop: "courseId"
+          label: '评论内容',
+          prop: 'content'
         },
         {
-          label: "评论内容",
-          prop: "content"
+          label: '状态',
+          prop: 'status',
+          dicData: DIC.auditStatus
         },
         {
-          label: "状态",
-          prop: "status"
+          type: 'input',
+          label: '父节点',
+          prop: 'parentId'
         },
         {
-          type: "input",
-          label: "父节点",
-          prop: "parentId"
+          label: '删除标志',
+          prop: 'delFlag',
+          dicData: DIC.typeList
         },
         {
-          label: "删除标志",
-          prop: "delFlag"
+          type: 'input',
+          label: '用户ID',
+          prop: 'createUserId'
         },
         {
-          type: "input",
-          label: "用户ID",
-          prop: "createUserId"
+          type: 'input',
+          label: '创建时间',
+          prop: 'createTime'
         },
         {
-          type: "input",
-          label: "创建时间",
-          prop: "createTime"
-        },
-        {
-          label: "是否置顶",
-          prop: "topFlag"
+          label: '是否置顶',
+          prop: 'topFlag',
+          dicData: DIC.typeList
         }
       ],
       tableData: [],
@@ -296,37 +254,24 @@ export default {
       dialogPvVisible: false,
       operationStatus: 0,
       form: {}, // 新增 编辑 数据源
-      rules: {
-        // 表单校验
-        name: [
-          { required: true, message: "导航名称不能为空", trigger: "blur" }
-        ],
-        code: [{ required: true, message: "请选择类型", trigger: "change" }],
-        openFlag: [
-          { required: true, message: "请选择是否启用", trigger: "change" }
-        ],
-        newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
-        ],
-        img: [{ required: true, message: "请上传图片", trigger: "change" }]
-      },
-      dataObj: { token: "", key: "" },
-      imageUrl: "" // 图片地址
-    };
+      rules: {},
+      dataObj: { token: '', key: '' }
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getList();
+    this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
-      this.tableLoading = true;
+      this.tableLoading = true
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -334,13 +279,13 @@ export default {
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -350,11 +295,11 @@ export default {
     create(form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          console.log(1111);
+          console.log(1111)
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -362,75 +307,52 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
-      this.form = {};
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
-      }
-      return isJPG && isLt2M;
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      console.log("res", res);
-      // this.$qiniuAddr + res.key
+      this.dialogPvVisible = true
+      this.form = {}
     },
     handleRemove() {}
   }
-};
+}
 </script>
 <style>
 .comment-input {

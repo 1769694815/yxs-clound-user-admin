@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-26 11:25:06
+ * @LastEditTime: 2020-03-03 14:01:14
  * @Description: 表格组件
  -->
 <template>
@@ -91,7 +91,7 @@
             <span
               v-else-if="item.dicUrl"
             >
-              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.list) }}</el-tag>
+              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
             </span>
             <span v-else>{{ scope.row[scope.column.property] }}</span>
           </template>
@@ -217,10 +217,11 @@ export default {
       }
       if (ele.dicUrl && !ele.slot) {
         remote(ele.dicUrl).then(res => {
-          ele.list = res.data.data
+          ele.dicData = res.data.data
         })
       }
     })
+    console.log('tableOption', this.tableOption)
   },
   methods: {
     checkChange(val) {

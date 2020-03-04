@@ -19,7 +19,7 @@ const service = axios.create({
   timeout: 30000 // request timeout
 })
 
-service.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+service.defaults.headers['Content-Type'] = 'application/json'
 
 // request interceptor
 service.interceptors.request.use(

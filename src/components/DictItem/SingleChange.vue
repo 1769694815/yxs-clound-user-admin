@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-02-22 11:47:30
+ * @LastEditTime: 2020-03-03 13:44:33
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -16,8 +16,12 @@
     <el-select
       v-if="type === 'select'"
       v-model="status"
-      size="small"
+      :size="size"
+      :disabled="disabled"
+      clearable
       placeholder="请选择状态"
+      style="width: 100%;"
+      @change="singleChange"
     >
       <el-option
         v-for="item in statusList"
@@ -37,7 +41,7 @@
         :key="item.value"
         :label="item.value"
         border
-        size="medium"
+        :size="size"
       >{{ item.label }}</el-radio>
     </el-radio-group>
   </div>
@@ -54,10 +58,10 @@ export default {
         return ''
       }
     },
-    operationStatus: {
-      type: Number,
+    disabled: {
+      type: Boolean,
       default: function() {
-        return 0
+        return false
       }
     },
     statusType: {
@@ -71,12 +75,26 @@ export default {
       default: function() {
         return 'select'
       }
+    },
+    size: {
+      type: String,
+      default: function() {
+        return 'small'
+      }
     }
   },
   data() {
     return {
-      status: this.value,
+      status: '',
       statusList: []
+    }
+  },
+  watch: {
+    value: {
+      handler(val) {
+        this.status = val
+      },
+      immediate: true
     }
   },
   created() {

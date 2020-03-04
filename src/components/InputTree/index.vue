@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 17:54:11
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-13 19:59:50
+ * @LastEditTime: 2020-03-03 17:57:15
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -15,18 +15,22 @@
     <el-input
       ref="input"
       v-model="text"
+      clearable
       autocomplete="off"
       :disabled="operationStatus === 1"
       readonly
       :placeholder="placeholder"
       @focus="onFocus"
+      @blur="onBlur"
     />
     <Tree
       v-if="showTree"
       class="tree"
       :option="treeOption"
       :data="treeData"
+      :show-checkbox="multiline"
       @node-click="nodeClick"
+      @check-change="checkChange"
     />
   </div>
 </template>
@@ -65,6 +69,12 @@ export default {
       default: function() {
         return ''
       }
+    },
+    multiline: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
     }
   },
   data() {
@@ -85,16 +95,30 @@ export default {
     onFocus() {
       this.showTree = true
     },
-    onBlur() {
-      this.showTree = false
+    onBlur(e) {
+      // this.showTree = false
     },
     nodeClick(data) {
       this.deptId = data.id
       this.text = data.name
       this.$emit('input', this.deptId)
-      this.$emit('node-click')
       this.$refs.input.blur()
       this.showTree = false
+    },
+    checkChange(list) {
+      this.deptId = ''
+      this.text = ''
+      for (let i = 0; i < list.length; i++) {
+        if (i === 0) {
+          this.deptId = list[i].id
+          this.text = list[i].name
+        } else {
+          this.deptId += ',' + list[i].id
+          this.text += ',' + list[i].name
+        }
+      }
+      this.$emit('input', this.deptId)
+      this.$emit('node-click')
     }
   }
 }

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-02-20 10:52:43
+ * @LastEditTime: 2020-03-03 14:29:49
  * @Description: 文件管理
  -->
 <template>
@@ -121,7 +121,7 @@
           <!--课时类型-->
           <el-col :span="12">
             <el-form-item label="课时类型" prop="type">
-              <el-select v-model="form.type" clearable class="course-input" placeholder="请选择课时类型">
+              <el-select v-model="form.type" clearable class="lesson-input" placeholder="请选择课时类型">
                 <el-option
                   v-for="item in DIC.fileType"
                   :key="item.label"
@@ -164,7 +164,7 @@
                 :on-success="handleSuccess"
                 :before-upload="beforeUpload"
               >
-                <img v-if="form.cover" :src="form.cover" class="avatar" />
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
                 <div slot="tip" class="lesson-upload__tip">图片大小不能超过2MB</div>
               </el-upload>
@@ -184,33 +184,32 @@
 <script>
 import {
   fetchList,
-  getObj,
   addObj,
   putObj,
   delObj
-} from "@/api/course/courselesson";
-import { mapGetters } from "vuex";
-import { getToken, getQiNiuYunDomain } from "@/api/qiniu";
+} from '@/api/course/courselesson'
+import { mapGetters } from 'vuex'
+import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
     statusFilter(type, list) {
-      let result;
+      let result
       list.map(ele => {
         if (type === ele.value) {
-          result = ele.label;
+          result = ele.label
         }
-      });
-      return result;
+      })
+      return result
     },
     dialogTitle(type) {
       const titleMap = {
-        0: "新 增",
-        1: "查 看",
-        2: "编 辑",
-        3: "删 除"
-      };
-      return titleMap[type];
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
     }
   },
   data() {
@@ -218,91 +217,92 @@ export default {
       typeList: [
         {
           value: 0,
-          label: "否"
+          label: '否'
         },
         {
           value: 1,
-          label: "是"
+          label: '是'
         }
       ],
       lessonStatus: [
         {
-          label: "未发布",
+          label: '未发布',
           value: 0
         },
         {
-          label: "发布",
+          label: '发布',
           value: 1
         }
       ],
       fileType: [
         {
-          label: "视频",
+          label: '视频',
           value: 1
         },
         {
-          label: "音频",
+          label: '音频',
           value: 2
         },
         {
-          label: "文档",
+          label: '文档',
           value: 3
         }
       ]
-    };
+    }
     return {
       DIC: DIC,
       tableKey: 0,
       headers: {
-        Authorization: "Bearer " + getToken
+        Authorization: 'Bearer ' + getToken
       },
       tableLoading: false,
       lessonTypeList: [],
       tableOption: [
         {
-          type: "input",
-          label: "标题",
-          prop: "title"
+          type: 'input',
+          label: '标题',
+          prop: 'title'
         },
         {
-          label: "课程",
-          prop: "courseId"
+          label: '课程',
+          prop: 'courseId'
         },
         {
-          label: "章节",
-          prop: "chapterId"
+          label: '章节',
+          prop: 'chapterId'
         },
         {
-          label: "排序",
-          prop: "sort"
+          label: '排序',
+          prop: 'sort'
         },
         {
-          label: "是否免费",
-          prop: "free",
+          label: '是否免费',
+          prop: 'free',
           dicData: DIC.typeList
         },
         {
-          label: "状态",
-          prop: "status",
+          label: '状态',
+          prop: 'status',
           dicData: DIC.lessonStatus
         },
         {
-          label: "类型",
-          prop: "type",
+          label: '类型',
+          prop: 'type',
           dicData: DIC.fileType
         },
         {
-          label: "时长(秒)",
-          prop: "length"
+          label: '时长(秒)',
+          prop: 'length'
         },
         {
-          label: "删除标记",
-          prop: "delFlag"
+          label: '删除标记',
+          prop: 'delFlag',
+          dicData: DIC.typeList
         },
         {
-          label: "创建时间",
-          prop: "createTime",
-          width: "160"
+          label: '创建时间',
+          prop: 'createTime',
+          width: '160'
         }
       ],
       tableData: [],
@@ -318,61 +318,60 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: "课时名称不能为空", trigger: "blur" }
+          { required: true, message: '课时名称不能为空', trigger: 'blur' }
         ],
         mediaUri: [
-          { required: true, message: "课时资源不能为空", trigger: "blur" }
+          { required: true, message: '课时资源不能为空', trigger: 'blur' }
         ],
         type: [
-          { required: true, message: "请选择课时类型", trigger: "change" }
+          { required: true, message: '请选择课时类型', trigger: 'change' }
         ],
         free: [
-          { required: true, message: "请选择课时是否免费", trigger: "change" }
+          { required: true, message: '请选择课时是否免费', trigger: 'change' }
         ],
         status: [
-          { required: true, message: "请选择课时发布", trigger: "change" }
-        ],
-        newwinFlag: [
-          { required: true, message: "请选择是否打开新窗口", trigger: "change" }
+          { required: true, message: '请选择课时发布', trigger: 'change' }
         ],
         cover: [
-          { required: true, message: "请上传课时封面", trigger: "change" }
+          { required: true, message: '请上传课时封面', trigger: 'change' }
         ]
       },
-      dataObj: { token: "", key: "" },
-      imageUrl: "" // 图片地址
-    };
+      dataObj: { token: '', key: '' },
+      imageUrl: '' // 图片地址
+    }
   },
   computed: {
-    ...mapGetters(["permissions"])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getList();
+    this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
-      this.tableLoading = true;
-      let params = {
+      this.tableLoading = true
+      const params = {
         chapterId: this.$route.query.chapterId
-      };
+      }
       fetchList(
         Object.assign(
           {
-            descs: "create_time",
+            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
+          params,
           this.searchForm
         )
       )
         .then(res => {
-          this.tableData = res.data.data.records;
-          this.page.total = res.data.data.total;
-          this.tableLoading = false;
+          this.tableData = res.data.data.records
+          this.page.total = res.data.data.total
+          this.tableLoading = false
         })
         .catch(() => {
-          this.tableLoading = false;
-        });
+          this.tableLoading = false
+        })
     },
     /**
      * 创建方法
@@ -380,13 +379,34 @@ export default {
      * @returns
      */
     create(form) {
-      this.$refs[form].validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(1111);
+          this.getList()
+          if (this.form.id != null) {
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          } else {
+            this.form.chapterId = this.$route.query.chapterId
+            this.form.courseId = this.$route.query.courseId
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              })
+            })
+          }
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     /**
      * 重置
@@ -394,52 +414,52 @@ export default {
      * @returns
      */
     resetForm(formName) {
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
     },
     handleFilter() {
-      this.getList();
+      this.getList()
     },
     handleEmpty() {
-      this.searchForm = {};
-      this.getList();
+      this.searchForm = {}
+      this.getList()
     },
     handleView(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 1;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 1
     },
     handleUpdate(row) {
-      this.form = row;
-      this.dialogPvVisible = true;
-      this.operationStatus = 2;
+      this.form = row
+      this.dialogPvVisible = true
+      this.operationStatus = 2
     },
     handleDelete(row, index) {
-      var _this = this;
-      this.$confirm("是否确认删除ID为" + row.id, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      var _this = this
+      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(function() {
-          return delObj(row.id);
+          return delObj(row.id)
         })
         .then(data => {
-          _this.$message.success("删除成功");
-          this.getList();
-        });
+          _this.$message.success('删除成功')
+          this.getList()
+        })
     },
     handleClose(form) {
-      this.dialogPvVisible = false;
-      this.form = {};
-      this.$refs[form].resetFields();
+      this.dialogPvVisible = false
+      this.form = {}
+      this.$refs[form].resetFields()
     },
     handleCreate() {
-      this.dialogPvVisible = true;
+      this.dialogPvVisible = true
       this.form = {
         free: 0,
         status: 0,
         type: 1
-      };
+      }
     },
     /**
      * 文件上传方法
@@ -447,13 +467,13 @@ export default {
      * @returns {boolean|boolean}
      */
     beforeUpload(file) {
-      const isJPG = file.type === "image/jpeg";
-      const isLt2M = file.size / 1024 / 1024 < 2;
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
 
       if (!isLt2M) {
-        this.$message.error("上传头像图片大小不能超过 2MB!");
+        this.$message.error('上传头像图片大小不能超过 2MB!')
       }
-      return isJPG && isLt2M;
+      return isJPG && isLt2M
     },
     /**
      * 文件上传成功后方法
@@ -461,12 +481,12 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      console.log("res", res);
-      // this.$qiniuAddr + res.key
+      this.form.cover = res.fileKey
+      this.imageUrl = res.url
     },
     handleRemove() {}
   }
-};
+}
 </script>
 <style>
 .lesson-input {

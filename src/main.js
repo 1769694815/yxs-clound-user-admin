@@ -1,3 +1,10 @@
+/*
+ * @Author: Donkey
+ * @Date: 2020-02-13 12:00:41
+ * @LastEditTime: 2020-03-03 14:24:29
+ * @LastEditors: xwen
+ * @Description:
+ */
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -32,8 +39,8 @@ import '@/permission' // permission control
 // }
 
 // 全局注册Xtable组件
-import Xtable from '@/components/Xtable/index'
-Vue.component('Xtable', Xtable)
+import GL_Component from '@/assets/js/globalComponent'
+Vue.use(GL_Component)
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
