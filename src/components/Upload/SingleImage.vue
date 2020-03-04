@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 13:48:06
+ * @LastEditTime: 2020-03-04 14:17:23
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -74,6 +74,12 @@ export default {
       default: function() {
         return ''
       }
+    },
+    type: {
+      type: Number,
+      default: function() {
+        return 2
+      }
     }
   },
   data() {
@@ -112,7 +118,8 @@ export default {
   },
   methods: {
     handleRemove() {
-      // this.$emit('handleSuccess', '')
+      this.imageUrl = ''
+      this.$emit('input', this.imageUrl)
     },
     handleRefresh() {
       this.$nextTick(() => {
@@ -129,7 +136,7 @@ export default {
         const params = {
           fileName: file.name,
           fileSize: file.size,
-          type: 2
+          type: this.type
         }
         getToken(params)
           .then(response => {
