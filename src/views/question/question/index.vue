@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 16:15:30
+ * @LastEditTime: 2020-03-04 15:14:56
  * @Description: 题目表管理
  -->
 <template>
@@ -131,8 +131,8 @@
           </el-col>
           <!--题目分值-->
           <el-col :span="12">
-            <el-form-item label="题目分值" prop="year">
-              <el-input v-model="form.year" placeholder="请输入题目分值" clearable class="question-input" />
+            <el-form-item label="题目分值" prop="score">
+              <el-input v-model="form.score" placeholder="请输入题目分值" clearable class="question-input" />
             </el-form-item>
           </el-col>
           <!--所属课程-->
@@ -197,8 +197,43 @@
             >-</button>
             <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
           </el-row>
-          <!--  -->
-
+          <!-- 题目答案 -->
+          <el-col v-if="form.typeId != 7" :span="24">
+            <el-form-item label="题目答案" prop="answer">
+              <!-- 非选择题 -->
+              <el-input
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
+                v-model="form.answer"
+                :autosize="{ minRows: 2, maxRows: 6}"
+                type="textarea"
+                placeholder="请输入题目答案"
+                clearable
+                class="question-textarea"
+              />
+              <!-- 选择题 -->
+              <el-radio-group v-if="form.typeId === 1" v-model="form.answer">
+                <el-radio
+                  v-for="(item, index) in singleArray"
+                  :key="index"
+                  :label="letterArray[index]"
+                >{{ letterArray[index] }}</el-radio>
+              </el-radio-group>
+              <!-- 多选题 -->
+              <el-checkbox-group v-if="form.typeId === 2 || form.typeId === 3" v-model="checkArray">
+                <el-checkbox
+                  v-for="(item, index) in singleArray"
+                  :key="index"
+                  :value="index"
+                  :label="letterArray[index]"
+                >{{ letterArray[index] }}</el-checkbox>
+              </el-checkbox-group>
+              <!-- 判断题 -->
+              <el-radio-group v-if="form.typeId === 4" v-model="form.answer">
+                <el-radio :label="'true'">正确</el-radio>
+                <el-radio :label="'false'">错误</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
           <!--题目解析-->
           <el-col :span="24">
             <el-form-item label="题目解析" prop="analysis">
@@ -433,25 +468,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false
@@ -537,15 +570,7 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {
-        type: 1,
-        status: 0,
-        serialStatus: 1,
-        recommend: 0,
-        buyFlag: 0,
-        doubleSpeed: 0,
-        drag: 0
-      }
+      this.form = {}
     },
     /**
      * 文件上传方法

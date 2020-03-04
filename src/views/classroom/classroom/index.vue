@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 16:16:40
+ * @LastEditTime: 2020-03-04 14:11:45
  * @Description: 文件管理
  -->
 <template>
@@ -57,6 +57,7 @@
         <el-tag>{{ scope.row.role }}</el-tag>
       </template>
       <template slot="menu" slot-scope="scope">
+        <el-button type="text" icon="el-icon-view" size="mini" @click="handleCourse(scope.row)">课程管理</el-button>
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
@@ -343,20 +344,38 @@
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
+
+    <course-modal
+      :modal-show="modalShow"
+      :classroom-id="classroomId"
+      :left-data="courseList"
+      :right-data="courseRightList"
+      @hide-modal="hideModal"
+      @success="success"
+    />
   </div>
 </template>
 
 <script>
-import { fetchList, addObj, putObj, delObj } from '@/api/classroom/classroom'
+import {
+  fetchList,
+  addObj,
+  putObj,
+  delObj,
+  getCourseSimpleById
+} from '@/api/classroom/classroom'
+import { getCourseSimpleList } from '@/api/course/course'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 import { getTeacherList } from '@/api/user'
 import InputTree from '@/components/InputTree/index'
 import { getAllCategoryType } from '@/api/course/category'
+import CourseModal from './courseModal.vue'
 
 export default {
   components: {
-    InputTree
+    InputTree,
+    CourseModal
   },
   filters: {
     statusFilter(type, list) {
@@ -433,6 +452,10 @@ export default {
       },
       tableLoading: false,
       tearcherList: [],
+      modalShow: false,
+      courseList: [],
+      courseRightList: [],
+      classroomId: null,
       tableOption: [
         {
           label: '标题',
@@ -506,31 +529,24 @@ export default {
       }, // 新增 编辑 数据源
       rules: {
         // 表单校验
-        name: [
-          { required: true, message: '分类名称不能为空', trigger: 'blur' }
+        title: [
+          { required: true, message: '班级名称不能为空', trigger: 'blur' }
         ],
-        code: [
-          { required: true, message: '分类编码不能为空', trigger: 'blur' }
+        buyFlag: [
+          { required: true, message: '请选择是否开放购买', trigger: 'change' }
         ],
-        hotFlag: [
-          { required: true, message: '请选择是否最热', trigger: 'change' }
-        ],
-        topFlag: [
-          { required: true, message: '请选择是否置顶', trigger: 'change' }
-        ],
-        columnFlag: [
-          { required: true, message: '请选择是否推荐栏目', trigger: 'change' }
+        expiryMode: [
+          { required: true, message: '请选择学习有效方式', trigger: 'change' }
         ],
         recommendedFlag: [
-          { required: true, message: '请选择是否首页推荐', trigger: 'change' }
+          { required: true, message: '请选择是否推荐', trigger: 'change' }
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
-        groupType: [
-          { required: true, message: '请选择分类类型', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        smallPicture: [
+          { required: true, message: '请上传图标', trigger: 'change' }
+        ]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
@@ -701,7 +717,27 @@ export default {
       this.imageUrl = res.url
     },
     handleRemove() {},
-    getNodeData() {}
+    getNodeData() {},
+    hideModal() {
+      this.modalShow = false
+    },
+    /**
+     * 课程管理页面
+     */
+    handleCourse(row, index) {
+      this.modalShow = true
+      this.classroomId = row.id
+      getCourseSimpleList().then(res => {
+        this.courseList = res.data.data
+      })
+      getCourseSimpleById(row.id).then(res => {
+        this.courseRightList = res.data.data
+      })
+    },
+    success() {
+      this.modalShow = false
+      this.getList()
+    }
   }
 }
 </script>

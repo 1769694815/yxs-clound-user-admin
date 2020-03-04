@@ -181,30 +181,14 @@
             :span="12"
           >
             <el-form-item
-              prop="publishedTime"
-              label="发布时间:"
+              prop="inventedNum"
+              label="虚拟数:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.publishedTime"
+                v-model="form.inventedNum"
                 autocomplete="off"
-                placeholder="请输入发布时间"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="body"
-              label="内容正文:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.body"
-                autocomplete="off"
-                placeholder="请输入内容正文"
+                placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -217,11 +201,9 @@
               label="缩略图:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-image
                 v-model="form.thumb"
-                autocomplete="off"
-                placeholder="请输入缩略图"
-                :disabled="operationStatus === 1"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -233,27 +215,9 @@
               label="缩略图原图:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-image
                 v-model="form.originalThumb"
-                autocomplete="off"
-                placeholder="请输入缩略图原图"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="picture"
-              label="文章头图，文章编辑／添加时，自动取正文的第１张图:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.picture"
-                autocomplete="off"
-                placeholder="请输入文章头图，文章编辑／添加时，自动取正文的第１张图"
-                :disabled="operationStatus === 1"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -262,31 +226,11 @@
           >
             <el-form-item
               prop="status"
-              label="状态（0:未发布,1:已发布,9:删除）:"
+              label="状态:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.status"
-                autocomplete="off"
-                placeholder="请输入状态（0:未发布,1:已发布,9:删除）"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="hits"
-              label="点击量:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.hits"
-                autocomplete="off"
-                placeholder="请输入点击量"
-                :disabled="operationStatus === 1"
-              />
+              <el-radio v-model="form.status" label="1" :disabled="operationStatus === 1">发布</el-radio>
+              <el-radio v-model="form.status" label="0" :disabled="operationStatus === 1">未发布</el-radio>
             </el-form-item>
           </el-col>
           <el-col
@@ -294,15 +238,11 @@
           >
             <el-form-item
               prop="featured"
-              label="是否头条（0:是,1:否）:"
+              label="是否头条:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.featured"
-                autocomplete="off"
-                placeholder="请输入是否头条（0:是,1:否）"
-                :disabled="operationStatus === 1"
-              />
+              <el-radio v-model="form.featured" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.featured" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
           <el-col
@@ -310,15 +250,11 @@
           >
             <el-form-item
               prop="promoted"
-              label="是否推荐（0:是,1:否）:"
+              label="是否推荐:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.promoted"
-                autocomplete="off"
-                placeholder="请输入是否推荐（0:是,1:否）"
-                :disabled="operationStatus === 1"
-              />
+              <el-radio v-model="form.promoted" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.promoted" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
           <el-col
@@ -326,64 +262,15 @@
           >
             <el-form-item
               prop="sticky"
-              label="是否置顶（0:是,1:否）:"
+              label="是否置顶:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.sticky"
-                autocomplete="off"
-                placeholder="请输入是否置顶（0:是,1:否）"
-                :disabled="operationStatus === 1"
-              />
+              <el-radio v-model="form.sticky" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.sticky" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="postNum"
-              label="回复数:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.postNum"
-                autocomplete="off"
-                placeholder="请输入回复数"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="upsNum"
-              label="点赞数:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.upsNum"
-                autocomplete="off"
-                placeholder="请输入点赞数"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="inventedNum"
-              label="虚拟数:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.inventedNum"
-                autocomplete="off"
-                placeholder="请输入虚拟数"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
+          <el-col :span="24">
+            <tinymce ref="tinymce" v-model="form.body" :height="300" />
           </el-col>
 
         </el-form>
@@ -419,8 +306,13 @@
 <script>
 import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
+import Tinymce from '@/components/Tinymce/index'
 
 export default {
+  name: 'Article',
+  components: {
+    Tinymce
+  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -590,6 +482,14 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
+      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        console.log(this.$refs.tinymce)
+        if (this.$refs.tinymce.hasInit) {
+          this.$refs.tinymce.destroyTinymce()
+        }
+        this.$refs.tinymce.init()
+      })
     },
     /**
              * 点击查看
