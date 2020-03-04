@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 14:37:43
+ * @LastEditTime: 2020-03-04 15:28:57
  * @Description: 表格组件
  -->
 <template>
@@ -109,6 +109,7 @@
       <el-table-column
         label="操作"
         align="center"
+        :width="menuWidth"
       >
         <template slot-scope="scope">
           <slot
@@ -216,6 +217,12 @@ export default {
           current: 1,
           page: 10
         }
+      }
+    },
+    menuWidth: {
+      type: String,
+      default: function() {
+        return ''
       }
     }
   },
