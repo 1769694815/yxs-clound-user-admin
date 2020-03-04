@@ -436,10 +436,6 @@ export default {
   created() {
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
-    // 初始化富文本编辑器
-    this.$nextTick(() => {
-      this.$refs.tinymce.init()
-    })
   },
   methods: {
     /**
@@ -486,6 +482,14 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
+      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        console.log(this.$refs.tinymce)
+        if (this.$refs.tinymce.hasInit) {
+          this.$refs.tinymce.destroyTinymce()
+        }
+        this.$refs.tinymce.init()
+      })
     },
     /**
              * 点击查看
