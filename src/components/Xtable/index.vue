@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 17:09:18
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:01:14
+ * @LastEditTime: 2020-03-04 14:38:58
  * @Description: 表格组件
  -->
 <template>
@@ -221,7 +221,6 @@ export default {
         })
       }
     })
-    console.log('tableOption', this.tableOption)
   },
   methods: {
     checkChange(val) {
