@@ -1,56 +1,60 @@
 <!--
  * @Date: 2020-02-17 18:17:06
- * @LastEditors: xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-02-17 18:17:07
- * @Description: 图片上传
+ * @LastEditTime: 2020-03-04 13:48:06
+ * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
 <template class="uploadImg">
   <div class="upload-container">
+    <input :value="value" style="display: none;">
     <el-upload
-      v-show="!imageUrl"
+      v-show="!imageUrl && !action"
       ref="upload"
       :data="dataObj"
-      list-type="picture-card"
-      :limit="limit"
       :before-upload="beforeUpload"
       :on-success="handleSuccess"
       :action="upload_qiniu_url"
-      class="image-uplaoder"
+      :show-file-list="false"
+      class="avatar-uploader"
     >
-      <i class="el-icon-plus" />
+      <i class="el-icon-plus avatar-uploader-icon" />
+      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
+    </el-upload>
+    <el-upload
+      v-show="!imageUrl && action"
+      ref="upload"
+      :headers="headers"
+      :before-upload="beforeUpload"
+      :on-success="handleSuccess"
+      :action="action"
+      :show-file-list="false"
+      class="avatar-uploader"
+    >
+      <i class="el-icon-plus avatar-uploader-icon" />
+      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
     </el-upload>
     <div
-      v-show="imageUrl.length>0"
+      v-show="imageUrl"
       class="image-preview"
     >
       <div
-        v-show="imageUrl.length>1"
+        v-show="imageUrl"
         class="image-preview-wrapper"
       >
-        <img :src="imageUrl">
+        <img :src="imageUrl" class="avatar">
         <div class="image-preview-action">
           <i
             class="el-icon-delete"
             @click="handleRemove"
           />
         </div>
-      </div>
-    </div>
-    <el-dialog :visible.sync="dialogVisible">
-      <img
-        width="100%"
-        :src="dialogImageUrl"
-        alt=""
-      >
-    </el-dialog>
-  </div>
-</template>
+      </div></div></div></template>
 
 <script>
 import { getToken } from '@/api/qiniu'
-import { randomLenNum } from '@/utils/index'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     value: {
@@ -64,27 +68,51 @@ export default {
       default: function() {
         return 1
       }
+    },
+    action: {
+      type: String,
+      default: function() {
+        return ''
+      }
     }
   },
   data() {
     return {
       upload_qiniu_url: this.$upload_qiniu_url,
+      upload_qiniu_addr: '',
       dataObj: { token: '', key: '' },
       image_uri: [],
       fileList: [],
       dialogImageUrl: '',
       dialogVisible: false,
-      disabled: false
+      disabled: false,
+      imageUrl: '',
+      headers: {
+        Authorization: 'Bearer '
+      }
     }
   },
   computed: {
-    imageUrl() {
-      return this.value
+    ...mapGetters(['access_token'])
+  },
+  watch: {
+    value: {
+      handler: function(val) {
+        console.log(val)
+        this.imageUrl = val
+      },
+      immediate: true
+    },
+    action: {
+      handler: function(val) {
+        this.headers.Authorization = 'Bearer ' + this.access_token
+      },
+      immediate: true
     }
   },
   methods: {
     handleRemove() {
-      this.$emit('handleSuccess', '')
+      // this.$emit('handleSuccess', '')
     },
     handleRefresh() {
       this.$nextTick(() => {
@@ -95,16 +123,22 @@ export default {
       this.dialogImageUrl = file.url
       this.dialogVisible = true
     },
-    beforeUpload() {
+    beforeUpload(file) {
       const _self = this
       return new Promise((resolve, reject) => {
-        getToken()
+        const params = {
+          fileName: file.name,
+          fileSize: file.size,
+          type: 2
+        }
+        getToken(params)
           .then(response => {
-            const key = randomLenNum(32)
-            const token = response.data
+            const key = response.data.data.fileKey
+            const token = response.data.data.token
             // console.log('token', token)
+            _self._data.upload_qiniu_addr = response.data.data.domain + '/'
             _self._data.dataObj.token = token
-            _self._data.dataObj.key = 'upload2/' + key + '.jpg'
+            _self._data.dataObj.key = key
             resolve(true)
           })
           .catch(err => {
@@ -115,8 +149,8 @@ export default {
     },
     handleSuccess(res, file) {
       console.log('res', res)
-      const imgUrl = this.$qiniuAddr + res.key
-      this.$emit('handleSuccess', imgUrl)
+      this.imageUrl = this.action ? res.url : this.upload_qiniu_addr + res.key
+      this.$emit('input', this.imageUrl)
     }
   }
 }
@@ -124,8 +158,8 @@ export default {
 
 <style lang="scss" scoped>
 .upload-container {
-  width: 100%;
-  height: 100%;
+  width: 178px;
+  height: 178px;
   position: relative;
   .image-uploader {
     height: 100%;
@@ -176,5 +210,8 @@ export default {
 .uploadImg {
   width: 150px;
   height: 150px;
+}
+.course-upload__tip {
+  margin-left: 0;
 }
 </style>

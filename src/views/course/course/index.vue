@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 18:01:08
+ * @LastEditTime: 2020-03-04 13:47:00
  * @Description: 课程管理
  -->
 <template>
@@ -301,18 +301,10 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item label="图片上传:" prop="smallPicture">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
+              <single-image
+                v-model="form.smallPicture"
                 action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -695,7 +687,7 @@ export default {
      */
     handleSuccess(res, file) {
       this.form.smallPicture = res.fileKey
-      this.imageUrl = res.url
+      // this.imageUrl = res.url
     },
     handleRemove() {},
     getNodeData() {}
