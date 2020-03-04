@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:01:14
+ * @LastEditTime: 2020-03-04 14:37:43
  * @Description: 表格组件
  -->
 <template>
@@ -93,6 +93,15 @@
             >
               <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
             </span>
+            <span
+              v-else-if="item.img"
+            >
+              <img
+                class="img"
+                :src="scope.row[scope.column.property]"
+                @click="imgView(scope.row[scope.column.property])"
+              >
+            </span>
             <span v-else>{{ scope.row[scope.column.property] }}</span>
           </template>
         </el-table-column>
@@ -132,6 +141,12 @@
           :label="item.prop"
         >{{ item.label }}</el-checkbox>
       </el-checkbox-group>
+    </el-dialog>
+    <el-dialog
+      :visible.sync="imgVisible"
+      title="图片"
+    >
+      <img class="maxImg" :src="imgUrl" alt="">
     </el-dialog>
   </div>
 </template>
@@ -207,7 +222,9 @@ export default {
   data() {
     return {
       hideVisible: false,
-      checkList: []
+      checkList: [],
+      imgVisible: false,
+      imgUrl: ''
     }
   },
   created() {
@@ -240,7 +257,24 @@ export default {
     },
     pageChange() {
       this.$emit('page-change')
+    },
+    imgView(url) {
+      this.imgUrl = url
+      this.imgVisible = true
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.img {
+  width: 100px;
+  height: auto;
+  max-height: 100px;
+  cursor: pointer;
+}
+.maxImg {
+  width: 100%;
+  height: auto;
+}
+</style>

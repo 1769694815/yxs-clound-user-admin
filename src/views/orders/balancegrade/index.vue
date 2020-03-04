@@ -233,7 +233,8 @@ export default {
           prop: 'iosId'
         }, {
           label: '商品图片',
-          prop: 'goodsImg'
+          prop: 'goodsImg',
+          img: true
         }],
       tableData: [],
       page: {
