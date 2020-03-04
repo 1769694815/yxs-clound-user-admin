@@ -150,17 +150,10 @@
               label="导航图片:"
               :label-width="formLabelWidth"
             >
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
-                action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :disabled="operationStatus === 1"
-              >
-                <img :src="form.pic" class="avatar">
-                <div slot="tip" class="category-upload__tip">图片大小不能超过5MB</div>
-              </el-upload>
+              <single-image
+                v-model="form.pic"
+                :type="2"
+              />
             </el-form-item>
           </el-col>
           <el-col
@@ -339,7 +332,43 @@ export default {
         current: 1,
         size: 10
       },
-      formRules: {},
+      formRules: {
+        name: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        url: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        pic: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        sequence: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        code: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        openFlag: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }],
+        newWinFlag: [{
+          required: true,
+          message: '请输入导航名称',
+          trigger: 'blur'
+        }]
+      },
       searchForm: {},
       dialogPvVisible: false,
       dialogDictItem: false,

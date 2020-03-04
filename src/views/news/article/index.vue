@@ -187,7 +187,6 @@
             >
               <el-input
                 v-model="form.inventedNum"
-                type="number"
                 autocomplete="off"
                 placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
@@ -204,7 +203,7 @@
             >
               <single-image
                 v-model="form.thumb"
-                type="3"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -218,7 +217,7 @@
             >
               <single-image
                 v-model="form.originalThumb"
-                type="3"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -310,6 +309,7 @@ import { mapGetters } from 'vuex'
 import Tinymce from '@/components/Tinymce/index'
 
 export default {
+  name: 'Article',
   components: {
     Tinymce
   },
@@ -436,6 +436,10 @@ export default {
   created() {
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
+    // 初始化富文本编辑器
+    this.$nextTick(() => {
+      this.$refs.tinymce.init()
+    })
   },
   methods: {
     /**
