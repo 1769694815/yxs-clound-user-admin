@@ -152,7 +152,7 @@
             >
               <single-image
                 v-model="form.pic"
-                :type="2"
+                status="2"
               />
             </el-form-item>
           </el-col>
@@ -206,11 +206,11 @@
           >
             <el-form-item
               prop="newWinFlag"
-              label="新窗口打开:"
+              label="打开方式:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">否</el-radio>
+              <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">新窗口</el-radio>
+              <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">当前窗口</el-radio>
             </el-form-item>
           </el-col>
         </el-form>
@@ -302,7 +302,8 @@ export default {
           prop: 'url'
         }, {
           label: '图片地址',
-          prop: 'pic'
+          prop: 'pic',
+          img: true
         }, {
           label: '显示顺序',
           prop: 'sequence'
@@ -340,32 +341,40 @@ export default {
         }],
         url: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请输入链接地址',
           trigger: 'blur'
+        }, {
+          message: '请输入正确的url',
+          trigger: 'blur',
+          type: 'url'
         }],
         pic: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请上传导航图片',
           trigger: 'blur'
         }],
         sequence: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请输入显示顺序',
           trigger: 'blur'
+        }, {
+          message: '请输入数字',
+          trigger: 'blur',
+          type: 'number'
         }],
         code: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请选择导航类型',
           trigger: 'blur'
         }],
         openFlag: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请选择是否启用',
           trigger: 'blur'
         }],
         newWinFlag: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请选择打开方式',
           trigger: 'blur'
         }]
       },
@@ -524,42 +533,3 @@ export default {
   }
 }
 </script>
-<style>
-.classroom-input {
-  width: 250px;
-}
-
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>
