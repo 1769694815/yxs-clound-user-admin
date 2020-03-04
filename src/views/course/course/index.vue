@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 16:17:07
+ * @LastEditTime: 2020-03-04 13:47:00
  * @Description: 课程管理
  -->
 <template>
@@ -114,6 +114,7 @@
             </el-form-item>
           </el-col>
           <!--课程分类-->
+          <!-- TODO: 注释树形组件多选 multiline -->
           <el-col :span="12">
             <el-form-item label="课程分类" prop="categoryIds">
               <Input-tree
@@ -300,18 +301,10 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item label="图片上传:" prop="smallPicture">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
+              <single-image
+                v-model="form.smallPicture"
                 action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -588,23 +581,27 @@ export default {
           this.getList()
           console.log('form', this.form)
           if (this.form.id != null) {
-            putObj(this.form).then(() => {
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
               })
-            })
+              .catch(() => {})
           } else {
-            addObj(this.form).then(() => {
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
               })
-            })
+              .catch(() => {})
           }
         } else {
           return false
@@ -666,15 +663,8 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {
-        type: 1,
-        status: 0,
-        serialStatus: 1,
-        recommend: 0,
-        buyFlag: 0,
-        doubleSpeed: 0,
-        drag: 0
-      }
+      this.operationStatus = 0
+      this.form = {}
     },
     /**
      * 文件上传方法
@@ -697,7 +687,7 @@ export default {
      */
     handleSuccess(res, file) {
       this.form.smallPicture = res.fileKey
-      this.imageUrl = res.url
+      // this.imageUrl = res.url
     },
     handleRemove() {},
     getNodeData() {}

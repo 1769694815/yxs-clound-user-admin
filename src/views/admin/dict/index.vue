@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:27:24
+ * @LastEditTime: 2020-03-03 14:43:59
  * @Description: 字典管理
  -->
 <template>
@@ -516,6 +516,9 @@ export default {
     this.getList()
   },
   methods: {
+    /**
+     * 获取列表数据
+     */
     getList() {
       this.tableLoading = true
       fetchList(
@@ -537,24 +540,38 @@ export default {
           this.tableLoading = false
         })
     },
-
+    /**
+     * 搜索
+     */
     handleFilter() {
       this.getList()
     },
+    /**
+     * 清空搜索表单
+     */
     handleEmpty() {
       this.searchForm = {}
       this.getList()
     },
+    /**
+     * 点击新增
+     */
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
     },
+    /**
+     * 点击编辑
+     */
     handleUpdate(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
     },
+    /**
+     * 新增保存
+     */
     create() {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
@@ -576,6 +593,9 @@ export default {
         }
       })
     },
+    /**
+     * 编辑保存
+     */
     update() {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
@@ -597,6 +617,9 @@ export default {
         }
       })
     },
+    /**
+     * 点击删除
+     */
     handleDelete(row, index) {
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {

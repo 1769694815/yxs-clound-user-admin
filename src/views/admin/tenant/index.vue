@@ -349,7 +349,7 @@ export default {
     this.getList()
     // 初始化富文本编辑器
     this.$nextTick(() => {
-      this.$$refs.Tinymce.init()
+      this.$refs.Tinymce.init()
     })
   },
   methods: {

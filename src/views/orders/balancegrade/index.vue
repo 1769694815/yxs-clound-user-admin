@@ -9,28 +9,15 @@
     >
 
       <el-form-item
-        label="类型:"
+        label="价格:"
         label-width="80px"
       >
-        <single-change
-          v-model="searchForm.code"
-          :operation-status="operationStatus"
-          status-type="navigation_type"
-          type="select"
+        <el-input
+          v-model="searchForm.price"
+          type="number"
+          size="small"
+          placeholder="请输入价格"
         />
-      </el-form-item>
-      <el-form-item
-        label="是否启用:"
-        label-width="80px"
-      >
-        <el-select v-model="searchForm.openFlag" clearable placeholder="请选择是否启用">
-          <el-option
-            v-for="item in DIC.openFlag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -114,14 +101,48 @@
             :span="12"
           >
             <el-form-item
-              prop="name"
-              label="导航名称:"
+              prop="yb"
+              label="益币:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.name"
+                v-model="form.yb"
                 autocomplete="off"
-                placeholder="请输入导航名称"
+                placeholder="请输入益币"
+                :disabled="operationStatus === 1"
+                type="number"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="price"
+              label="价格（元）:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.price"
+                autocomplete="off"
+                placeholder="请输入价格（元）"
+                :disabled="operationStatus === 1"
+                type="number"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="iosId"
+              label="ios商品id:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.iosId"
+                autocomplete="off"
+                placeholder="请输入ios商品id"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -130,87 +151,14 @@
             :span="12"
           >
             <el-form-item
-              prop="url"
-              label="链接地址:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.url"
-                autocomplete="off"
-                placeholder="请输入链接地址"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="pic"
-              label="导航图片:"
+              prop="goodsImg"
+              label="商品图片:"
               :label-width="formLabelWidth"
             >
               <single-image
-                v-model="form.pic"
-                :type="2"
+                v-model="form.goodsImg"
+                type="4"
               />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="sequence"
-              label="显示顺序:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.sequence"
-                autocomplete="off"
-                placeholder="请输入显示顺序"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="code"
-              label="类型:"
-              :label-width="formLabelWidth"
-            >
-              <single-change
-                v-model="form.code"
-                :operation-status="operationStatus"
-                status-type="navigation_type"
-                type="select"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="openFlag"
-              label="是否启用:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.openFlag" label="1" :disabled="operationStatus === 1">启用</el-radio>
-              <el-radio v-model="form.openFlag" label="0" :disabled="operationStatus === 1">禁用</el-radio>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="newWinFlag"
-              label="新窗口打开:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
         </el-form>
@@ -244,7 +192,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/navigation'
+import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/balancegrade'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -269,62 +217,24 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      openFlag: [
-        {
-          label: '启用',
-          value: '1'
-        }, {
-          label: '禁用',
-          value: '0'
-        }
-      ],
-      newWinFlag: [
-        {
-          label: '是',
-          value: '1'
-        }, {
-          label: '否',
-          value: '0'
-        }
-      ]
-    }
     return {
       headers: {},
       tableKey: 0,
       tableLoading: false,
       tableOption: [
         {
-          label: '导航名称',
-          prop: 'name'
+          label: '益币',
+          prop: 'yb'
         }, {
-          label: '链接地址',
-          prop: 'url'
+          label: '价格（元）',
+          prop: 'price'
         }, {
-          label: '图片地址',
-          prop: 'pic'
+          label: 'IOS商品ID',
+          prop: 'iosId'
         }, {
-          label: '显示顺序',
-          prop: 'sequence'
-        }, {
-          label: '类型',
-          prop: 'code',
-          dicUrl: 'navigation_type',
-          dicData: []
-        }, {
-          label: '是否启用',
-          prop: 'openFlag',
-          dicData: DIC.openFlag
-        }, {
-          label: '新窗口打开',
-          prop: 'newWinFlag',
-          dicData: DIC.newWinFlag
-        }, {
-          label: '创建时间',
-          prop: 'createTime'
-        }, {
-          label: '修改时间',
-          prop: 'updateTime'
+          label: '商品图片',
+          prop: 'goodsImg',
+          img: true
         }],
       tableData: [],
       page: {
@@ -333,39 +243,24 @@ export default {
         size: 10
       },
       formRules: {
-        name: [{
+        yb: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请输入益币',
           trigger: 'blur'
         }],
-        url: [{
+        price: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请输入价格',
           trigger: 'blur'
         }],
-        pic: [{
+        iosId: [{
           required: true,
-          message: '请输入导航名称',
+          message: '请输入IOS 商品ID',
           trigger: 'blur'
         }],
-        sequence: [{
+        goodsImg: [{
           required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        code: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        openFlag: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        newWinFlag: [{
-          required: true,
-          message: '请输入导航名称',
+          message: '请上传商品图片',
           trigger: 'blur'
         }]
       },
@@ -373,11 +268,9 @@ export default {
       dialogPvVisible: false,
       dialogDictItem: false,
       operationStatus: 0,
-      form: {
-        pic: ''
-      },
+      form: {},
       formLabelWidth: '90px',
-      DIC: DIC
+      imageUrl: ''
     }
   },
   computed: {
@@ -517,25 +410,28 @@ export default {
           this.getList()
         })
     },
+    /**
+     * 文件上传方法
+     * @param file
+     * @returns {boolean|boolean}
+     */
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isLt2M) {
+        this.$message.error('上传商品图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
     handleSuccess(res, file) {
-      this.form.pic = res.url
+      this.form.goodsImg = res.url
     }
 
   }
 }
 </script>
 <style>
-.classroom-input {
-  width: 250px;
-}
-
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

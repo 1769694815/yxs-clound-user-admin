@@ -9,28 +9,15 @@
     >
 
       <el-form-item
-        label="类型:"
+        label="标题:"
         label-width="80px"
       >
-        <single-change
-          v-model="searchForm.code"
-          :operation-status="operationStatus"
-          status-type="navigation_type"
-          type="select"
+        <el-input
+          v-model="searchForm.title"
+          type="text"
+          size="small"
+          placeholder="请输入文章标题"
         />
-      </el-form-item>
-      <el-form-item
-        label="是否启用:"
-        label-width="80px"
-      >
-        <el-select v-model="searchForm.openFlag" clearable placeholder="请选择是否启用">
-          <el-option
-            v-for="item in DIC.openFlag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -114,14 +101,14 @@
             :span="12"
           >
             <el-form-item
-              prop="name"
-              label="导航名称:"
+              prop="title"
+              label="文章标题:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.name"
+                v-model="form.title"
                 autocomplete="off"
-                placeholder="请输入导航名称"
+                placeholder="请输入文章标题"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -130,14 +117,14 @@
             :span="12"
           >
             <el-form-item
-              prop="url"
-              label="链接地址:"
+              prop="brIfe"
+              label="简叙:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.url"
+                v-model="form.brIfe"
                 autocomplete="off"
-                placeholder="请输入链接地址"
+                placeholder="请输入简叙"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -146,13 +133,77 @@
             :span="12"
           >
             <el-form-item
-              prop="pic"
-              label="导航图片:"
+              prop="categoryId"
+              label="栏目ID:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.categoryId"
+                autocomplete="off"
+                placeholder="请输入栏目ID"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="source"
+              label="来源:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.source"
+                autocomplete="off"
+                placeholder="请输入来源"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="sourceUrl"
+              label="来源URL:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.sourceUrl"
+                autocomplete="off"
+                placeholder="请输入来源URL"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="inventedNum"
+              label="虚拟数:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.inventedNum"
+                autocomplete="off"
+                placeholder="请输入虚拟数"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="thumb"
+              label="缩略图:"
               :label-width="formLabelWidth"
             >
               <single-image
-                v-model="form.pic"
-                :type="2"
+                v-model="form.thumb"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -160,15 +211,13 @@
             :span="12"
           >
             <el-form-item
-              prop="sequence"
-              label="显示顺序:"
+              prop="originalThumb"
+              label="缩略图原图:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.sequence"
-                autocomplete="off"
-                placeholder="请输入显示顺序"
-                :disabled="operationStatus === 1"
+              <single-image
+                v-model="form.originalThumb"
+                :type="3"
               />
             </el-form-item>
           </el-col>
@@ -176,43 +225,54 @@
             :span="12"
           >
             <el-form-item
-              prop="code"
-              label="类型:"
+              prop="status"
+              label="状态:"
               :label-width="formLabelWidth"
             >
-              <single-change
-                v-model="form.code"
-                :operation-status="operationStatus"
-                status-type="navigation_type"
-                type="select"
-                :disabled="operationStatus === 1"
-              />
+              <el-radio v-model="form.status" label="1" :disabled="operationStatus === 1">发布</el-radio>
+              <el-radio v-model="form.status" label="0" :disabled="operationStatus === 1">未发布</el-radio>
             </el-form-item>
           </el-col>
           <el-col
             :span="12"
           >
             <el-form-item
-              prop="openFlag"
-              label="是否启用:"
+              prop="featured"
+              label="是否头条:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.openFlag" label="1" :disabled="operationStatus === 1">启用</el-radio>
-              <el-radio v-model="form.openFlag" label="0" :disabled="operationStatus === 1">禁用</el-radio>
+              <el-radio v-model="form.featured" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.featured" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
           <el-col
             :span="12"
           >
             <el-form-item
-              prop="newWinFlag"
-              label="新窗口打开:"
+              prop="promoted"
+              label="是否推荐:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">否</el-radio>
+              <el-radio v-model="form.promoted" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.promoted" label="0" :disabled="operationStatus === 1">否</el-radio>
             </el-form-item>
           </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
+              prop="sticky"
+              label="是否置顶:"
+              :label-width="formLabelWidth"
+            >
+              <el-radio v-model="form.sticky" label="1" :disabled="operationStatus === 1">是</el-radio>
+              <el-radio v-model="form.sticky" label="0" :disabled="operationStatus === 1">否</el-radio>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <tinymce ref="tinymce" v-model="form.body" :height="300" />
+          </el-col>
+
         </el-form>
       </el-row>
       <div
@@ -244,10 +304,15 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/navigation'
+import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
+import Tinymce from '@/components/Tinymce/index'
 
 export default {
+  name: 'Article',
+  components: {
+    Tinymce
+  },
   filters: {
     statusFilter(type, list) {
       let result
@@ -270,16 +335,19 @@ export default {
   },
   data() {
     const DIC = {
-      openFlag: [
+      status: [
         {
-          label: '启用',
+          label: '已发布',
           value: '1'
         }, {
-          label: '禁用',
+          label: '未发布',
           value: '0'
+        }, {
+          label: '已删除',
+          value: '9'
         }
       ],
-      newWinFlag: [
+      flag: [
         {
           label: '是',
           value: '1'
@@ -295,36 +363,57 @@ export default {
       tableLoading: false,
       tableOption: [
         {
-          label: '导航名称',
-          prop: 'name'
+          label: '文章标题',
+          prop: 'title'
         }, {
-          label: '链接地址',
-          prop: 'url'
+          label: '简叙',
+          prop: 'brIfe'
         }, {
-          label: '图片地址',
-          prop: 'pic'
+          label: '栏目ID',
+          prop: 'categoryId'
         }, {
-          label: '显示顺序',
-          prop: 'sequence'
+          label: '来源',
+          prop: 'source'
         }, {
-          label: '类型',
-          prop: 'code',
-          dicUrl: 'navigation_type',
-          dicData: []
+          label: '来源URL',
+          prop: 'sourceUrl'
         }, {
-          label: '是否启用',
-          prop: 'openFlag',
-          dicData: DIC.openFlag
+          label: '发布时间',
+          prop: 'publishedTime'
         }, {
-          label: '新窗口打开',
-          prop: 'newWinFlag',
-          dicData: DIC.newWinFlag
+          label: '缩略图',
+          prop: 'thumb'
         }, {
-          label: '创建时间',
-          prop: 'createTime'
+          label: '文章头图',
+          prop: 'picture'
         }, {
-          label: '修改时间',
-          prop: 'updateTime'
+          label: '状态',
+          prop: 'status',
+          dicData: DIC.status
+        }, {
+          label: '点击量',
+          prop: 'hits'
+        }, {
+          label: '是否头条',
+          prop: 'featured',
+          dicData: DIC.flag
+        }, {
+          label: '是否推荐',
+          prop: 'promoted',
+          dicData: DIC.flag
+        }, {
+          label: '是否置顶',
+          prop: 'sticky',
+          dicData: DIC.flag
+        }, {
+          label: '回复数',
+          prop: 'postNum'
+        }, {
+          label: '点赞数',
+          prop: 'upsNum'
+        }, {
+          label: '虚拟数',
+          prop: 'inventedNum'
         }],
       tableData: [],
       page: {
@@ -332,52 +421,13 @@ export default {
         current: 1,
         size: 10
       },
-      formRules: {
-        name: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        url: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        pic: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        sequence: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        code: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        openFlag: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }],
-        newWinFlag: [{
-          required: true,
-          message: '请输入导航名称',
-          trigger: 'blur'
-        }]
-      },
+      formRules: {},
       searchForm: {},
       dialogPvVisible: false,
       dialogDictItem: false,
       operationStatus: 0,
-      form: {
-        pic: ''
-      },
-      formLabelWidth: '90px',
-      DIC: DIC
+      form: {},
+      formLabelWidth: '90px'
     }
   },
   computed: {
@@ -432,6 +482,14 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
+      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        console.log(this.$refs.tinymce)
+        if (this.$refs.tinymce.hasInit) {
+          this.$refs.tinymce.destroyTinymce()
+        }
+        this.$refs.tinymce.init()
+      })
     },
     /**
              * 点击查看
@@ -516,50 +574,8 @@ export default {
           _this.$message.success('删除成功')
           this.getList()
         })
-    },
-    handleSuccess(res, file) {
-      this.form.pic = res.url
     }
 
   }
 }
 </script>
-<style>
-.classroom-input {
-  width: 250px;
-}
-
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
-</style>

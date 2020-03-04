@@ -2,7 +2,7 @@
 const path = require('path')
 const defaultSettings = require('./src/settings.js')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
@@ -41,7 +41,7 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: 'http://yxs-cloud.utools.club',
-        target: 'http://125.65.83.218:9999',
+        target: 'http://pigx-gateway:9999',
         // target: `http://127.0.0.1:${port}/mock`,
         ws: false, // 需要websocket 开启
         changeOrigin: true,
@@ -62,7 +62,7 @@ module.exports = {
       }
     }
   },
-  chainWebpack (config) {
+  chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test
     config.plugins.delete('prefetch') // TODO: need test
 
