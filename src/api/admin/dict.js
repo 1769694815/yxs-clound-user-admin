@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-14 13:33:11
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:24:06
+ * @LastEditTime: 2020-03-05 11:09:23
  * @Description: 字典api
  */
 import request from '@/utils/request'
@@ -92,5 +92,13 @@ export function remote(type) {
   return request({
     url: '/admin/dict/type/' + type,
     method: 'get'
+  })
+}
+
+export function http(url, query) {
+  return request({
+    url,
+    method: 'get',
+    params: query
   })
 }
