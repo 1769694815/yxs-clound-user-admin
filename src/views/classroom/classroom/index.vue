@@ -52,8 +52,7 @@
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
-      menu-width="160px"
-      style="width: 100%"
+      menu-width="160"
     >
       <template slot="role" slot-scope="scope">
         <el-tag>{{ scope.row.role }}</el-tag>

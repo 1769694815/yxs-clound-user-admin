@@ -425,7 +425,7 @@ export default {
         {
           label: '课程分类',
           prop: 'categoryName',
-          width: '160'
+          width: '100'
         },
         {
           label: '课程状态',
@@ -436,7 +436,7 @@ export default {
         {
           label: '连载状态',
           prop: 'serialStatus',
-          width: '100',
+          width: '120',
           dicData: DIC.serialStatusList
         },
         {

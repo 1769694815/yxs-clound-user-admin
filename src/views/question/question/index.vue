@@ -386,7 +386,7 @@ export default {
           label: '难度',
           prop: 'difficulty',
           dicData: DIC.difficultyList,
-          width: 60
+          width: 80
         },
         {
           label: '课程',
