@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 10:35:02
+ * @LastEditTime: 2020-03-05 11:10:19
  * @Description: 表格组件
  -->
 <template>
@@ -87,13 +87,13 @@
             />
             <!-- 有默认数据 -->
             <span v-else-if="item.dicData">
-              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
+              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
             </span>
-            <!-- 根据接口返回数据 -->
+            <!-- 根据接口返回数据 dicProp参数 -->
             <span
               v-else-if="item.dicUrl"
             >
-              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
+              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
             <span
@@ -110,7 +110,11 @@
                 lazy
                 class="img"
                 @click="imgView(scope.row[scope.column.property])"
-              />
+              >
+                <div slot="error" class="image-slot">
+                  <i class="el-icon-picture-outline" />
+                </div>
+              </el-image>
             </span>
             <span v-else>{{ scope.row[scope.column.property] }}</span>
           </template>
@@ -168,7 +172,7 @@
 
 <script>
 import Pagination from '@/components/Pagination/index'
-import { remote } from '@/api/admin/dict'
+import { remote, http } from '@/api/admin/dict'
 export default {
   name: 'XTable',
   components: {
@@ -254,9 +258,16 @@ export default {
         this.checkList.push(ele.prop)
       }
       if (ele.dicUrl && !ele.slot) {
-        remote(ele.dicUrl).then(res => {
-          ele.dicData = res.data.data
-        })
+        const isUrl = ele.dicUrl.indexOf('/') > -1
+        if (isUrl) {
+          http(ele.dicUrl).then(res => {
+            ele.dicData = res.data.data
+          })
+        } else {
+          remote(ele.dicUrl).then(res => {
+            ele.dicData = res.data.data
+          })
+        }
       }
     })
   },
