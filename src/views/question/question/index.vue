@@ -177,11 +177,10 @@
             </el-form-item>
           </el-col>
           <!--题目选项-->
-          <el-row
+          <el-col
             v-for="(item, index) in singleArray"
             v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3"
-            :key="index"
-          >
+            :key="index">
             <el-col :span="20">
               <el-form-item :label="'选项'+ letterArray[index]">
                 <el-input
@@ -201,7 +200,7 @@
               @click="optionDel(letterArray[index])"
             >-</button>
             <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
-          </el-row>
+          </el-col>
           <!-- 题目答案 -->
           <el-col v-if="form.typeId != 7" :span="24">
             <el-form-item label="题目答案" prop="answer">
@@ -423,20 +422,7 @@ export default {
       formLabelWidth: '90px',
       rules: {
         // 表单校验
-        title: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
-        ],
-        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
-        openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
-        ],
-        newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
-      },
-      dataObj: { token: '', key: '' },
-      imageUrl: '' // 图片地址
+      }
     }
   },
   computed: {

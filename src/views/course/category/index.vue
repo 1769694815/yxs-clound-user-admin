@@ -284,11 +284,11 @@ export default {
       classificationTypeList: [
         {
           value: 1,
-          label: '班级'
+          label: '课程'
         },
         {
           value: 2,
-          label: '课程'
+          label: '班级'
         }
       ]
     }
