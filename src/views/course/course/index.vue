@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-04 13:47:00
+ * @LastEditTime: 2020-03-04 16:56:10
  * @Description: 课程管理
  -->
 <template>
@@ -300,11 +300,8 @@
 
           <!--图片上传-->
           <el-col :span="24">
-            <el-form-item label="图片上传:" prop="smallPicture">
-              <single-image
-                v-model="form.smallPicture"
-                action="/admin/sys-file/uploadAfter/2"
-              />
+            <el-form-item prop="smallPicture" label="图片上传:" :label-width="formLabelWidth">
+              <single-image v-model="form.smallPicture" :type="5" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -509,6 +506,7 @@ export default {
       operationStatus: 0,
       labelWidth: '90px',
       form: {}, // 新增 编辑 数据源
+      formLabelWidth: '90px',
       rules: {
         // 表单校验
         title: [
