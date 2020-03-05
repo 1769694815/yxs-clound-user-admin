@@ -142,12 +142,13 @@
           </el-col>
           <!--所属课程-->
           <el-col :span="12">
-            <el-form-item label="所属课程" prop="courseId" @change="getLessonList">
+            <el-form-item label="所属课程" prop="courseId">
               <el-select
                 v-model="form.courseId"
                 clearable
                 class="question-input"
                 placeholder="请选择所属课程"
+                @change="getLessonList"
               >
                 <el-option
                   v-for="item in courseList"
