@@ -52,6 +52,8 @@
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
+      menu-width="160px"
+      style="width: 100%"
     >
       <template slot="role" slot-scope="scope">
         <el-tag>{{ scope.row.role }}</el-tag>
@@ -72,8 +74,7 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
-      :title="operationStatus | dialogTitle"
-    >
+      :title="operationStatus | dialogTitle">
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
           <!--班级标题-->
@@ -447,31 +448,38 @@ export default {
       classroomId: null,
       tableOption: [
         {
+          width: 100,
           label: '标题',
           prop: 'title'
         },
         {
+          width: 60,
           label: '状态',
           prop: 'status'
         },
         {
+          width: 80,
           label: '授课方式',
           prop: 'teachingMethod',
           dicData: DIC.teachingMethodList
         },
         {
+          width: 60,
           label: '价格',
           prop: 'price'
         },
         {
+          width: 80,
           label: '填写人数',
           prop: 'learnNum'
         },
         {
+          width: 80,
           label: '课程数',
           prop: 'courseNum'
         },
         {
+          width: 80,
           label: '课时数',
           prop: 'lessonNum'
         },
@@ -500,6 +508,7 @@ export default {
           dicData: DIC.typeList
         },
         {
+          width: 160,
           label: '创建时间',
           prop: 'createTime'
         }
