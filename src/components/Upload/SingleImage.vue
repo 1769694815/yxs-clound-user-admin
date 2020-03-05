@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 10:09:02
+ * @LastEditTime: 2020-03-05 14:53:09
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -185,6 +185,7 @@ export default {
   width: 178px;
   height: 178px;
   position: relative;
+
   .image-uploader {
     height: 100%;
   }
@@ -234,9 +235,6 @@ export default {
 .uploadImg {
   width: 150px;
   height: 150px;
-}
-.course-upload__tip {
-  margin-left: 0;
 }
 .not-allowed {
   cursor: not-allowed !important;

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 17:00:39
+ * @LastEditTime: 2020-03-05 15:01:04
  * @Description: 题目表管理
  -->
 <template>
@@ -180,7 +180,8 @@
           <el-col
             v-for="(item, index) in singleArray"
             v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3"
-            :key="index">
+            :key="index"
+          >
             <el-col :span="20">
               <el-form-item :label="'选项'+ letterArray[index]">
                 <el-input
@@ -607,45 +608,11 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .question-textarea {
   width: 90%;
 }
 .question-input {
   width: 250px;
-}
-
-.course-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>
