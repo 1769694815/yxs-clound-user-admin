@@ -368,7 +368,11 @@ export default {
           hide: true
         }, {
           label: '栏目ID',
-          prop: 'categoryId'
+          prop: 'categoryId',
+          dicUrl: '/news/articlecategory/getCategoryType',
+          dicData: [],
+          dicProp: { label: 'name', value: 'id' }
+
         }, {
           label: '来源',
           prop: 'source',
