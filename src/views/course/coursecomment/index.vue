@@ -236,7 +236,8 @@ export default {
         {
           type: 'input',
           label: '创建时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: 160
         },
         {
           label: '是否置顶',

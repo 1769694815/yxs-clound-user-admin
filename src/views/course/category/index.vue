@@ -361,6 +361,7 @@ export default {
         {
           label: '分类类型',
           prop: 'groupType',
+          width: '120',
           dicData: DIC.classificationTypeList
         },
         {
@@ -370,7 +371,8 @@ export default {
         },
         {
           label: '字体颜色',
-          prop: 'fontColor'
+          prop: 'fontColor',
+          width: '100'
         }
       ],
       tableData: [],
