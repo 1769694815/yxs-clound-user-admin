@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 13:50:28
+ * @LastEditTime: 2020-03-05 15:53:59
  * @Description: 表格组件
  -->
 <template>
@@ -106,7 +106,7 @@
                 @click="imgView(scope.row[scope.column.property])"
               >
                 <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
+                  <span class="el-image__error">加载失败</span>
                 </div>
               </el-image>
             </span>
@@ -304,6 +304,10 @@ export default {
   height: auto;
   max-height: 100px;
   cursor: pointer;
+  .image-slot {
+    width: 100%;
+    height: 100%;
+  }
 }
 .maxImg {
   width: 100%;

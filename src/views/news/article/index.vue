@@ -10,7 +10,7 @@
 
       <el-form-item
         label="标题:"
-        label-width="80px"
+        label-width="60px"
       >
         <el-input
           v-model="searchForm.title"
@@ -21,7 +21,7 @@
       </el-form-item>
       <el-form-item
         label="状态:"
-        :label-width="formLabelWidth"
+        label-width="60px"
       >
         <el-select v-model="searchForm.status" clearable placeholder="请选择是否发布">
           <el-option
@@ -441,6 +441,7 @@ export default {
         }, {
           label: '缩略图',
           prop: 'thumb',
+          width: '140',
           img: true
         }, {
           label: '文章头图',
