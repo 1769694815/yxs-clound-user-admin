@@ -277,9 +277,6 @@ export default {
       }
       getObj(data.id).then(response => {
         this.form = response.data.data
-        // 需要把number类型更改为字符串类型
-        this.form.publishArticle = String(this.form.publishArticle)
-        this.form.published = String(this.form.published)
       })
       this.currentId = data.id
       this.showElement = true
@@ -335,7 +332,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(this.currentId).then(() => {
+        delObj(this.form.id).then(() => {
           this.getList()
           this.resetForm()
           this.onCancel()

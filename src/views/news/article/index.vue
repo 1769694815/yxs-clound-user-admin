@@ -43,6 +43,7 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      menu-width="200px"
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
@@ -138,16 +139,15 @@
               label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1">
+              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
                 <el-option
                   v-for="item in categoryTypeList"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.value"
+                  :value="item.id"
                 />
-              </el-select>
 
-            </el-form-item>
+              </el-select></el-form-item>
           </el-col>
           <el-col
             :span="12"
@@ -189,11 +189,12 @@
               label="虚拟数:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <el-input-number
                 v-model="form.inventedNum"
                 autocomplete="off"
                 placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
+                style="width: 336px;"
               />
             </el-form-item>
           </el-col>
@@ -378,7 +379,8 @@ export default {
           hide: true
         }, {
           label: '缩略图',
-          prop: 'thumb'
+          prop: 'thumb',
+          img: true
         }, {
           label: '文章头图',
           prop: 'picture',
@@ -414,8 +416,8 @@ export default {
           prop: 'upsNum',
           hide: true
         }, {
-          label: '发布时间',
-          prop: 'publishedTime'
+          label: '创建时间',
+          prop: 'createTime'
         }],
       tableData: [],
       page: {
@@ -424,7 +426,68 @@ export default {
         size: 10
       },
       categoryTypeList: [],
-      formRules: {},
+      formRules: {
+        title: [{
+          required: true,
+          message: '请输入文章标题',
+          trigger: 'blur'
+        }],
+        brIfe: [{
+          required: true,
+          message: '请输入简叙',
+          trigger: 'blur'
+        }],
+        categoryId: [{
+          required: true,
+          message: '请选择所属栏目',
+          trigger: 'blur'
+        }],
+        source: [{
+          required: true,
+          message: '请输入来源',
+          trigger: 'blur'
+        }],
+        sourceUrl: [{
+          required: true,
+          message: '请输入来源URL',
+          trigger: 'blur'
+        }],
+        inventedNum: [{
+          required: true,
+          message: '请输入虚拟数',
+          trigger: 'blur'
+        }],
+        thumb: [{
+          required: true,
+          message: '请上传缩略图',
+          trigger: 'blur'
+        }],
+        featured: [{
+          required: true,
+          message: '请选择是否头条',
+          trigger: 'blur'
+        }],
+        promoted: [{
+          required: true,
+          message: '请选择是否推荐',
+          trigger: 'blur'
+        }],
+        sticky: [{
+          required: true,
+          message: '请选择是否置顶',
+          trigger: 'blur'
+        }],
+        status: [{
+          required: true,
+          message: '请选择状态',
+          trigger: 'blur'
+        }],
+        body: [{
+          required: true,
+          message: '请输入文章描述',
+          trigger: 'blur'
+        }]
+      },
       searchForm: {},
       dialogPvVisible: false,
       dialogDictItem: false,
@@ -494,14 +557,7 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
-      // 初始化富文本编辑器
-      this.$nextTick(() => {
-        console.log(this.$refs.tinymce)
-        if (this.$refs.tinymce.hasInit) {
-          this.$refs.tinymce.destroyTinymce()
-        }
-        this.$refs.tinymce.init()
-      })
+      this.init()
     },
     /**
      * 点击查看
@@ -509,7 +565,11 @@ export default {
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
+      getObj(row.id).then(data => {
+        this.form = data.data.data
+      })
       this.form = row
+      this.init()
     },
     /**
      * 点击编辑
@@ -518,6 +578,10 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
+      getObj(row.id).then(data => {
+        this.form = data.data.data
+      })
+      this.init()
     },
     /**
      * 新增保存
@@ -525,6 +589,7 @@ export default {
     create() {
       this.$refs
         .dataForm.validate(valid => {
+          console.log(this.form)
           if (valid) {
             this.dialogPvVisible = false
             this.tableLoading = true
@@ -586,8 +651,19 @@ export default {
           _this.$message.success('删除成功')
           this.getList()
         })
+    },
+    /**
+     * 初始化富文本编辑器
+     */
+    init() {
+      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        if (this.$refs.tinymce.hasInit) {
+          this.$refs.tinymce.destroyTinymce()
+        }
+        this.$refs.tinymce.init()
+      })
     }
-
   }
 }
 </script>

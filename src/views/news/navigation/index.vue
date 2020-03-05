@@ -208,7 +208,7 @@
           >
             <el-form-item
               prop="newWinFlag"
-              label-width="100px"
+              :label-width="formLabelWidth"
               label="打开方式:"
             >
               <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">新窗口</el-radio>

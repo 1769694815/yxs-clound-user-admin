@@ -28,9 +28,9 @@ export function getObj(id) {
   })
 }
 
-export function delObj(row) {
+export function delObj(id) {
   return request({
-    url: '/news/articlecategory/' + row.id,
+    url: '/news/articlecategory/' + id,
     method: 'delete'
   })
 }
