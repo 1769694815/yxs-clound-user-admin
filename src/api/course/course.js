@@ -1,3 +1,10 @@
+/*
+ * @Author: zhoum
+ * @Date: 2020-02-27 09:16:54
+ * @LastEditTime: 2020-03-03 17:13:30
+ * @LastEditors: zhoum
+ * @Description:
+ */
 import request from '@/utils/request'
 
 export function fetchList(query) {
@@ -47,6 +54,13 @@ export function putObj(obj) {
 export function getCategoryTree(type) {
   return request({
     url: '/course/category/getCategoryTree?type=' + type,
+    method: 'get'
+  })
+}
+
+export function getCourseSimpleList() {
+  return request({
+    url: '/course/course/getCourseSimpleList',
     method: 'get'
   })
 }

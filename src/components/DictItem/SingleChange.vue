@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-03 13:44:33
+ * @LastEditTime: 2020-03-04 15:04:10
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -80,6 +80,12 @@ export default {
       type: String,
       default: function() {
         return 'small'
+      }
+    },
+    operationStatus: {
+      type: [String, Number],
+      default: function() {
+        return 0
       }
     }
   },

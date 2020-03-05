@@ -1,3 +1,10 @@
+/*
+ * @Author: zhoum
+ * @Date: 2020-02-28 13:59:32
+ * @LastEditTime: 2020-03-04 11:58:50
+ * @LastEditors: zhoum
+ * @Description:
+ */
 import request from '@/utils/request'
 
 export function fetchList(query) {
@@ -37,6 +44,24 @@ export function putObj(obj) {
   return request({
     url: '/classroom/classroom',
     method: 'put',
+    headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    },
+    data: obj
+  })
+}
+
+export function getCourseSimpleById(classroomId) {
+  return request({
+    url: '/classroom/classroom/getCourseSimpleById?classroomId=' + classroomId,
+    method: 'get'
+  })
+}
+
+export function saveClassCourse(obj) {
+  return request({
+    url: '/classroom/classroomcourses/addClassCourse',
+    method: 'post',
     headers: {
       'Content-Type': 'application/json;charset=UTF-8'
     },

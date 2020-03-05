@@ -31,6 +31,7 @@ function addPath(ele, first) {
 const routerList = []
 
 function formatRoutes(aMenu = [], first) {
+  // console.log(first)
   const aRouter = []
   const propsConfig = webiste.menu.props
   const propsDefault = {
@@ -74,10 +75,10 @@ function formatRoutes(aMenu = [], first) {
       component(resolve) {
         // 判断是否为首路由
         if (first) {
-          require(['@/layout'], resolve)
+          require(['@/layout/index'], resolve)
           // 判断是否为多层路由
         } else if (isChild && !first) {
-          require(['@/layout'], resolve)
+          require(['@/layout/layout'], resolve)
 
           // 判断是否为最终的页面视图
         } else {
@@ -110,14 +111,21 @@ function formatRoutes(aMenu = [], first) {
     }
     aRouter.push(oRouter)
   }
-  if (first) {
-    if (!routerList.includes(aRouter[0][propsDefault.path])) {
-      // this.$router.addRoutes(aRouter)
-      routerList.push(aRouter[0][propsDefault.path])
-    }
-  } else {
-    return aRouter
-  }
+  return aRouter
+  // if (first) {
+  //   // console.log('routerList', routerList)
+  //   // console.log('aRouter', aRouter[0][propsDefault.path])
+  //   // if (!routerList.includes(aRouter[0][propsDefault.path])) {
+  //   //   // this.$router.addRoutes(aRouter)
+  //   //   console.log('aRouter', aRouter)
+  //   //   routerList.push(aRouter[0][propsDefault.path])
+  //   //   return aRouter
+  //   // }
+  //   return aRouter
+  // } else {
+  //   console.log('最后的数据', aRouter)
+  //   return aRouter
+  // }
 }
 
 const state = {
@@ -240,7 +248,7 @@ const actions = {
           addPath(ele)
         })
         const type = obj.type
-        const asyncRoutes = constantRoutes.concat(formatRoutes(menu))
+        const asyncRoutes = constantRoutes.concat(formatRoutes(menu, true))
         commit('SET_ROUTES', { type, asyncRoutes })
         resolve(asyncRoutes)
       }).catch(error => {

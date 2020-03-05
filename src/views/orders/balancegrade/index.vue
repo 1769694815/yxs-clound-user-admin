@@ -155,10 +155,9 @@
               label="商品图片:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-image
                 v-model="form.goodsImg"
-                autocomplete="off"
-                placeholder="请输入商品图片"
+                status="4"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -220,6 +219,7 @@ export default {
   },
   data() {
     return {
+      headers: {},
       tableKey: 0,
       tableLoading: false,
       tableOption: [
@@ -234,7 +234,8 @@ export default {
           prop: 'iosId'
         }, {
           label: '商品图片',
-          prop: 'goodsImg'
+          prop: 'goodsImg',
+          img: true
         }],
       tableData: [],
       page: {
@@ -269,7 +270,8 @@ export default {
       dialogDictItem: false,
       operationStatus: 0,
       form: {},
-      formLabelWidth: '90px'
+      formLabelWidth: '90px',
+      imageUrl: ''
     }
   },
   computed: {
@@ -277,6 +279,7 @@ export default {
   },
   created() {
     this.getList()
+    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
@@ -407,8 +410,53 @@ export default {
           _this.$message.success('删除成功')
           this.getList()
         })
+    },
+    /**
+     * 文件上传方法
+     * @param file
+     * @returns {boolean|boolean}
+     */
+    beforeUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isLt2M) {
+        this.$message.error('上传商品图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+    handleSuccess(res, file) {
+      this.form.goodsImg = res.url
     }
 
   }
 }
 </script>
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>

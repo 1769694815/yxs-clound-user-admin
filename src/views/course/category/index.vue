@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:30:23
+ * @LastEditTime: 2020-03-04 16:57:53
  * @Description: 文件管理
  -->
 <template>
@@ -216,20 +216,10 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="图片上传:" prop="img">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
-                action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="category-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+          <!--图片上传-->
+          <el-col :span="24">
+            <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
+              <single-image v-model="form.img" :type="8" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -392,6 +382,7 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
+      formLabelWidth: '90px',
       form: {
         topFlag: 0
       }, // 新增 编辑 数据源

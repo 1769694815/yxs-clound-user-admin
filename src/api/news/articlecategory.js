@@ -1,8 +1,13 @@
 import request from '@/utils/request'
 
 export function fetchList(query) {
+  for (const key in query) {
+    if (query[key] == null || query[key] === '') {
+      delete query[key]
+    }
+  }
   return request({
-    url: '/news/navigation/page',
+    url: '/news/articlecategory/page',
     method: 'get',
     params: query
   })
@@ -10,7 +15,7 @@ export function fetchList(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/news/navigation',
+    url: '/news/articlecategory',
     method: 'post',
     data: obj
   })
@@ -18,28 +23,30 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/news/navigation/' + id,
+    url: '/news/articlecategory/' + id,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return request({
-    url: '/news/navigation/' + id,
+    url: '/news/articlecategory/' + id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/news/navigation',
+    url: '/news/articlecategory',
     method: 'put',
     data: obj
   })
 }
-export function dictType() {
+
+export function fetchArticleCategoryTree(query) {
   return request({
-    url: '/admin/dict/type/navigation_type',
-    method: 'get'
+    url: '/news/articlecategory/tree',
+    method: 'get',
+    params: query
   })
 }
