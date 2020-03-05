@@ -208,13 +208,8 @@
           >
             <el-form-item
               prop="newWinFlag"
-<<<<<<< HEAD
-              label="新窗口打开:"
               label-width="100px"
-=======
               label="打开方式:"
-              :label-width="formLabelWidth"
->>>>>>> d969004ae1bced48d9e55dc63fdeb4ec95458605
             >
               <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">新窗口</el-radio>
               <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">当前窗口</el-radio>
@@ -540,7 +535,6 @@ export default {
   }
 }
 </script>
-<<<<<<< HEAD
 <style>
   .classroom-input {
     width: 250px;
@@ -580,5 +574,4 @@ export default {
     display: block;
   }
 </style>
-=======
->>>>>>> d969004ae1bced48d9e55dc63fdeb4ec95458605
+
