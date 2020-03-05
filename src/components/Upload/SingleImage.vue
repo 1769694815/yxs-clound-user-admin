@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 09:12:59
+ * @LastEditTime: 2020-03-05 10:09:02
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -46,14 +46,17 @@
         class="image-preview-wrapper"
       >
         <img :src="imageUrl" class="avatar">
-        <div class="image-preview-action">
+        <div :class="['image-preview-action', { 'not-allowed': disabled }]">
           <i
-            v-if="disabled"
+            v-show="!disabled"
             class="el-icon-delete"
             @click="handleRemove"
           />
         </div>
-      </div></div></div></template>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script>
 import { getToken } from '@/api/qiniu'
@@ -234,5 +237,8 @@ export default {
 }
 .course-upload__tip {
   margin-left: 0;
+}
+.not-allowed {
+  cursor: not-allowed !important;
 }
 </style>

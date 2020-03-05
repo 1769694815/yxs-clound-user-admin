@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-04 15:14:56
+ * @LastEditTime: 2020-03-04 17:00:39
  * @Description: 题目表管理
  -->
 <template>
@@ -132,7 +132,12 @@
           <!--题目分值-->
           <el-col :span="12">
             <el-form-item label="题目分值" prop="score">
-              <el-input v-model="form.score" placeholder="请输入题目分值" clearable class="question-input" />
+              <el-input
+                v-model="form.score"
+                placeholder="请输入题目分值"
+                clearable
+                class="question-input"
+              />
             </el-form-item>
           </el-col>
           <!--所属课程-->
@@ -245,6 +250,13 @@
                 clearable
                 class="question-textarea"
               />
+            </el-form-item>
+          </el-col>
+
+          <!--图片上传-->
+          <el-col :span="24">
+            <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
+              <single-image v-model="form.imgUrl" :type="7" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -408,6 +420,7 @@ export default {
       operationStatus: 0,
       labelWidth: '90px',
       form: {}, // 新增 编辑 数据源
+      formLabelWidth: '90px',
       rules: {
         // 表单校验
         title: [

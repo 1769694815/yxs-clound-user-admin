@@ -155,6 +155,7 @@
               <single-image
                 v-model="form.pic"
                 status="2"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -301,7 +302,8 @@ export default {
           prop: 'name'
         }, {
           label: '链接地址',
-          prop: 'url'
+          prop: 'url',
+          link: true
         }, {
           label: '图片地址',
           prop: 'pic',

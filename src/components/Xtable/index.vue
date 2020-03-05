@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 15:28:57
+ * @LastEditTime: 2020-03-05 10:35:02
  * @Description: 表格组件
  -->
 <template>
@@ -68,10 +68,10 @@
           <span>{{ scope.$index + (page.current - 1) * page.size + 1 }}</span>
         </template>
       </el-table-column>
-      <template v-for="(item, index) in tableOption">
+      <template v-for="item in tableOption">
         <el-table-column
           v-if="!item.hide"
-          :key="index"
+          :key="item.prop"
           :prop="item.prop"
           :label="item.label"
           :width="item.width"
@@ -85,22 +85,32 @@
               :row="scope.row"
               :$index="scope.$index"
             />
+            <!-- 有默认数据 -->
             <span v-else-if="item.dicData">
               <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
             </span>
+            <!-- 根据接口返回数据 -->
             <span
               v-else-if="item.dicUrl"
             >
-              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
+              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
+            <!-- 链接跳转 -->
+            <span
+              v-else-if="item.link"
+            >
+              <el-link :href="scope.row[scope.column.property]" target="_blank">{{ scope.row[scope.column.property] }}</el-link>
+            </span>
+            <!-- 图片 -->
             <span
               v-else-if="item.img"
             >
-              <img
-                class="img"
+              <el-image
                 :src="scope.row[scope.column.property]"
+                lazy
+                class="img"
                 @click="imgView(scope.row[scope.column.property])"
-              >
+              />
             </span>
             <span v-else>{{ scope.row[scope.column.property] }}</span>
           </template>
@@ -137,8 +147,8 @@
         @change="checkChange"
       >
         <el-checkbox
-          v-for="(item, index) in tableOption"
-          :key="index"
+          v-for="item in tableOption"
+          :key="item.prop"
           :label="item.prop"
         >{{ item.label }}</el-checkbox>
       </el-checkbox-group>
@@ -147,7 +157,11 @@
       :visible.sync="imgVisible"
       title="图片"
     >
-      <img class="maxImg" :src="imgUrl" alt="">
+      <el-image
+        :src="imgUrl"
+        lazy
+        class="maxImg"
+      />
     </el-dialog>
   </div>
 </template>
@@ -161,12 +175,12 @@ export default {
     Pagination
   },
   filters: {
-    statusFilter(status, list) {
+    statusFilter(status, list, prop = { value: 'value', label: 'label' }) {
       let result
       for (const i in list) {
         const item = list[i]
-        if (status === item.value) {
-          result = item.label
+        if (status === item[prop.value]) {
+          result = item[prop.label]
         }
       }
       return result
@@ -245,7 +259,6 @@ export default {
         })
       }
     })
-    console.log('tableOption', this.tableOption)
   },
   methods: {
     checkChange(val) {

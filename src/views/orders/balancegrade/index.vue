@@ -158,6 +158,7 @@
               <single-image
                 v-model="form.goodsImg"
                 status="4"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
