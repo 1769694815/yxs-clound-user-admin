@@ -106,6 +106,7 @@
                 clearable
                 class="category-input"
                 placeholder="请选择分类类型"
+                @change="groupTypeChange"
               >
                 <el-option
                   v-for="item in DIC.classificationTypeList"
@@ -437,8 +438,12 @@ export default {
   created() {
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
+    this.getAllCategoryType(1)
   },
   methods: {
+    groupTypeChange(type) {
+      this.getAllCategoryType(type)
+    },
     getAllCategoryType(type) {
       getAllCategoryType(type).then(res => {
         this.treeData = res.data.data
