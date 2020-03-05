@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 09:53:55
+ * @LastEditTime: 2020-03-05 10:35:02
  * @Description: 表格组件
  -->
 <template>
@@ -93,7 +93,7 @@
             <span
               v-else-if="item.dicUrl"
             >
-              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
+              <el-tag>{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
             <span
@@ -175,12 +175,12 @@ export default {
     Pagination
   },
   filters: {
-    statusFilter(status, list) {
+    statusFilter(status, list, prop = { value: 'value', label: 'label' }) {
       let result
       for (const i in list) {
         const item = list[i]
-        if (status === item.value) {
-          result = item.label
+        if (status === item[prop.value]) {
+          result = item[prop.label]
         }
       }
       return result
