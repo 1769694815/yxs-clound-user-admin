@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 15:24:04
+ * @LastEditTime: 2020-03-05 09:12:59
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -17,10 +17,11 @@
       :on-success="handleSuccess"
       :action="upload_qiniu_url"
       :show-file-list="false"
+      :disabled="disabled"
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
+      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <el-upload
       v-show="!imageUrl && action"
@@ -30,10 +31,11 @@
       :on-success="handleSuccess"
       :action="action"
       :show-file-list="false"
+      :disabled="disabled"
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
+      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <div
       v-show="imageUrl"
@@ -46,6 +48,7 @@
         <img :src="imageUrl" class="avatar">
         <div class="image-preview-action">
           <i
+            v-if="disabled"
             class="el-icon-delete"
             @click="handleRemove"
           />
@@ -80,6 +83,18 @@ export default {
       default: function() {
         return 2
       }
+    },
+    disabled: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
+    },
+    title: {
+      type: String,
+      default: function() {
+        return '图片大小不能超过2MB'
+      }
     }
   },
   data() {
@@ -91,7 +106,6 @@ export default {
       fileList: [],
       dialogImageUrl: '',
       dialogVisible: false,
-      disabled: false,
       imageUrl: '',
       headers: {
         Authorization: 'Bearer '
@@ -136,7 +150,7 @@ export default {
         const params = {
           fileName: file.name,
           fileSize: file.size,
-          type: this.type
+          type: this.status
         }
         getToken(params)
           .then(response => {

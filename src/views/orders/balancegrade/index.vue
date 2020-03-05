@@ -157,7 +157,7 @@
             >
               <single-image
                 v-model="form.goodsImg"
-                type="4"
+                status="4"
               />
             </el-form-item>
           </el-col>
