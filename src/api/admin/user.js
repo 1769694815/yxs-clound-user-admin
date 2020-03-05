@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-13 15:15:03
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-13 15:15:37
+ * @LastEditTime: 2020-03-05 15:19:27
  * @Description: 用户管理api
  */
 import request from '@/utils/request'
@@ -49,5 +49,13 @@ export function getDetails(obj) {
   return request({
     url: '/admin/user/details/' + obj,
     method: 'get'
+  })
+}
+
+export function updateInfo(obj) {
+  return request({
+    url: '/admin/user/edit',
+    method: 'put',
+    data: obj
   })
 }
