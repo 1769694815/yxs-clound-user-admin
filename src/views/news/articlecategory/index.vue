@@ -1,583 +1,404 @@
 <template>
   <div class="app-container calendar-list-container">
-    <!-- 搜索栏 -->
-    <el-form
-      ref="search"
-      :inline="true"
-      class="search"
-      size="medium"
-    >
-
-      <el-form-item
-        label="搜索字段1:"
-        label-width="80px"
-      >
-        <el-input
-          v-model="searchForm.field1"
-          type="text"
-          size="small"
-          placeholder="请输入搜索字段1"
-        />
-      </el-form-item>
-      <el-form-item>
+    <div class="filter-container">
+      <el-button-group>
         <el-button
+          v-if="articleCategory_btn_add"
           type="primary"
-          icon="el-icon-search"
-          size="small"
-          @click="handleFilter"
-        >搜 索
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="default"
-          icon="el-icon-delete"
-          size="small"
-          @click="handleEmpty"
-        >清 空
-        </el-button>
-      </el-form-item>
-    </el-form>
-    <Xtable
-      :table-key="tableKey"
-      :table-loading="tableLoading"
-      :table-data="tableData"
-      :page="page"
-      :table-option.sync="tableOption"
-      @handle-create="handleCreate"
-      @refresh-change="handleFilter"
-      @page-change="getList"
-    >
-      <template
-        slot="role"
-        slot-scope="scope"
-      >
-        <el-tag>{{ scope.row.role }}</el-tag>
-      </template>
-      <template
-        slot="menu"
-        slot-scope="scope"
-      >
-        <el-button
-          type="text"
-          icon="el-icon-view"
-          size="mini"
-          @click="handleView(scope.row)"
-        >查看
+          icon="plus"
+          @click="handlerAdd"
+        >添加
         </el-button>
         <el-button
-          type="text"
-          icon="el-icon-view"
-          size="mini"
-          @click="handleUpdate(scope.row)"
+          v-if="articleCategory_btn_edit"
+          type="primary"
+          icon="edit"
+          @click="handlerEdit"
         >编辑
         </el-button>
         <el-button
-          type="text"
-          size="mini"
-          icon="el-icon-delete"
-          @click="handleDelete(scope.row, scope.index)"
+          v-if="articleCategory_btn_del"
+          type="primary"
+          icon="delete"
+          @click="handleDelete"
         >删除
         </el-button>
-      </template>
-    </Xtable>
-    <!-- 表单弹窗 -->
-    <el-dialog
-      :visible.sync="dialogPvVisible"
-      :title="operationStatus | dialogTitle"
-    >
-      <el-row
-        style="padding: 0 20px;"
-        :span="24"
-        :gutter="20"
-      >
-        <el-form
-          ref="dataForm"
-          :rules="formRules"
-          :model="form"
-        >
+      </el-button-group>
+    </div>
 
-          <el-col
-            :span="12"
+    <el-row>
+      <el-col
+        :span="8"
+        style="margin-top: 15px"
+      >
+        <el-tree
+          :data="treeData"
+          :default-expanded-keys="aExpandedKeys"
+          :filter-node-method="filterNode"
+          :props="defaultProps"
+          class="filter-tree"
+          node-key="id"
+          highlight-current
+          @node-click="getNodeData"
+          @node-expand="nodeExpand"
+          @node-collapse="nodeCollapse"
+        />
+      </el-col>
+      <el-col
+        :span="16"
+        style="margin-top: 15px;"
+      >
+        <div class="box-card">
+          <el-form
+            ref="form"
+            :label-position="labelPosition"
+            :model="form"
+            :rules="rules"
+            label-width="100px"
           >
             <el-form-item
-              prop="id"
-              label=":"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.id"
-                autocomplete="off"
-                placeholder="请输入"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="name"
-              label="栏目名称:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.name"
-                autocomplete="off"
-                placeholder="请输入栏目名称"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="code"
-              label="URL目录名称:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.code"
-                autocomplete="off"
-                placeholder="请输入URL目录名称"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="weight"
-              label="权重:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.weight"
-                autocomplete="off"
-                placeholder="请输入权重"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="publishArticle"
-              label="是否允许发布文章(1:是,2:否):"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.publishArticle"
-                autocomplete="off"
-                placeholder="请输入是否允许发布文章(1:是,2:否)"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="seoTitle"
-              label="栏目标题:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.seoTitle"
-                autocomplete="off"
-                placeholder="请输入栏目标题"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="seoKeyword"
-              label="SEO 关键字:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.seoKeyword"
-                autocomplete="off"
-                placeholder="请输入SEO 关键字"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="seoDesc"
-              label="栏目描述（SEO）:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.seoDesc"
-                autocomplete="off"
-                placeholder="请输入栏目描述（SEO）"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="published"
-              label="是否启用（1:启用 2:停用):"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.published"
-                autocomplete="off"
-                placeholder="请输入是否启用（1:启用 2:停用)"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
+              label="父级节点"
               prop="parentId"
-              label="父类ID:"
-              :label-width="formLabelWidth"
             >
               <el-input
                 v-model="form.parentId"
-                autocomplete="off"
-                placeholder="请输入父类ID"
-                :disabled="operationStatus === 1"
+                :disabled="true"
+                label-width="100px"
+                placeholder="请输入父级节点"
               />
             </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
             <el-form-item
-              prop="userName"
-              label="创建人:"
-              :label-width="formLabelWidth"
+              v-if="form.menuId"
+              label="节点ID"
+              prop="menuId"
             >
               <el-input
-                v-model="form.userName"
-                autocomplete="off"
-                placeholder="请输入创建人"
-                :disabled="operationStatus === 1"
+                v-model="form.menuId"
+                :disabled="formEdit || formStatus === 'update'"
+                type="number"
+                placeholder="请输入节点ID"
               />
             </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
             <el-form-item
-              prop="createdTime"
-              label="创建时间:"
-              :label-width="formLabelWidth"
+              prop="name"
+              label="栏目名称:"
+              label-width="100px"
             >
               <el-input
-                v-model="form.createdTime"
-                autocomplete="off"
-                placeholder="请输入创建时间"
-                :disabled="operationStatus === 1"
+                v-model="form.name"
+                :disabled="formEdit"
+                placeholder="请输入栏目名称"
               />
             </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
             <el-form-item
-              prop="tenantId"
-              label="租户id:"
-              :label-width="formLabelWidth"
+              prop="seoTitle"
+              label="SEO标题:"
+              label-width="100px"
             >
               <el-input
-                v-model="form.tenantId"
-                autocomplete="off"
-                placeholder="请输入租户id"
-                :disabled="operationStatus === 1"
+                v-model="form.seoTitle"
+                :disabled="formEdit"
+                placeholder="请输入SEO标题"
               />
             </el-form-item>
-          </el-col>
-
-        </el-form>
-      </el-row>
-      <div
-        slot="footer"
-        class="doalog-footer"
-      >
-        <el-button
-          v-if="operationStatus === 0"
-          type="primary"
-          size="small"
-          @click="create"
-        >保 存
-        </el-button>
-        <el-button
-          v-if="operationStatus === 2"
-          type="primary"
-          size="small"
-          @click="update"
-        >修 改
-        </el-button>
-        <el-button
-          size="small"
-          @click="dialogPvVisible = false"
-        >取 消
-        </el-button>
-      </div>
-    </el-dialog>
+            <el-form-item
+              prop="seoKeyword"
+              label="SEO关键字:"
+              label-width="100px"
+            >
+              <el-input
+                v-model="form.seoKeyword"
+                :disabled="formEdit"
+                placeholder="请输入SEO关键字"
+              />
+            </el-form-item>
+            <el-form-item
+              prop="code"
+              label="URL名称:"
+              label-width="100px"
+            >
+              <el-input
+                v-model="form.code"
+                :disabled="formEdit"
+                placeholder="请输入URL目录名称"
+              />
+            </el-form-item>
+            <el-form-item
+              prop="weight"
+              label="排序:"
+              label-width="100px"
+            >
+              <el-input-number
+                v-model="form.weight"
+                :disabled="formEdit"
+                placeholder="请输入排序"
+              />
+            </el-form-item>
+            <el-form-item
+              prop="seoDesc"
+              label="URL描述:"
+              label-width="100px"
+            >
+              <el-input v-model="form.seoDesc" type="textarea" placeholder="请输入URL描述" :rows="5" :disabled="formEdit" />
+            </el-form-item>
+            <el-form-item
+              label="发布文章:"
+              prop="publishArticle"
+              label-width="100px"
+            >
+              <el-radio
+                v-model="form.publishArticle"
+                :disabled="formEdit"
+                label="0"
+              >是</el-radio>
+              <el-radio
+                v-model="form.publishArticle"
+                :disabled="formEdit"
+                label="1"
+              >否</el-radio>
+            </el-form-item>
+            <el-form-item
+              label="启用:"
+              prop="published"
+              label-width="100px"
+            >
+              <el-radio
+                v-model="form.published"
+                :disabled="formEdit"
+                label="0"
+              >是</el-radio>
+              <el-radio
+                v-model="form.published"
+                :disabled="formEdit"
+                label="1"
+              >否</el-radio>
+            </el-form-item>
+            <el-form-item v-if="formStatus === 'update'">
+              <el-button
+                type="primary"
+                @click="update"
+              >更新
+              </el-button>
+              <el-button @click="onCancel">取消</el-button>
+            </el-form-item>
+            <el-form-item v-if="formStatus === 'create'">
+              <el-button
+                type="primary"
+                @click="create"
+              >保存
+              </el-button>
+              <el-button @click="onCancel">取消</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/articlecategory'
+import { addObj, delObj, fetchArticleCategoryTree, getObj, putObj } from '@/api/news/articlecategory'
 import { mapGetters } from 'vuex'
-
 export default {
-  filters: {
-    statusFilter(type, list) {
-      let result
-      list.map(ele => {
-        if (type === ele.value) {
-          result = ele.label
-        }
-      })
-      return result
-    },
-    dialogTitle(type) {
-      const titleMap = {
-        0: '新 增',
-        1: '查 看',
-        2: '编 辑',
-        3: '删 除'
-      }
-      return titleMap[type]
-    }
-  },
   data() {
-    const DIC = {
-      openFlag: [
-        {
-          label: '启用',
-          value: '1'
-        }, {
-          label: '禁用',
-          value: '0'
-        }
-      ],
-      flag: [
-        {
-          label: '是',
-          value: '1'
-        }, {
-          label: '否',
-          value: '0'
-        }
-      ]
-    }
     return {
-      headers: {},
-      tableKey: 0,
-      tableLoading: false,
-      tableOption: [
-        {
-          label: '栏目名称',
-          prop: 'name'
-        }, {
-          label: 'URL目录名称',
-          prop: 'code'
-        }, {
-          label: '权重',
-          prop: 'weight'
-        }, {
-          label: '是否允许发布文章',
-          prop: 'publishArticle',
-          dicData: DIC.flag
-        }, {
-          label: '栏目标题',
-          prop: 'seoTitle'
-        }, {
-          label: 'SEO 关键字',
-          prop: 'seoKeyword'
-        }, {
-          label: '栏目描述（SEO）',
-          prop: 'seoDesc'
-        }, {
-          label: '是否启用（1:启用 2:停用)',
-          prop: 'published'
-        }, {
-          label: '父类ID',
-          prop: 'parentId'
-        }, {
-          label: '创建人',
-          prop: 'userName'
-        }, {
-          label: '创建时间',
-          prop: 'createdTime'
-        }, {
-          label: '租户id',
-          prop: 'tenantId'
-        }],
-      tableData: [],
-      page: {
-        total: 0,
-        current: 1,
-        size: 10
+      formEdit: true,
+      formAdd: true,
+      formStatus: '',
+      loading: null,
+      showElement: false,
+      form: {
+        name: undefined,
+        parentId: undefined,
+        published: undefined,
+        publishArticle: undefined
       },
-      formRules: {},
-      searchForm: {},
-      dialogPvVisible: false,
-      dialogDictItem: false,
-      operationStatus: 0,
-      form: {},
-      formLabelWidth: '90px'
+      currentId: -1,
+      articleCategory_btn_add: false,
+      articleCategory_btn_edit: false,
+      articleCategory_btn_del: false,
+      rules: {
+        menuId: [{ required: true, message: '节点ID不合法', trigger: 'blur' }],
+        name: [{ required: true, message: '标题不合法', trigger: 'blur' }],
+        seoTitle: [{ required: true, message: 'SEO标题不合法', trigger: 'blur' }],
+        seoKeyword: [{ required: true, message: 'EO关键字不合法', trigger: 'blur' }],
+        code: [{ required: true, message: 'URL目录名称不合法', trigger: 'blur' }],
+        seoDesc: [{ required: true, message: 'URL描述不合法', trigger: 'blur' }],
+        weight: [{ required: true, message: '排序不合法', trigger: 'blur' }],
+        publishArticle: [{ required: true, message: '请选择是否发布文章', trigger: 'blur' }],
+        published: [{ required: true, message: '请选择是否启用', trigger: 'blur' }]
+      },
+      treeData: [],
+      oExpandedKey: {
+        // key (from tree id) : expandedOrNot boolean
+      },
+      oTreeNodeChildren: {
+        // id1 : [children] (from tree node id1)
+        // id2 : [children] (from tree node id2)
+      },
+      aExpandedKeys: [],
+      defaultProps: {
+        children: 'children',
+        label: 'name'
+      },
+      labelPosition: 'right'
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
   },
   created() {
+    this.articleCategory_btn_add = this.permissions['news_articlecategory_add']
+    this.articleCategory_btn_edit = this.permissions['news_articlecategory_edit']
+    this.articleCategory_btn_del = this.permissions['news_articlecategory_del']
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
-    /**
-             * 获取列表数据
-             */
     getList() {
-      this.tableLoading = true
-      fetchList(
-        Object.assign(
-          {
-            descs: 'create_time',
-            current: this.page.current,
-            size: this.page.size
-          },
-          this.searchForm
-        )
-      )
-        .then(res => {
-          this.tableData = res.data.data.records
-          this.page.total = res.data.data.total
-          this.tableLoading = false
-        })
-        .catch(() => {
-          this.tableLoading = false
-        })
+      this.loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+
+      fetchArticleCategoryTree().then(response => {
+        this.treeData = response.data.data
+        this.loading.close()
+      })
     },
-    /**
-             * 搜索
-             */
-    handleFilter() {
-      this.getList()
+    filterNode(value, data) {
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
-    /**
-             * 清空搜索表单
-             */
-    handleEmpty() {
-      this.searchForm = {}
-      this.getList()
+    getNodeData(data) {
+      if (!this.formEdit) {
+        this.formStatus = 'update'
+      }
+      getObj(data.id).then(response => {
+        this.form = response.data.data
+        // 需要把number类型更改为字符串类型
+        this.form.publishArticle = String(this.form.publishArticle)
+        this.form.published = String(this.form.published)
+      })
+      this.currentId = data.id
+      this.showElement = true
     },
-    /**
-             * 点击新增
-             */
-    handleCreate() {
-      this.dialogPvVisible = true
-      this.operationStatus = 0
-      this.form = {}
+    nodeExpand(data) {
+      const aChildren = data.children
+      if (aChildren.length > 0) {
+        this.oExpandedKey[data.id] = true
+        this.oTreeNodeChildren[data.id] = aChildren
+      }
+      this.setExpandedKeys()
     },
-    /**
-             * 点击查看
-             */
-    handleView(row, index) {
-      this.dialogPvVisible = true
-      this.operationStatus = 1
-      this.form = row
+    nodeCollapse(data) {
+      this.oExpandedKey[data.id] = false
+      // 如果有子节点
+      this.treeRecursion(this.oTreeNodeChildren[data.id], oNode => {
+        this.oExpandedKey[oNode.id] = false
+      })
+      this.setExpandedKeys()
     },
-    /**
-             * 点击编辑
-             */
-    handleUpdate(row, index) {
-      this.dialogPvVisible = true
-      this.operationStatus = 2
-      this.form = row
+    setExpandedKeys() {
+      const oTemp = this.oExpandedKey
+      this.aExpandedKeys = []
+      for (const sKey in oTemp) {
+        if (oTemp[sKey]) {
+          this.aExpandedKeys.push(parseInt(sKey))
+        }
+      }
     },
-    /**
-             * 新增保存
-             */
-    create() {
-      this.$refs
-        .dataForm.validate(valid => {
-          if (valid) {
-            this.dialogPvVisible = false
-            this.tableLoading = true
-            addObj(this.form)
-              .then(res => {
-                this.tableLoading = false
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.getList()
-              })
-              .catch(() => {
-                this.tableLoading = false
-              })
-          }
-        })
+    treeRecursion(aChildren, fnCallback) {
+      if (aChildren) {
+        for (let i = 0; i < aChildren.length; ++i) {
+          const oNode = aChildren[i]
+          fnCallback && fnCallback(oNode)
+          this.treeRecursion(oNode.children, fnCallback)
+        }
+      }
     },
-    /**
-             * 编辑保存
-             */
-    update() {
-      this.$refs
-        .dataForm.validate(valid => {
-          if (valid) {
-            this.dialogPvVisible = false
-            this.tableLoading = true
-            putObj(this.form)
-              .then(res => {
-                this.tableLoading = false
-                this.$message({
-                  showClose: true,
-                  message: '修改成功',
-                  type: 'success'
-                })
-                this.getList()
-              })
-              .catch(() => {
-                this.tableLoading = false
-              })
-          }
-        })
+    handlerAdd() {
+      this.resetForm()
+      this.formEdit = false
+      this.formStatus = 'create'
     },
-    /**
-             * 点击删除
-             */
-    handleDelete(row, index) {
-      var _this = this
-      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+    handlerEdit() {
+      if (this.form.id) {
+        this.formEdit = false
+        this.formStatus = 'update'
+      }
+    },
+    handleDelete() {
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(function() {
-          return delObj(row)
-        })
-        .then(data => {
-          _this.$message.success('删除成功')
+      }).then(() => {
+        delObj(this.currentId).then(() => {
           this.getList()
+          this.resetForm()
+          this.onCancel()
+          this.$notify({
+            title: '成功',
+            message: '删除成功',
+            type: 'success',
+            duration: 2000
+          })
         })
+      })
+    },
+    update() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          putObj(this.form).then(() => {
+            this.getList()
+            this.formEdit = false
+            this.$notify({
+              title: '成功',
+              message: '更新成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    create() {
+      this.$refs.form.validate(valid => {
+        console.log(this.form)
+        if (valid) {
+          addObj(this.form).then(() => {
+            this.getList()
+            this.formEdit = false
+            this.$notify({
+              title: '成功',
+              message: '创建成功',
+              type: 'success',
+              duration: 2000
+            })
+          })
+        }
+      })
+    },
+    onCancel() {
+      this.formEdit = true
+      this.formStatus = ''
+    },
+    resetForm() {
+      this.form = {
+        name: undefined,
+        published: undefined,
+        publishArticle: undefined,
+        parentId: this.currentId
+      }
     }
-
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .box-card {
+    width: 100%;
+  }
+</style>

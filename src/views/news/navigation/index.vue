@@ -56,6 +56,7 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      menu-width="200px"
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
@@ -98,6 +99,7 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
+      :close-on-click-modal="false"
     >
       <el-row
         style="padding: 0 20px;"
@@ -207,7 +209,7 @@
             <el-form-item
               prop="newWinFlag"
               label="新窗口打开:"
-              :label-width="formLabelWidth"
+              label-width="100px"
             >
               <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">是</el-radio>
               <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">否</el-radio>
@@ -244,7 +246,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/navigation'
+import { fetchList, addObj, putObj, delObj } from '@/api/news/navigation'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -302,7 +304,8 @@ export default {
           prop: 'url'
         }, {
           label: '图片地址',
-          prop: 'pic'
+          prop: 'pic',
+          img: true
         }, {
           label: '显示顺序',
           prop: 'sequence'
@@ -389,8 +392,8 @@ export default {
   },
   methods: {
     /**
-             * 获取列表数据
-             */
+     * 获取列表数据
+     */
     getList() {
       this.tableLoading = true
       fetchList(
@@ -413,45 +416,45 @@ export default {
         })
     },
     /**
-             * 搜索
-             */
+     * 搜索
+     */
     handleFilter() {
       this.getList()
     },
     /**
-             * 清空搜索表单
-             */
+     * 清空搜索表单
+     */
     handleEmpty() {
       this.searchForm = {}
       this.getList()
     },
     /**
-             * 点击新增
-             */
+     * 点击新增
+     */
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
     },
     /**
-             * 点击查看
-             */
+     * 点击查看
+     */
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
       this.form = row
     },
     /**
-             * 点击编辑
-             */
+     * 点击编辑
+     */
     handleUpdate(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
     },
     /**
-             * 新增保存
-             */
+     * 新增保存
+     */
     create() {
       this.$refs
         .dataForm.validate(valid => {
@@ -475,8 +478,8 @@ export default {
         })
     },
     /**
-             * 编辑保存
-             */
+     * 编辑保存
+     */
     update() {
       this.$refs
         .dataForm.validate(valid => {
@@ -500,8 +503,8 @@ export default {
         })
     },
     /**
-             * 点击删除
-             */
+     * 点击删除
+     */
     handleDelete(row, index) {
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {
@@ -525,41 +528,41 @@ export default {
 }
 </script>
 <style>
-.classroom-input {
-  width: 250px;
-}
+  .classroom-input {
+    width: 250px;
+  }
 
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
+  .category-upload__tip {
+    font-size: 12px;
+    color: #ff0000;
+    margin-top: 7px;
+    margin-left: 100px;
+  }
 
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
 
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
 
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
 
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

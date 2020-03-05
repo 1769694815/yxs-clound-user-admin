@@ -85,6 +85,7 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
+      :close-on-click-modal="false"
     >
       <el-row
         style="padding: 0 20px;"
@@ -134,15 +135,18 @@
           >
             <el-form-item
               prop="categoryId"
-              label="栏目ID:"
+              label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.categoryId"
-                autocomplete="off"
-                placeholder="请输入栏目ID"
-                :disabled="operationStatus === 1"
-              />
+              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1">
+                <el-option
+                  v-for="item in categoryTypeList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.value"
+                />
+              </el-select>
+
             </el-form-item>
           </el-col>
           <el-col
@@ -211,20 +215,6 @@
             :span="12"
           >
             <el-form-item
-              prop="originalThumb"
-              label="缩略图原图:"
-              :label-width="formLabelWidth"
-            >
-              <single-image
-                v-model="form.originalThumb"
-                :type="3"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
               prop="status"
               label="状态:"
               :label-width="formLabelWidth"
@@ -270,7 +260,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <tinymce ref="tinymce" v-model="form.body" :height="300" />
+            <el-form-item
+              prop="body"
+              label="文章描述:"
+              :label-width="formLabelWidth"
+            >
+              <tinymce ref="tinymce" v-model="form.body" :height="300" />
+            </el-form-item>
           </el-col>
 
         </el-form>
@@ -304,7 +300,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
+import { fetchList, getObj, addObj, putObj, delObj, getCategoryType } from '@/api/news/article'
 import { mapGetters } from 'vuex'
 import Tinymce from '@/components/Tinymce/index'
 
@@ -367,25 +363,26 @@ export default {
           prop: 'title'
         }, {
           label: '简叙',
-          prop: 'brIfe'
+          prop: 'brIfe',
+          hide: true
         }, {
           label: '栏目ID',
           prop: 'categoryId'
         }, {
           label: '来源',
-          prop: 'source'
+          prop: 'source',
+          hide: true
         }, {
           label: '来源URL',
-          prop: 'sourceUrl'
-        }, {
-          label: '发布时间',
-          prop: 'publishedTime'
+          prop: 'sourceUrl',
+          hide: true
         }, {
           label: '缩略图',
           prop: 'thumb'
         }, {
           label: '文章头图',
-          prop: 'picture'
+          prop: 'picture',
+          hide: true
         }, {
           label: '状态',
           prop: 'status',
@@ -393,6 +390,9 @@ export default {
         }, {
           label: '点击量',
           prop: 'hits'
+        }, {
+          label: '虚拟数',
+          prop: 'inventedNum'
         }, {
           label: '是否头条',
           prop: 'featured',
@@ -407,13 +407,15 @@ export default {
           dicData: DIC.flag
         }, {
           label: '回复数',
-          prop: 'postNum'
+          prop: 'postNum',
+          hide: true
         }, {
           label: '点赞数',
-          prop: 'upsNum'
+          prop: 'upsNum',
+          hide: true
         }, {
-          label: '虚拟数',
-          prop: 'inventedNum'
+          label: '发布时间',
+          prop: 'publishedTime'
         }],
       tableData: [],
       page: {
@@ -421,6 +423,7 @@ export default {
         current: 1,
         size: 10
       },
+      categoryTypeList: [],
       formRules: {},
       searchForm: {},
       dialogPvVisible: false,
@@ -434,13 +437,14 @@ export default {
     ...mapGetters(['permissions', 'access_token'])
   },
   created() {
+    this.getCategoryType()
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
-             * 获取列表数据
-             */
+     * 获取列表数据
+     */
     getList() {
       this.tableLoading = true
       fetchList(
@@ -463,21 +467,29 @@ export default {
         })
     },
     /**
-             * 搜索
-             */
+     * 栏目列表
+     */
+    getCategoryType() {
+      getCategoryType().then(data => {
+        this.categoryTypeList = data.data.data
+      })
+    },
+    /**
+     * 搜索
+     */
     handleFilter() {
       this.getList()
     },
     /**
-             * 清空搜索表单
-             */
+     * 清空搜索表单
+     */
     handleEmpty() {
       this.searchForm = {}
       this.getList()
     },
     /**
-             * 点击新增
-             */
+     * 点击新增
+     */
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
@@ -492,24 +504,24 @@ export default {
       })
     },
     /**
-             * 点击查看
-             */
+     * 点击查看
+     */
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
       this.form = row
     },
     /**
-             * 点击编辑
-             */
+     * 点击编辑
+     */
     handleUpdate(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
     },
     /**
-             * 新增保存
-             */
+     * 新增保存
+     */
     create() {
       this.$refs
         .dataForm.validate(valid => {
@@ -533,8 +545,8 @@ export default {
         })
     },
     /**
-             * 编辑保存
-             */
+     * 编辑保存
+     */
     update() {
       this.$refs
         .dataForm.validate(valid => {
@@ -558,8 +570,8 @@ export default {
         })
     },
     /**
-             * 点击删除
-             */
+     * 点击删除
+     */
     handleDelete(row, index) {
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {
@@ -579,3 +591,31 @@ export default {
   }
 }
 </script>
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409eff;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
+</style>
