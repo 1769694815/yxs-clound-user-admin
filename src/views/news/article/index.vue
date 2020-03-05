@@ -478,7 +478,8 @@ export default {
           hide: true
         }, {
           label: '创建时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: '200px'
         }],
       tableData: [],
       page: {
@@ -617,8 +618,8 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
       this.init()
+      this.form = {}
     },
     /**
      * 点击查看
