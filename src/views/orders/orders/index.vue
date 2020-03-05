@@ -67,13 +67,6 @@
         </el-button>
         <el-button
           type="text"
-          icon="el-icon-view"
-          size="mini"
-          @click="handleUpdate(scope.row)"
-        >编辑
-        </el-button>
-        <el-button
-          type="text"
           size="mini"
           icon="el-icon-delete"
           @click="handleDelete(scope.row, scope.index)"
@@ -96,23 +89,6 @@
           :rules="formRules"
           :model="form"
         >
-
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="id"
-              label="订单ID:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.id"
-                autocomplete="off"
-                placeholder="请输入订单ID"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
           <el-col
             :span="12"
           >
@@ -134,13 +110,14 @@
           >
             <el-form-item
               prop="status"
-              label="订单状态(1.未支付, 2.支付成功, 3.退款中, 4.已退款, 5.已取消):"
+              label="订单状态:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-change
                 v-model="form.status"
-                autocomplete="off"
-                placeholder="请输入订单状态(1.未支付, 2.支付成功, 3.退款中, 4.已退款, 5.已取消)"
+                :operation-status="operationStatus"
+                status-type="order_status"
+                type="select"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -165,31 +142,29 @@
             :span="12"
           >
             <el-form-item
-              prop="itemImg"
-              label="商品图片:"
+              prop="itemType"
+              label="商品类型:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.itemImg"
-                autocomplete="off"
-                placeholder="请输入商品图片"
+              <single-change
+                v-model="form.itemType"
+                :operation-status="operationStatus"
+                status-type="goods_type"
+                type="select"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
           <el-col
-            :span="12"
+            :span="24"
           >
             <el-form-item
-              prop="itemType"
-              label="商品类型:1课程,2培训班:"
+              prop="itemImg"
+              label="商品图片:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.itemType"
-                autocomplete="off"
-                placeholder="请输入商品类型:1课程,2培训班"
-                :disabled="operationStatus === 1"
+              <single-image
+                v-model="form.itemImg"
               />
             </el-form-item>
           </el-col>
@@ -214,13 +189,13 @@
           >
             <el-form-item
               prop="amount"
-              label="订单实付金额:"
+              label="实付金额:"
               :label-width="formLabelWidth"
             >
               <el-input
                 v-model="form.amount"
                 autocomplete="off"
-                placeholder="请输入订单实付金额"
+                placeholder="请输入实付金额"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -245,174 +220,15 @@
             :span="12"
           >
             <el-form-item
-              prop="giftFlag"
-              label="是否为赠送礼物:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.giftFlag"
-                autocomplete="off"
-                placeholder="请输入是否为赠送礼物"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="giftTo"
-              label="赠送给用户ID:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.giftTo"
-                autocomplete="off"
-                placeholder="请输入赠送给用户ID"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="discountId"
-              label="折扣活动ID:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.discountId"
-                autocomplete="off"
-                placeholder="请输入折扣活动ID"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="discount"
-              label="折扣:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.discount"
-                autocomplete="off"
-                placeholder="请输入折扣"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="coupon"
-              label="优惠码:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.coupon"
-                autocomplete="off"
-                placeholder="请输入优惠码"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="couponDiscount"
-              label="优惠码扣减金额:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.couponDiscount"
-                autocomplete="off"
-                placeholder="请输入优惠码扣减金额"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
               prop="payWay"
-              label="订单支付方式（1：支付宝，2：微信，3：余额）:"
+              label="支付方式:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-change
                 v-model="form.payWay"
-                autocomplete="off"
-                placeholder="请输入订单支付方式（1：支付宝，2：微信，3：余额）"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="coinAmount"
-              label="虚拟币支付额:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.coinAmount"
-                autocomplete="off"
-                placeholder="请输入虚拟币支付额"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="coinRate"
-              label="虚拟币汇率:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.coinRate"
-                autocomplete="off"
-                placeholder="请输入虚拟币汇率"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="priceType"
-              label="创建订单时的标价类型(1:人民币,2:虚拟币):"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.priceType"
-                autocomplete="off"
-                placeholder="请输入创建订单时的标价类型(1:人民币,2:虚拟币)"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="bank"
-              label="银行编号:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.bank"
-                autocomplete="off"
-                placeholder="请输入银行编号"
+                :operation-status="operationStatus"
+                status-type="pay_way"
+                type="select"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -470,7 +286,7 @@
           >
             <el-form-item
               prop="itemData"
-              label="订单业务数据:"
+              label="业务数据:"
               :label-width="formLabelWidth"
             >
               <el-input
@@ -486,7 +302,7 @@
           >
             <el-form-item
               prop="createTime"
-              label="订单创建时间:"
+              label="创建时间:"
               :label-width="formLabelWidth"
             >
               <el-input
@@ -533,22 +349,6 @@
             :span="12"
           >
             <el-form-item
-              prop="token"
-              label="令牌:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.token"
-                autocomplete="off"
-                placeholder="请输入令牌"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
               prop="tradeSn"
               label="交易号:"
               :label-width="formLabelWidth"
@@ -566,29 +366,14 @@
           >
             <el-form-item
               prop="source"
-              label="订单来源（1：APP，2：PC，3：后台）:"
+              label="订单来源:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <single-change
                 v-model="form.source"
-                autocomplete="off"
-                placeholder="请输入订单来源（1：APP，2：PC，3：后台）"
-                :disabled="operationStatus === 1"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="tenantId"
-              label="租户id:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.tenantId"
-                autocomplete="off"
-                placeholder="请输入租户id"
+                :operation-status="operationStatus"
+                status-type="order_source"
+                type="select"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -660,19 +445,21 @@ export default {
       }, {
         label: '订单状态',
         prop: 'status',
-        dicUrl: 'order_status'
+        dicUrl: 'order_status',
+        dicData: []
       }, {
         label: '商品标题',
         prop: 'title'
       }, {
         label: '商品类型',
         prop: 'itemType',
-        dicUrl: 'goods_type'
+        dicUrl: 'goods_type',
+        dicData: []
       }, {
         label: '商品ID',
         prop: 'itemId'
       }, {
-        label: '订单实付金额',
+        label: '实付金额',
         prop: 'amount'
       }, {
         label: '订单总价',
@@ -685,13 +472,13 @@ export default {
         label: '支付时间',
         prop: 'payTime'
       }, {
-        label: '支付流水号',
+        label: '支付流水',
         prop: 'cashSn'
       }, {
         label: '备注',
         prop: 'note'
       }, {
-        label: '订单创建时间',
+        label: '创建时间',
         prop: 'createTime'
       }, {
         label: '交易号',
@@ -699,7 +486,8 @@ export default {
       }, {
         label: '订单来源',
         prop: 'source',
-        dicUrl: 'order_source'
+        dicUrl: 'order_source',
+        dicData: []
       }],
       tableData: [],
       page: {

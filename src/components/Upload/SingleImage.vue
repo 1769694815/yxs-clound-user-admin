@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 14:17:23
+ * @LastEditTime: 2020-03-05 10:09:02
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -17,10 +17,11 @@
       :on-success="handleSuccess"
       :action="upload_qiniu_url"
       :show-file-list="false"
+      :disabled="disabled"
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
+      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <el-upload
       v-show="!imageUrl && action"
@@ -30,10 +31,11 @@
       :on-success="handleSuccess"
       :action="action"
       :show-file-list="false"
+      :disabled="disabled"
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">图片大小不能超过2MB</div>
+      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <div
       v-show="imageUrl"
@@ -44,13 +46,17 @@
         class="image-preview-wrapper"
       >
         <img :src="imageUrl" class="avatar">
-        <div class="image-preview-action">
+        <div :class="['image-preview-action', { 'not-allowed': disabled }]">
           <i
+            v-show="!disabled"
             class="el-icon-delete"
             @click="handleRemove"
           />
         </div>
-      </div></div></div></template>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script>
 import { getToken } from '@/api/qiniu'
@@ -75,10 +81,22 @@ export default {
         return ''
       }
     },
-    type: {
-      type: Number,
+    status: {
+      type: [Number, String],
       default: function() {
         return 2
+      }
+    },
+    disabled: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
+    },
+    title: {
+      type: String,
+      default: function() {
+        return '图片大小不能超过2MB'
       }
     }
   },
@@ -91,7 +109,6 @@ export default {
       fileList: [],
       dialogImageUrl: '',
       dialogVisible: false,
-      disabled: false,
       imageUrl: '',
       headers: {
         Authorization: 'Bearer '
@@ -136,7 +153,7 @@ export default {
         const params = {
           fileName: file.name,
           fileSize: file.size,
-          type: this.type
+          type: this.status
         }
         getToken(params)
           .then(response => {
@@ -220,5 +237,8 @@ export default {
 }
 .course-upload__tip {
   margin-left: 0;
+}
+.not-allowed {
+  cursor: not-allowed !important;
 }
 </style>

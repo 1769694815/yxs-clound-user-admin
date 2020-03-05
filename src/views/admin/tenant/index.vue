@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:02:17
+ * @LastEditTime: 2020-03-04 15:29:44
  * @Description: 租户管理
  -->
 <template>
@@ -347,10 +347,6 @@ export default {
     this.admin_systenant_del = this.permissions['admin_systenant_del']
     this.admin_systenant_edit = this.permissions['admin_systenant_edit']
     this.getList()
-    // 初始化富文本编辑器
-    this.$nextTick(() => {
-      this.$refs.Tinymce.init()
-    })
   },
   methods: {
     getList() {
@@ -387,6 +383,11 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
+      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        console.log(this.$refs.tinymce)
+        this.$refs.tinymce.init()
+      })
     },
     create() {
       this.dialogPvVisible = false
