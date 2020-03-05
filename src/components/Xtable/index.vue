@@ -117,7 +117,8 @@
       <el-table-column
         label="操作"
         align="center"
-        :width="menuWidth"
+        :min-width="menuWidth"
+        :fixed="menuFixed"
       >
         <template slot-scope="scope">
           <slot
@@ -234,7 +235,13 @@ export default {
     menuWidth: {
       type: String,
       default: function() {
-        return ''
+        return '160'
+      }
+    },
+    menuFixed: {
+      type: String,
+      default: function() {
+        return 'right'
       }
     }
   },

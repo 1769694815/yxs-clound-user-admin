@@ -19,6 +19,62 @@
           placeholder="请输入文章标题"
         />
       </el-form-item>
+      <el-form-item
+        label="状态:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.status" clearable placeholder="请选择是否发布">
+          <el-option
+            v-for="item in DIC.status"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否头条:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.featured" clearable placeholder="请选择是否头条">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否推荐:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.promoted" clearable placeholder="请选择是否推荐">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否置顶:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.sticky" clearable placeholder="请选择是否置顶">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -358,6 +414,7 @@ export default {
       headers: {},
       tableKey: 0,
       tableLoading: false,
+      DIC: DIC,
       tableOption: [
         {
           label: '文章标题',
@@ -421,7 +478,8 @@ export default {
           hide: true
         }, {
           label: '创建时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: '200px'
         }],
       tableData: [],
       page: {
@@ -560,8 +618,8 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
       this.init()
+      this.form = {}
     },
     /**
      * 点击查看
