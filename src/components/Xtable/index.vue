@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 11:10:19
+ * @LastEditTime: 2020-03-05 13:50:28
  * @Description: 表格组件
  -->
 <template>
@@ -86,13 +86,7 @@
               :$index="scope.$index"
             />
             <!-- 有默认数据 -->
-            <span v-else-if="item.dicData">
-              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
-            </span>
-            <!-- 根据接口返回数据 dicProp参数 -->
-            <span
-              v-else-if="item.dicUrl"
-            >
+            <span v-else-if="(item.dicData && item.dicData.length) || item.dicUrl">
               <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
