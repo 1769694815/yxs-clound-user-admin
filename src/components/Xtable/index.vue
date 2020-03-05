@@ -124,6 +124,7 @@
         label="操作"
         align="center"
         :width="menuWidth"
+        :fixed="menuFixed"
       >
         <template slot-scope="scope">
           <slot
@@ -241,6 +242,12 @@ export default {
       type: String,
       default: function() {
         return ''
+      }
+    },
+    menuFixed: {
+      type: String,
+      default: function() {
+        return 'right'
       }
     }
   },
