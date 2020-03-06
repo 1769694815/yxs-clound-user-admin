@@ -143,6 +143,7 @@
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
       :close-on-click-modal="false"
+      :before-close="closeDialog"
     >
       <el-row
         style="padding: 0 20px;"
@@ -265,6 +266,7 @@
               <single-image
                 v-model="form.thumb"
                 :type="3"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -322,7 +324,7 @@
               label="文章描述:"
               :label-width="formLabelWidth"
             >
-              <tinymce ref="tinymce" v-model="form.body" :height="300" />
+              <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
             </el-form-item>
           </el-col>
 
@@ -348,7 +350,7 @@
         </el-button>
         <el-button
           size="small"
-          @click="dialogPvVisible = false"
+          @click="closeDialog"
         >取 消
         </el-button>
       </div>
@@ -619,8 +621,9 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.init()
       this.form = {}
+      this.form.body = ''
+      this.init()
     },
     /**
      * 点击查看
@@ -630,9 +633,8 @@ export default {
       this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
+        this.init()
       })
-      this.form = row
-      this.init()
     },
     /**
      * 点击编辑
@@ -643,8 +645,8 @@ export default {
       this.form = row
       getObj(row.id).then(data => {
         this.form = data.data.data
+        this.init()
       })
-      this.init()
     },
     /**
      * 新增保存
@@ -719,13 +721,18 @@ export default {
      * 初始化富文本编辑器
      */
     init() {
-      // 初始化富文本编辑器
+      this.$nextTick(() => {
+        this.$refs.tinymce.init()
+      })
+    },
+    closeDialog() {
       this.$nextTick(() => {
         if (this.$refs.tinymce.hasInit) {
           this.$refs.tinymce.destroyTinymce()
         }
-        this.$refs.tinymce.init()
       })
+      this.$refs.dataForm.resetFields()
+      this.dialogPvVisible = false
     }
   }
 }
