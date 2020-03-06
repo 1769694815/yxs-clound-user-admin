@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 17:00:39
+ * @LastEditTime: 2020-03-05 15:01:04
  * @Description: 题目表管理
  -->
 <template>
@@ -142,12 +142,13 @@
           </el-col>
           <!--所属课程-->
           <el-col :span="12">
-            <el-form-item label="所属课程" prop="courseId" @change="getLessonList">
+            <el-form-item label="所属课程" prop="courseId">
               <el-select
                 v-model="form.courseId"
                 clearable
                 class="question-input"
                 placeholder="请选择所属课程"
+                @change="getLessonList"
               >
                 <el-option
                   v-for="item in courseList"
@@ -177,7 +178,7 @@
             </el-form-item>
           </el-col>
           <!--题目选项-->
-          <el-row
+          <el-col
             v-for="(item, index) in singleArray"
             v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3"
             :key="index"
@@ -201,7 +202,7 @@
               @click="optionDel(letterArray[index])"
             >-</button>
             <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
-          </el-row>
+          </el-col>
           <!-- 题目答案 -->
           <el-col v-if="form.typeId != 7" :span="24">
             <el-form-item label="题目答案" prop="answer">
@@ -386,7 +387,7 @@ export default {
           label: '难度',
           prop: 'difficulty',
           dicData: DIC.difficultyList,
-          width: 60
+          width: 80
         },
         {
           label: '课程',
@@ -423,20 +424,7 @@ export default {
       formLabelWidth: '90px',
       rules: {
         // 表单校验
-        title: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
-        ],
-        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
-        openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
-        ],
-        newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图片', trigger: 'change' }]
-      },
-      dataObj: { token: '', key: '' },
-      imageUrl: '' // 图片地址
+      }
     }
   },
   computed: {
@@ -621,45 +609,11 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .question-textarea {
   width: 90%;
 }
 .question-input {
   width: 250px;
-}
-
-.course-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>

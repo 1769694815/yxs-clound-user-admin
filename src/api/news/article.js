@@ -30,8 +30,8 @@ export function getObj(id) {
 
 export function delObj(row) {
   return request({
-    url: '/news/article/' + row.id,
-    method: 'delete'
+    url: '/news/article/removeArticle?id=' + row.id,
+    method: 'get'
   })
 }
 

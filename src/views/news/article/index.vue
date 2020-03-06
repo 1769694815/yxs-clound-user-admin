@@ -10,7 +10,7 @@
 
       <el-form-item
         label="标题:"
-        label-width="80px"
+        label-width="60px"
       >
         <el-input
           v-model="searchForm.title"
@@ -18,6 +18,62 @@
           size="small"
           placeholder="请输入文章标题"
         />
+      </el-form-item>
+      <el-form-item
+        label="状态:"
+        label-width="60px"
+      >
+        <el-select v-model="searchForm.status" clearable placeholder="请选择是否发布">
+          <el-option
+            v-for="item in DIC.status"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否头条:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.featured" clearable placeholder="请选择是否头条">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否推荐:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.promoted" clearable placeholder="请选择是否推荐">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
+      </el-form-item>
+      <el-form-item
+        label="是否置顶:"
+        :label-width="formLabelWidth"
+      >
+        <el-select v-model="searchForm.sticky" clearable placeholder="请选择是否置顶">
+          <el-option
+            v-for="item in DIC.flag"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -358,6 +414,7 @@ export default {
       headers: {},
       tableKey: 0,
       tableLoading: false,
+      DIC: DIC,
       tableOption: [
         {
           label: '文章标题',
@@ -368,7 +425,11 @@ export default {
           hide: true
         }, {
           label: '栏目ID',
-          prop: 'categoryId'
+          prop: 'categoryId',
+          dicUrl: '/news/articlecategory/getCategoryType',
+          dicData: [],
+          dicProp: { label: 'name', value: 'id' }
+
         }, {
           label: '来源',
           prop: 'source',
@@ -380,6 +441,7 @@ export default {
         }, {
           label: '缩略图',
           prop: 'thumb',
+          width: '140',
           img: true
         }, {
           label: '文章头图',
@@ -417,7 +479,8 @@ export default {
           hide: true
         }, {
           label: '创建时间',
-          prop: 'createTime'
+          prop: 'createTime',
+          width: '200px'
         }],
       tableData: [],
       page: {
@@ -556,8 +619,8 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
       this.init()
+      this.form = {}
     },
     /**
      * 点击查看
@@ -667,31 +730,3 @@ export default {
   }
 }
 </script>
-<style>
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
-
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
-
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
-</style>

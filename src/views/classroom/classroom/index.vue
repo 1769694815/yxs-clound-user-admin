@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 16:55:55
+ * @LastEditTime: 2020-03-05 15:00:03
  * @Description: 文件管理
  -->
 <template>
@@ -52,6 +52,7 @@
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
+      menu-width="160"
     >
       <template slot="role" slot-scope="scope">
         <el-tag>{{ scope.row.role }}</el-tag>
@@ -72,8 +73,7 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
-      :title="operationStatus | dialogTitle"
-    >
+      :title="operationStatus | dialogTitle">
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
           <!--班级标题-->
@@ -447,31 +447,38 @@ export default {
       classroomId: null,
       tableOption: [
         {
+          width: 100,
           label: '标题',
           prop: 'title'
         },
         {
+          width: 60,
           label: '状态',
           prop: 'status'
         },
         {
+          width: 80,
           label: '授课方式',
           prop: 'teachingMethod',
           dicData: DIC.teachingMethodList
         },
         {
+          width: 60,
           label: '价格',
           prop: 'price'
         },
         {
+          width: 80,
           label: '填写人数',
           prop: 'learnNum'
         },
         {
+          width: 80,
           label: '课程数',
           prop: 'courseNum'
         },
         {
+          width: 80,
           label: '课时数',
           prop: 'lessonNum'
         },
@@ -500,6 +507,7 @@ export default {
           dicData: DIC.typeList
         },
         {
+          width: 160,
           label: '创建时间',
           prop: 'createTime'
         }
@@ -731,42 +739,8 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .classroom-input {
   width: 250px;
-}
-
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>

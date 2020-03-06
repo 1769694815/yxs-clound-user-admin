@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
  * @LastEditTime: 2020-03-06 11:11:38
  * @Description: 文件管理
@@ -284,11 +284,11 @@ export default {
       classificationTypeList: [
         {
           value: 1,
-          label: '班级'
+          label: '课程'
         },
         {
           value: 2,
-          label: '课程'
+          label: '班级'
         }
       ]
     }
@@ -361,6 +361,7 @@ export default {
         {
           label: '分类类型',
           prop: 'groupType',
+          width: '120',
           dicData: DIC.classificationTypeList
         },
         {
@@ -370,7 +371,8 @@ export default {
         },
         {
           label: '字体颜色',
-          prop: 'fontColor'
+          prop: 'fontColor',
+          width: '100'
         }
       ],
       tableData: [],
@@ -583,42 +585,8 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .category-input {
   width: 100%;
-}
-
-.category-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>

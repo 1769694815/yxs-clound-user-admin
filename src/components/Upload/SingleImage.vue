@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 10:09:02
+ * @LastEditTime: 2020-03-05 15:47:19
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -21,7 +21,6 @@
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <el-upload
       v-show="!imageUrl && action"
@@ -35,7 +34,6 @@
       class="avatar-uploader"
     >
       <i class="el-icon-plus avatar-uploader-icon" />
-      <div slot="tip" class="course-upload__tip">{{ title }}</div>
     </el-upload>
     <div
       v-show="imageUrl"
@@ -45,7 +43,12 @@
         v-show="imageUrl"
         class="image-preview-wrapper"
       >
-        <img :src="imageUrl" class="avatar">
+        <el-iamge :src="imageUrl" class="avatar">
+          <div slot="error" class="el-image">
+            <span class="el-image__error">加载失败</span>
+          </div>
+        </el-iamge>
+        <!-- <img :src="imageUrl" class="avatar"> -->
         <div :class="['image-preview-action', { 'not-allowed': disabled }]">
           <i
             v-show="!disabled"
@@ -55,6 +58,7 @@
         </div>
       </div>
     </div>
+    <div slot="tip" class="course-upload__tip">{{ title }}</div>
   </div>
 </template>
 
@@ -173,7 +177,7 @@ export default {
     },
     handleSuccess(res, file) {
       console.log('res', res)
-      this.imageUrl = this.action ? res.url : this.upload_qiniu_addr + res.key
+      this.imageUrl = this.action ? res.data.url : this.upload_qiniu_addr + res.key
       this.$emit('input', this.imageUrl)
     }
   }
@@ -183,14 +187,11 @@ export default {
 <style lang="scss" scoped>
 .upload-container {
   width: 178px;
-  height: 178px;
+  height: 230px;
   position: relative;
-  .image-uploader {
-    height: 100%;
-  }
   .image-preview {
     width: 100%;
-    height: 100%;
+    height: 178px;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -235,10 +236,11 @@ export default {
   width: 150px;
   height: 150px;
 }
-.course-upload__tip {
-  margin-left: 0;
-}
 .not-allowed {
   cursor: not-allowed !important;
+}
+.el-image {
+  width: 100%;
+  height: 100%;
 }
 </style>

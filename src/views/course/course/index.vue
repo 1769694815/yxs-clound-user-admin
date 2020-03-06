@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-04 16:56:10
+ * @LastEditTime: 2020-03-05 14:50:11
  * @Description: 课程管理
  -->
 <template>
@@ -425,7 +425,7 @@ export default {
         {
           label: '课程分类',
           prop: 'categoryName',
-          width: '160'
+          width: '100'
         },
         {
           label: '课程状态',
@@ -436,7 +436,7 @@ export default {
         {
           label: '连载状态',
           prop: 'serialStatus',
-          width: '100',
+          width: '120',
           dicData: DIC.serialStatusList
         },
         {
@@ -692,42 +692,8 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
 .course-input {
   width: 100%;
-}
-
-.course-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
 }
 </style>

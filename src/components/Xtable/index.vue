@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 11:10:19
+ * @LastEditTime: 2020-03-05 15:53:59
  * @Description: 表格组件
  -->
 <template>
@@ -86,13 +86,7 @@
               :$index="scope.$index"
             />
             <!-- 有默认数据 -->
-            <span v-else-if="item.dicData">
-              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData) }}</el-tag>
-            </span>
-            <!-- 根据接口返回数据 dicProp参数 -->
-            <span
-              v-else-if="item.dicUrl"
-            >
+            <span v-else-if="(item.dicData && item.dicData.length) || item.dicUrl">
               <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
@@ -112,7 +106,7 @@
                 @click="imgView(scope.row[scope.column.property])"
               >
                 <div slot="error" class="image-slot">
-                  <i class="el-icon-picture-outline" />
+                  <span class="el-image__error">加载失败</span>
                 </div>
               </el-image>
             </span>
@@ -123,7 +117,8 @@
       <el-table-column
         label="操作"
         align="center"
-        :width="menuWidth"
+        :min-width="menuWidth"
+        :fixed="menuFixed"
       >
         <template slot-scope="scope">
           <slot
@@ -240,7 +235,13 @@ export default {
     menuWidth: {
       type: String,
       default: function() {
-        return ''
+        return '160'
+      }
+    },
+    menuFixed: {
+      type: String,
+      default: function() {
+        return 'right'
       }
     }
   },
@@ -303,6 +304,10 @@ export default {
   height: auto;
   max-height: 100px;
   cursor: pointer;
+  .image-slot {
+    width: 100%;
+    height: 100%;
+  }
 }
 .maxImg {
   width: 100%;

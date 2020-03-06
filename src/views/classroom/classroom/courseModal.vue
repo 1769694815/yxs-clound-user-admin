@@ -94,8 +94,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-</style>
-<style>
 .el-transfer-panel {
   width: 300px;
 }

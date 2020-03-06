@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:29:49
+ * @LastEditTime: 2020-03-06 11:26:45
  * @Description: 文件管理
  -->
 <template>
@@ -97,7 +97,7 @@
             <el-form-item label="是否免费" prop="free">
               <el-select v-model="form.free" clearable class="lesson-input" placeholder="请选择是否免费">
                 <el-option
-                  v-for="item in DIC.typeList"
+                  v-for="item in DIC.freeList"
                   :key="item.label"
                   :label="item.label"
                   :value="item.value"
@@ -156,18 +156,11 @@
           <!--课时封面-->
           <el-col :span="12">
             <el-form-item label="课时封面:" prop="cover">
-              <el-upload
-                :headers="headers"
-                class="avatar-uploader"
+              <single-image
+                v-model="imageUrl"
                 action="/admin/sys-file/uploadAfter/2"
-                :show-file-list="false"
-                :on-success="handleSuccess"
-                :before-upload="beforeUpload"
-              >
-                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                <i v-else class="el-icon-plus avatar-uploader-icon" />
-                <div slot="tip" class="lesson-upload__tip">图片大小不能超过2MB</div>
-              </el-upload>
+                :disabled="operationStatus === 1"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -214,6 +207,16 @@ export default {
   },
   data() {
     const DIC = {
+      freeList: [
+        {
+          value: 0,
+          label: '是'
+        },
+        {
+          value: 1,
+          label: '否'
+        }
+      ],
       typeList: [
         {
           value: 0,
@@ -488,42 +491,8 @@ export default {
   }
 }
 </script>
-<style>
-.lesson-input {
-  width: 250px;
-}
-
-.lesson-upload__tip {
-  font-size: 12px;
-  color: #ff0000;
-  margin-top: 7px;
-  margin-left: 100px;
-}
-
-.avatar-uploader .el-upload {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-}
-
-.avatar-uploader .el-upload:hover {
-  border-color: #409eff;
-}
-
-.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 178px;
-  height: 178px;
-  line-height: 178px;
-  text-align: center;
-}
-
-.avatar {
-  width: 178px;
-  height: 178px;
-  display: block;
-}
+<style lang="scss" scoped>
+  .lesson-input {
+    width: 100%;
+  }
 </style>
