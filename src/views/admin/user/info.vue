@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-03-05 14:02:24
- * @LastEditTime: 2020-03-05 15:59:07
+ * @LastEditTime: 2020-03-06 13:57:08
  * @LastEditors: xwen
  * @Description: 个人信息
  -->
@@ -52,7 +52,6 @@
             >
               <single-image
                 v-model="ruleForm.avatar"
-                action="/admin/sys-file/upload/1"
               />
             </el-form-item>
             <el-form-item>
@@ -152,8 +151,17 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           updateInfo(this.ruleForm).then(res => {
-            // DOTO: 接口报错
-            console.log(res)
+            if (res.data.ok && res.data.data) {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              })
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'error'
+              })
+            }
           })
         }
       })

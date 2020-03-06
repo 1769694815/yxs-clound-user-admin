@@ -59,12 +59,28 @@ export const constantRoutes = [
     path: '/info',
     component: Layout,
     redirect: '/info/index',
+    hidden: true,
     children: [{
       path: 'index',
       name: 'UserInfo',
-      component: () => import('@/views/admin/user/info')
+      component: () => import('@/views/admin/user/info'),
+      meta: { title: '个人信息' }
+    }]
+  },
+
+  {
+    path: '/course/coursechapter',
+    component: Layout,
+    redirect: '/course/coursechapter/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Coursechapter',
+      component: () => import('@/views/course/coursechapter'),
+      meta: { title: '章节管理' }
     }]
   }
+
 ]
 
 /**

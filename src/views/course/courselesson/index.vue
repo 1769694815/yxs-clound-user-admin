@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 14:59:25
+ * @LastEditTime: 2020-03-06 11:26:45
  * @Description: 文件管理
  -->
 <template>
@@ -97,7 +97,7 @@
             <el-form-item label="是否免费" prop="free">
               <el-select v-model="form.free" clearable class="lesson-input" placeholder="请选择是否免费">
                 <el-option
-                  v-for="item in DIC.typeList"
+                  v-for="item in DIC.freeList"
                   :key="item.label"
                   :label="item.label"
                   :value="item.value"
@@ -207,6 +207,16 @@ export default {
   },
   data() {
     const DIC = {
+      freeList: [
+        {
+          value: 0,
+          label: '是'
+        },
+        {
+          value: 1,
+          label: '否'
+        }
+      ],
       typeList: [
         {
           value: 0,

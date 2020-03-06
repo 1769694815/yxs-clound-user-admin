@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:00:15
+ * @LastEditTime: 2020-03-06 15:54:15
  * @Description: 文件管理
  -->
 <template>
@@ -218,8 +218,8 @@
           </el-col>
           <!--图片上传-->
           <el-col :span="24">
-            <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.img" :type="8" />
+            <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
+              <single-image v-model="form.icon" :type="8" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -239,7 +239,7 @@ import {
   addObj,
   putObj,
   delObj,
-  getAllCategoryType
+  getCategoryTreeByNotType
 } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
@@ -308,6 +308,12 @@ export default {
         {
           label: '分类名称',
           prop: 'name',
+          overHidden: true,
+          width: '120'
+        },
+        {
+          label: '父类名称',
+          prop: 'parentName',
           overHidden: true,
           width: '120'
         },
@@ -411,10 +417,7 @@ export default {
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
-        groupType: [
-          { required: true, message: '请选择分类类型', trigger: 'change' }
-        ],
-        img: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
@@ -431,17 +434,14 @@ export default {
   created() {
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
-    this.getAllCategoryType(1)
   },
   methods: {
     groupTypeChange(type) {
-      this.getAllCategoryType(type)
+      this.getCategoryTreeByNotType(type)
     },
-    getAllCategoryType(type) {
-      getAllCategoryType(type).then(res => {
+    getCategoryTreeByNotType(type) {
+      getCategoryTreeByNotType(type).then(res => {
         this.treeData = res.data.data
-        console.log('treeData', res.data.data)
-        // this.form.parentId = res.data.id;
       })
     },
     getList() {
@@ -475,25 +475,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false
@@ -547,15 +545,7 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {
-        groupType: 1,
-        hotFlag: 0,
-        recommendedFlag: 0,
-        columnFlag: 0,
-        topFlag: 0,
-        showFlag: 0,
-        fontColor: '#000000'
-      }
+      this.form = {}
     },
     /**
      * 文件上传方法
@@ -577,7 +567,7 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      this.form.img = res.fileKey
+      this.form.icon = res.fileKey
       this.imageUrl = res.url
     },
     handleRemove() {},
