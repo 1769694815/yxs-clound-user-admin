@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:00:15
+ * @LastEditTime: 2020-03-06 11:11:38
  * @Description: 文件管理
  -->
 <template>
@@ -218,8 +218,8 @@
           </el-col>
           <!--图片上传-->
           <el-col :span="24">
-            <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.img" :type="8" />
+            <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
+              <single-image v-model="form.icon" :type="8" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -414,7 +414,7 @@ export default {
         groupType: [
           { required: true, message: '请选择分类类型', trigger: 'change' }
         ],
-        img: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
@@ -577,7 +577,7 @@ export default {
      * @param file
      */
     handleSuccess(res, file) {
-      this.form.img = res.fileKey
+      this.form.icon = res.fileKey
       this.imageUrl = res.url
     },
     handleRemove() {},
