@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:47:19
+ * @LastEditTime: 2020-03-06 10:26:49
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -43,11 +43,11 @@
         v-show="imageUrl"
         class="image-preview-wrapper"
       >
-        <el-iamge :src="imageUrl" class="avatar">
-          <div slot="error" class="el-image">
+        <el-image :src="imageUrl" class="avatar">
+          <div slot="error" class="el-image" style="width: 100%; height: 100%;">
             <span class="el-image__error">加载失败</span>
           </div>
-        </el-iamge>
+        </el-image>
         <!-- <img :src="imageUrl" class="avatar"> -->
         <div :class="['image-preview-action', { 'not-allowed': disabled }]">
           <i
@@ -125,7 +125,6 @@ export default {
   watch: {
     value: {
       handler: function(val) {
-        console.log(val)
         this.imageUrl = val
       },
       immediate: true

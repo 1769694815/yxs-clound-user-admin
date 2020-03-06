@@ -34,7 +34,7 @@ export default {
     },
     value: {
       type: String,
-      default: ''
+      default: null
     },
     toolbar: {
       type: Array,
@@ -56,6 +56,10 @@ export default {
       type: [Number, String],
       required: false,
       default: 'auto'
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -136,7 +140,8 @@ export default {
         link_title: false,
         nonbreaking_force_tab: true, // inserting nonbreaking space &nbsp; need Nonbreaking Space Plugin
         init_instance_callback: editor => {
-          if (_this.value) {
+          console.log('_this.value', _this.value)
+          if (_this.value || _this.value === '') {
             editor.setContent(_this.value)
           }
           _this.hasInit = true
@@ -144,6 +149,10 @@ export default {
             this.hasChange = true
             this.$emit('input', editor.getContent())
           })
+          // 设置只读模式
+          if (_this.readonly) {
+            editor.setMode('readonly')
+          }
         },
         setup(editor) {
           editor.on('FullscreenStateChanged', (e) => {
