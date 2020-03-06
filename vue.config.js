@@ -41,7 +41,7 @@ module.exports = {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
         // target: 'http://yxs-cloud.utools.club',
-        target: 'http://125.65.83.218:9999',
+        target: 'http://192.168.2.199:9999',
         // target: `http://127.0.0.1:${port}/mock`,
         ws: false, // 需要websocket 开启
         changeOrigin: true,

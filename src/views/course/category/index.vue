@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-06 14:12:29
+ * @LastEditTime: 2020-03-06 15:54:15
  * @Description: 文件管理
  -->
 <template>
@@ -239,7 +239,7 @@ import {
   addObj,
   putObj,
   delObj,
-  getAllCategoryType
+  getCategoryTreeByNotType
 } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
@@ -308,6 +308,12 @@ export default {
         {
           label: '分类名称',
           prop: 'name',
+          overHidden: true,
+          width: '120'
+        },
+        {
+          label: '父类名称',
+          prop: 'parentName',
           overHidden: true,
           width: '120'
         },
@@ -431,12 +437,11 @@ export default {
   },
   methods: {
     groupTypeChange(type) {
-      this.getAllCategoryType(type)
+      this.getCategoryTreeByNotType(type)
     },
-    getAllCategoryType(type) {
-      getAllCategoryType(type).then(res => {
+    getCategoryTreeByNotType(type) {
+      getCategoryTreeByNotType(type).then(res => {
         this.treeData = res.data.data
-        console.log('treeData', res.data.data)
       })
     },
     getList() {
@@ -470,25 +475,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false
@@ -542,14 +545,7 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {
-        hotFlag: 0,
-        recommendedFlag: 0,
-        columnFlag: 0,
-        topFlag: 0,
-        showFlag: 0,
-        fontColor: '#000000'
-      }
+      this.form = {}
     },
     /**
      * 文件上传方法
