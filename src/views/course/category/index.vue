@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-06 11:11:38
+ * @LastEditTime: 2020-03-06 14:12:29
  * @Description: 文件管理
  -->
 <template>
@@ -411,9 +411,6 @@ export default {
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
-        groupType: [
-          { required: true, message: '请选择分类类型', trigger: 'change' }
-        ],
         icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       dataObj: { token: '', key: '' },
@@ -431,7 +428,6 @@ export default {
   created() {
     this.getList()
     this.headers.Authorization = 'Bearer ' + this.access_token
-    this.getAllCategoryType(1)
   },
   methods: {
     groupTypeChange(type) {
@@ -441,7 +437,6 @@ export default {
       getAllCategoryType(type).then(res => {
         this.treeData = res.data.data
         console.log('treeData', res.data.data)
-        // this.form.parentId = res.data.id;
       })
     },
     getList() {
@@ -548,7 +543,6 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {
-        groupType: 1,
         hotFlag: 0,
         recommendedFlag: 0,
         columnFlag: 0,
