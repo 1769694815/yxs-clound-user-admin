@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 14:50:11
+ * @LastEditTime: 2020-03-06 14:59:20
  * @Description: 课程管理
  -->
 <template>
@@ -633,7 +633,7 @@ export default {
     },
     handleChapterList(row, index) {
       this.$router.push({
-        path: '/course/coursechapter/index',
+        path: '/course/coursechapter',
         query: {
           courseId: row.id
         }
