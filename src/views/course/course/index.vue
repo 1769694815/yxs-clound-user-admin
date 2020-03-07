@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 14:50:38
+ * @LastEditTime: 2020-03-07 17:16:40
  * @Description: 课程管理
  -->
 <template>
@@ -619,6 +619,7 @@ export default {
               })
               .catch(() => {})
           }
+          this.dialogPvVisible = false
         } else {
           return false
         }
