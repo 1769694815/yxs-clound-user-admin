@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:16:40
+ * @LastEditTime: 2020-03-07 17:40:56
  * @Description: 课程管理
  -->
 <template>
@@ -535,20 +535,21 @@ export default {
   computed: {
     ...mapGetters(['permissions'])
   },
-  watch: {
-    // 联动需要监听主数据
-    'form.type': function(val) {
-      if (!val) {
-        this.form.categoryIds = ''
-        this.treeData = []
-      } else {
-        this.getCategoryTree(val)
-      }
-    }
-  },
+  // watch: {
+  //   // 联动需要监听主数据
+  //   'form.type': function(val) {
+  //     if (!val) {
+  //       this.form.categoryIds = ''
+  //       this.treeData = []
+  //     } else {
+  //       this.getCategoryTree(val)
+  //     }
+  //   }
+  // },
   created() {
     this.getList()
     this.getTeacherList()
+    this.getCategoryTree(1)
   },
   methods: {
     groupTypeChange(type) {

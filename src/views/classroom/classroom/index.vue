@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 16:05:48
+ * @LastEditTime: 2020-03-07 17:42:56
  * @Description: 文件管理
  -->
 <template>
@@ -123,8 +123,8 @@
                 v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
+                multiline
                 placeholder="请选择班级分类"
-                @node-click="getNodeData"
               />
             </el-form-item>
           </el-col>
