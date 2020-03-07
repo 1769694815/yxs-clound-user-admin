@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 10:12:09
+ * @LastEditTime: 2020-03-07 12:36:21
  * @Description: 文件管理
  -->
 <template>
@@ -10,31 +10,9 @@
     <!-- 头部菜单 -->
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
-      <!--分类名称-->
-      <el-form-item label="分类名称:" label-width="80px">
-        <el-input v-model="searchForm.name" type="text" size="small" placeholder="请输入分类名称" />
-      </el-form-item>
-      <!--是否最热-->
-      <el-form-item label="是否最热:" label-width="80px">
-        <el-select v-model="searchForm.hotFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
-      </el-form-item>
-      <!--是否置顶-->
-      <el-form-item label="是否置顶:" label-width="130px">
-        <el-select v-model="searchForm.topFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+      <!--班级名称-->
+      <el-form-item label="班级名称:" label-width="80px">
+        <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入班级名称" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -657,6 +635,7 @@ export default {
       this.operationStatus = 1
     },
     handleUpdate(row) {
+      console.log('row', row)
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 2

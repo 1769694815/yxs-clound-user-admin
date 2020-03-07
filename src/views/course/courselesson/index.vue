@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-06 11:26:45
+ * @LastEditTime: 2020-03-07 11:50:54
  * @Description: 文件管理
  -->
 <template>
@@ -150,16 +150,6 @@
                 placeholder="请输入课时简介"
                 clearable
                 class="lesson-input"
-              />
-            </el-form-item>
-          </el-col>
-          <!--课时封面-->
-          <el-col :span="12">
-            <el-form-item label="课时封面:" prop="cover">
-              <single-image
-                v-model="imageUrl"
-                action="/admin/sys-file/uploadAfter/2"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -334,9 +324,6 @@ export default {
         ],
         status: [
           { required: true, message: '请选择课时发布', trigger: 'change' }
-        ],
-        cover: [
-          { required: true, message: '请上传课时封面', trigger: 'change' }
         ]
       },
       dataObj: { token: '', key: '' },
@@ -463,29 +450,6 @@ export default {
         status: 0,
         type: 1
       }
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      this.form.cover = res.fileKey
-      this.imageUrl = res.url
     },
     handleRemove() {}
   }
