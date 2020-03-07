@@ -167,7 +167,7 @@
               label="显示顺序:"
               :label-width="formLabelWidth"
             >
-              <el-input
+              <el-input-number
                 v-model="form.sequence"
                 autocomplete="off"
                 placeholder="请输入显示顺序"

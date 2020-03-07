@@ -325,7 +325,7 @@
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
 import { getTeacherList } from '@/api/user'
-import { getAllCategoryType } from '@/api/course/category'
+import { getCategoryTreeByNotType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
@@ -543,7 +543,7 @@ export default {
   },
   methods: {
     getCategoryTree() {
-      getAllCategoryType(1).then(res => {
+      getCategoryTreeByNotType(1).then(res => {
         this.treeData = res.data.data
       })
     },
