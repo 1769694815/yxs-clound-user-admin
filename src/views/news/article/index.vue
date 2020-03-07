@@ -440,6 +440,9 @@ export default {
           label: '来源URL',
           prop: 'sourceUrl',
           hide: true
+        },{
+          label: '生成URL',
+          prop: 'url'
         }, {
           label: '缩略图',
           prop: 'thumb',
