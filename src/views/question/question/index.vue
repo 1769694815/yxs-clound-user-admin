@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:01:04
+ * @LastEditTime: 2020-03-07 18:01:09
  * @Description: 题目表管理
  -->
 <template>
@@ -61,6 +61,7 @@
             <el-form-item label="题目内容" prop="stem">
               <el-input
                 v-model="form.stem"
+                :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
                 type="textarea"
                 placeholder="请输入题目内容"
@@ -72,7 +73,13 @@
           <!--所属年份-->
           <el-col :span="12">
             <el-form-item label="所属年份" prop="year">
-              <el-input v-model="form.year" placeholder="请输入所属年份" clearable class="question-input" />
+              <el-input
+                v-model="form.year"
+                :disabled="operationStatus === 1"
+                placeholder="请输入所属年份"
+                clearable
+                class="question-input"
+              />
             </el-form-item>
           </el-col>
           <!--题目题型-->
@@ -80,6 +87,7 @@
             <el-form-item label="题目题型" prop="typeId">
               <el-select
                 v-model="form.typeId"
+                :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择题目题型"
@@ -98,6 +106,7 @@
             <el-form-item label="题目类型" prop="questionType">
               <el-select
                 v-model="form.questionType"
+                :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择题目类型"
@@ -116,6 +125,7 @@
             <el-form-item label="题目难度" prop="difficulty">
               <el-select
                 v-model="form.difficulty"
+                :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择题目难度"
@@ -134,6 +144,7 @@
             <el-form-item label="题目分值" prop="score">
               <el-input
                 v-model="form.score"
+                :disabled="operationStatus === 1"
                 placeholder="请输入题目分值"
                 clearable
                 class="question-input"
@@ -145,6 +156,7 @@
             <el-form-item label="所属课程" prop="courseId">
               <el-select
                 v-model="form.courseId"
+                :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择所属课程"
@@ -164,6 +176,7 @@
             <el-form-item label="所属课时" prop="lessonId">
               <el-select
                 v-model="form.lessonId"
+                :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择所属课时"
@@ -187,6 +200,7 @@
               <el-form-item :label="'选项'+ letterArray[index]">
                 <el-input
                   v-model="singleArray[index]"
+                  :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                   class="question-textarea"
@@ -210,6 +224,7 @@
               <el-input
                 v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
                 v-model="form.answer"
+                :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
                 type="textarea"
                 placeholder="请输入题目答案"
@@ -217,7 +232,11 @@
                 class="question-textarea"
               />
               <!-- 选择题 -->
-              <el-radio-group v-if="form.typeId === 1" v-model="form.answer">
+              <el-radio-group
+                v-if="form.typeId === 1"
+                v-model="form.answer"
+                :disabled="operationStatus === 1"
+              >
                 <el-radio
                   v-for="(item, index) in singleArray"
                   :key="index"
@@ -225,7 +244,11 @@
                 >{{ letterArray[index] }}</el-radio>
               </el-radio-group>
               <!-- 多选题 -->
-              <el-checkbox-group v-if="form.typeId === 2 || form.typeId === 3" v-model="checkArray">
+              <el-checkbox-group
+                v-if="form.typeId === 2 || form.typeId === 3"
+                v-model="checkArray"
+                :disabled="operationStatus === 1"
+              >
                 <el-checkbox
                   v-for="(item, index) in singleArray"
                   :key="index"
@@ -234,7 +257,11 @@
                 >{{ letterArray[index] }}</el-checkbox>
               </el-checkbox-group>
               <!-- 判断题 -->
-              <el-radio-group v-if="form.typeId === 4" v-model="form.answer">
+              <el-radio-group
+                v-if="form.typeId === 4"
+                v-model="form.answer"
+                :disabled="operationStatus === 1"
+              >
                 <el-radio :label="'true'">正确</el-radio>
                 <el-radio :label="'false'">错误</el-radio>
               </el-radio-group>
@@ -250,6 +277,7 @@
                 placeholder="请输入题目解析"
                 clearable
                 class="question-textarea"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -257,7 +285,7 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.imgUrl" :type="7" />
+              <single-image v-model="form.imgUrl" :type="7" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
         </el-form>

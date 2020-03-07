@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:32:24
+ * @LastEditTime: 2020-03-07 17:56:15
  * @Description: 文件管理
  -->
 <template>
@@ -89,20 +89,33 @@
           <!--分类编码-->
           <el-col :span="12">
             <el-form-item label="分类编码" prop="name">
-              <el-input v-model="form.name" placeholder="请输入分类名称" clearable class="category-input" />
+              <el-input
+                v-model="form.name"
+                :disabled="operationStatus === 1"
+                placeholder="请输入分类名称"
+                clearable
+                class="category-input"
+              />
             </el-form-item>
           </el-col>
           <!--分类编码-->
           <el-col :span="12">
             <el-form-item label="分类编码" prop="name">
-              <el-input v-model="form.code" placeholder="请输入分类编码" clearable class="category-input" />
+              <el-input
+                v-model="form.code"
+                :disabled="operationStatus === 1"
+                placeholder="请输入分类编码"
+                clearable
+                class="category-input"
+              />
             </el-form-item>
           </el-col>
           <!--分类类型-->
           <el-col :span="12">
-            <el-form-item label="分类类型" prop="groupType">
+            <el-form-item label="分类类型" :disabled="operationStatus === 1" prop="groupType">
               <el-select
                 v-model="form.groupType"
+                :disabled="operationStatus === 1"
                 clearable
                 class="category-input"
                 placeholder="请选择分类类型"
@@ -131,7 +144,7 @@
           <!--是否最热-->
           <el-col :span="12">
             <el-form-item label="是否最热" prop="hotFlag">
-              <el-radio-group v-model="form.hotFlag">
+              <el-radio-group v-model="form.hotFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -145,7 +158,7 @@
           <!--是否置顶-->
           <el-col :span="12">
             <el-form-item label="是否置顶" prop="topFlag">
-              <el-radio-group v-model="form.topFlag">
+              <el-radio-group v-model="form.topFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -159,7 +172,7 @@
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
-              <el-radio-group v-model="form.showFlag">
+              <el-radio-group v-model="form.showFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -173,13 +186,13 @@
           <!--字体颜色-->
           <el-col :span="12">
             <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor" />
+              <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
           <el-col :span="12">
             <el-form-item label="APP顶部导航" prop="columnFlag" label-width="120px">
-              <el-radio-group v-model="form.columnFlag">
+              <el-radio-group v-model="form.columnFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -193,7 +206,7 @@
           <!--APP首页分栏-->
           <el-col :span="12">
             <el-form-item label="APP首页分栏" prop="recommendedFlag" label-width="140px">
-              <el-radio-group v-model="form.recommendedFlag">
+              <el-radio-group v-model="form.recommendedFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -209,6 +222,7 @@
             <el-form-item label="显示顺序" prop="sort">
               <el-input-number
                 v-model="form.sequence"
+                :disabled="operationStatus === 1"
                 placeholder="请输入显示顺序"
                 clearable
                 class="category-input"
@@ -218,7 +232,7 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.icon" :type="8" />
+              <single-image v-model="form.icon" :type="8" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
         </el-form>

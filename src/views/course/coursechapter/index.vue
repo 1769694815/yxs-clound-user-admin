@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:00:37
+ * @LastEditTime: 2020-03-07 17:57:23
  * @Description: 文件管理
  -->
 <template>
@@ -62,13 +62,25 @@
           <!--章节名称-->
           <el-col :span="12">
             <el-form-item label="章节名称" prop="title">
-              <el-input v-model="form.title" placeholder="请输入章节名称" clearable class="chapter-input" />
+              <el-input
+                v-model="form.title"
+                :disabled="operationStatus === 1"
+                placeholder="请输入章节名称"
+                clearable
+                class="chapter-input"
+              />
             </el-form-item>
           </el-col>
           <!--章节排序-->
           <el-col :span="12">
             <el-form-item label="章节排序" prop="sort">
-              <el-input v-model="form.sort" placeholder="请输入章节排序" clearable class="chapter-input" />
+              <el-input
+                v-model="form.sort"
+                :disabled="operationStatus === 1"
+                placeholder="请输入章节排序"
+                clearable
+                class="chapter-input"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -83,12 +95,7 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  addObj,
-  putObj,
-  delObj
-} from '@/api/course/coursechapter'
+import { fetchList, addObj, putObj, delObj } from '@/api/course/coursechapter'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 
@@ -221,26 +228,24 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
             this.form.courseId = this.$route.query.courseId
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false

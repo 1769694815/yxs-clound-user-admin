@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:40:56
+ * @LastEditTime: 2020-03-07 17:55:03
  * @Description: 课程管理
  -->
 <template>
@@ -91,19 +91,37 @@
           <!--课程标题-->
           <el-col :span="12">
             <el-form-item label="课程标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入课程标题" clearable class="course-input" />
+              <el-input
+                v-model="form.title"
+                :disabled="operationStatus === 1"
+                placeholder="请输入课程标题"
+                clearable
+                class="course-input"
+              />
             </el-form-item>
           </el-col>
           <!--副标题-->
           <el-col :span="12">
             <el-form-item label="副标题" prop="brife">
-              <el-input v-model="form.brife" placeholder="请输入副标题" clearable class="course-input" />
+              <el-input
+                v-model="form.brife"
+                :disabled="operationStatus === 1"
+                placeholder="请输入副标题"
+                clearable
+                class="course-input"
+              />
             </el-form-item>
           </el-col>
           <!--课程类型-->
           <el-col :span="12">
             <el-form-item label="课程类型" prop="type">
-              <el-select v-model="form.type" clearable class="course-input" placeholder="请选择课程类型">
+              <el-select
+                v-model="form.type"
+                :disabled="operationStatus === 1"
+                clearable
+                class="course-input"
+                placeholder="请选择课程类型"
+              >
                 <el-option
                   v-for="item in DIC.courseTypeList"
                   :key="item.value"
@@ -133,6 +151,7 @@
               <el-select
                 v-model="form.teacherId"
                 clearable
+                :disabled="operationStatus === 1"
                 class="course-input"
                 placeholder="请选择课程讲师"
               >
@@ -148,13 +167,19 @@
           <!--课程价格-->
           <el-col :span="12">
             <el-form-item label="课程价格" prop="price">
-              <el-input v-model="form.price" placeholder="请输入课程价格" clearable class="course-input" />
+              <el-input
+                v-model="form.price"
+                :disabled="operationStatus === 1"
+                placeholder="请输入课程价格"
+                clearable
+                class="course-input"
+              />
             </el-form-item>
           </el-col>
           <!--课程状态-->
           <el-col :span="12">
             <el-form-item label="课程状态" prop="status">
-              <el-radio-group v-model="form.status">
+              <el-radio-group v-model="form.status" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.courseStatus"
                   :key="item.value"
@@ -172,6 +197,7 @@
                 v-model="form.serialStatus"
                 clearable
                 class="course-input"
+                :disabled="operationStatus === 1"
                 placeholder="请选择连载状态"
               >
                 <el-option
@@ -186,7 +212,7 @@
           <!--是否推荐-->
           <el-col :span="12">
             <el-form-item label="是否推荐" prop="recommend">
-              <el-radio-group v-model="form.recommend">
+              <el-radio-group v-model="form.recommend" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -200,7 +226,7 @@
           <!--开售标志-->
           <el-col :span="12">
             <el-form-item label="开售标志" prop="buyFlag">
-              <el-radio-group v-model="form.buyFlag">
+              <el-radio-group v-model="form.buyFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -214,7 +240,7 @@
           <!--视频拖动-->
           <el-col :span="12">
             <el-form-item label="视频拖动" prop="drag">
-              <el-radio-group v-model="form.drag">
+              <el-radio-group v-model="form.drag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -228,7 +254,7 @@
           <!--倍速播放-->
           <el-col :span="12">
             <el-form-item label="倍速播放" prop="doubleSpeed">
-              <el-radio-group v-model="form.doubleSpeed">
+              <el-radio-group v-model="form.doubleSpeed" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -244,6 +270,7 @@
             <el-form-item label="有效天数" prop="effectiveDays">
               <el-input
                 v-model="form.effectiveDays"
+                :disabled="operationStatus === 1"
                 placeholder="请输入有效天数"
                 clearable
                 class="course-input"
@@ -255,7 +282,13 @@
           <!--课程排序-->
           <el-col :span="12">
             <el-form-item label="课程排序" prop="sort">
-              <el-input v-model="form.sort" placeholder="请输入课程排序" clearable class="course-input" />
+              <el-input
+                v-model="form.sort"
+                :disabled="operationStatus === 1"
+                placeholder="请输入课程排序"
+                clearable
+                class="course-input"
+              />
             </el-form-item>
           </el-col>
           <!--填写人数-->
@@ -263,6 +296,7 @@
             <el-form-item label="填写人数" prop="learnNum">
               <el-input
                 v-model="form.learnNum"
+                :disabled="operationStatus === 1"
                 placeholder="请输入填写人数"
                 clearable
                 class="course-input"
@@ -277,6 +311,7 @@
             <el-form-item label="课程简叙" prop="subtitle">
               <el-input
                 v-model="form.subtitle"
+                :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入课程简叙"
                 clearable
@@ -290,6 +325,7 @@
             <el-form-item label="课程简介" prop="about">
               <el-input
                 v-model="form.about"
+                :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 4}"
                 placeholder="请输入课程简介"
                 clearable
@@ -302,7 +338,11 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="smallPicture" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.smallPicture" :type="5" />
+              <single-image
+                v-model="form.smallPicture"
+                :disabled="operationStatus === 1"
+                :type="5"
+              />
             </el-form-item>
           </el-col>
           <!-- 附件上传 -->
@@ -310,7 +350,7 @@
             <el-form-item label="附件上传">
               <single-file v-model="fileUrl" />
             </el-form-item>
-          </el-col> -->
+          </el-col>-->
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">

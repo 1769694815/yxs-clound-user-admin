@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 14:57:16
+ * @LastEditTime: 2020-03-07 18:02:11
  * @Description: 文件管理
  -->
 <template>
@@ -91,6 +91,7 @@
               <el-form-item label="题目内容" prop="stem">
                 <el-input
                   v-model="form.stem"
+                  :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
@@ -98,12 +99,12 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="所属年份" prop="year">
-                <el-input v-model="form.year" />
+                <el-input v-model="form.year" :disabled="operationStatus === 1" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item label="题目类型" prop="questionType">
-                <el-radio-group v-model="form.questionType">
+                <el-radio-group v-model="form.questionType" :disabled="operationStatus === 1">
                   <el-radio :label="1">练习题</el-radio>
                   <el-radio :label="2">历年真题</el-radio>
                 </el-radio-group>
@@ -111,7 +112,12 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="题目题型" prop="typeId">
-                <el-select v-model="form.typeId" placeholder="请选择题目题型" @change="getQuestionType">
+                <el-select
+                  v-model="form.typeId"
+                  placeholder="请选择题目题型"
+                  :disabled="operationStatus === 1"
+                  @change="getQuestionType"
+                >
                   <el-option
                     v-for="item in questionTypeList"
                     :key="item.id"
@@ -127,6 +133,7 @@
               <el-form-item label="题目难度" prop="difficulty">
                 <el-rate
                   v-model="form.difficulty"
+                  :disabled="operationStatus === 1"
                   :max="4"
                   :texts="['简单', '中等', '复杂', '极难']"
                   show-text
@@ -135,14 +142,19 @@
             </el-col>
             <el-col :span="12">
               <el-form-item label="题目分值" prop="score">
-                <el-input v-model="form.score" />
+                <el-input v-model="form.score" :disabled="operationStatus === 1" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
               <el-form-item label="所属课程" prop="courseId">
-                <el-select v-model="form.courseId" placeholder="请选择所属课程" @change="getLessonList">
+                <el-select
+                  v-model="form.courseId"
+                  :disabled="operationStatus === 1"
+                  placeholder="请选择所属课程"
+                  @change="getLessonList"
+                >
                   <el-option
                     v-for="item in courseList"
                     :key="item.id"
@@ -155,7 +167,11 @@
 
             <el-col :span="12">
               <el-form-item label="所属课时" prop="lessonId">
-                <el-select v-model="form.lessonId" placeholder="请选择所属课时">
+                <el-select
+                  v-model="form.lessonId"
+                  :disabled="operationStatus === 1"
+                  placeholder="请选择所属课时"
+                >
                   <el-option
                     v-for="item in lessonList"
                     :key="item.id"
@@ -175,6 +191,7 @@
               <el-form-item :label="'选项'+ letterArray[index]">
                 <el-input
                   v-model="singleArray[index]"
+                  :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
@@ -198,11 +215,16 @@
                 <el-input
                   v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
                   v-model="form.answer"
+                  :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
                 <!-- 选择题 -->
-                <el-radio-group v-if="form.typeId === 1" v-model="form.answer">
+                <el-radio-group
+                  v-if="form.typeId === 1"
+                  v-model="form.answer"
+                  :disabled="operationStatus === 1"
+                >
                   <el-radio
                     v-for="(item, index) in singleArray"
                     :key="index"
@@ -222,7 +244,11 @@
                   >{{ letterArray[index] }}</el-checkbox>
                 </el-checkbox-group>
                 <!-- 判断题 -->
-                <el-radio-group v-if="form.typeId === 4" v-model="form.answer">
+                <el-radio-group
+                  v-if="form.typeId === 4"
+                  v-model="form.answer"
+                  :disabled="operationStatus === 1"
+                >
                   <el-radio :label="'true'">正确</el-radio>
                   <el-radio :label="'false'">错误</el-radio>
                 </el-radio-group>
@@ -234,6 +260,7 @@
               <el-form-item label="题目解析" prop="analysis">
                 <el-input
                   v-model="form.analysis"
+                  :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
                 />
@@ -457,25 +484,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false

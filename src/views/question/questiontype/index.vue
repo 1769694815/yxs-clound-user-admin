@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:00:54
+ * @LastEditTime: 2020-03-07 18:00:01
  * @Description: 文件管理
  -->
 <template>
@@ -58,6 +58,7 @@
             <el-form-item label="题型名称" prop="name">
               <el-input
                 v-model="form.name"
+                :disabled="operationStatus === 1"
                 placeholder="请输入题型名称"
                 clearable
                 class="question-type-input"
@@ -69,6 +70,7 @@
             <el-form-item label="题型分值" prop="score">
               <el-input
                 v-model="form.score"
+                :disabled="operationStatus === 1"
                 placeholder="请输入题型分值"
                 clearable
                 class="question-type-input"
@@ -80,6 +82,7 @@
             <el-form-item label="漏选分值" prop="missScore">
               <el-input
                 v-model="form.missScore"
+                :disabled="operationStatus === 1"
                 placeholder="请输入漏选分值"
                 clearable
                 class="question-type-input"
@@ -91,6 +94,7 @@
             <el-form-item label="题型排序" prop="sort">
               <el-input
                 v-model="form.sort"
+                :disabled="operationStatus === 1"
                 placeholder="请输入题型排序"
                 clearable
                 class="question-type-input"
@@ -102,6 +106,7 @@
             <el-form-item label="题型描述" prop="description">
               <el-input
                 v-model="form.description"
+                :disabled="operationStatus === 1"
                 placeholder="请输入题型描述"
                 clearable
                 class="question-type-input"
@@ -120,12 +125,7 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  addObj,
-  putObj,
-  delObj
-} from '@/api/question/questiontype'
+import { fetchList, addObj, putObj, delObj } from '@/api/question/questiontype'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -236,25 +236,23 @@ export default {
         if (valid) {
           this.getList()
           if (this.form.id != null) {
-            putObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '修改成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            putObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '修改成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           } else {
-            addObj(this.form)
-              .then(() => {
-                this.$notify({
-                  title: '成功',
-                  message: '创建成功',
-                  type: 'success',
-                  duration: 2000
-                })
+            addObj(this.form).then(() => {
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
               })
+            })
           }
         } else {
           return false

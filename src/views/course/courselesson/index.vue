@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:50:54
+ * @LastEditTime: 2020-03-07 17:56:52
  * @Description: 文件管理
  -->
 <template>
@@ -89,13 +89,25 @@
           <!--课时标题-->
           <el-col :span="12">
             <el-form-item label="课时标题" prop="title">
-              <el-input v-model="form.title" placeholder="请输入课时标题" clearable class="lesson-input" />
+              <el-input
+                v-model="form.title"
+                :disabled="operationStatus === 1"
+                placeholder="请输入课时标题"
+                clearable
+                class="lesson-input"
+              />
             </el-form-item>
           </el-col>
           <!--是否免费-->
           <el-col :span="12">
             <el-form-item label="是否免费" prop="free">
-              <el-select v-model="form.free" clearable class="lesson-input" placeholder="请选择是否免费">
+              <el-select
+                v-model="form.free"
+                :disabled="operationStatus === 1"
+                clearable
+                class="lesson-input"
+                placeholder="请选择是否免费"
+              >
                 <el-option
                   v-for="item in DIC.freeList"
                   :key="item.label"
@@ -108,7 +120,13 @@
           <!--课时状态-->
           <el-col :span="12">
             <el-form-item label="课时状态" prop="status">
-              <el-select v-model="form.status" clearable class="lesson-input" placeholder="请选择课时状态">
+              <el-select
+                v-model="form.status"
+                :disabled="operationStatus === 1"
+                clearable
+                class="lesson-input"
+                placeholder="请选择课时状态"
+              >
                 <el-option
                   v-for="item in DIC.lessonStatus"
                   :key="item.label"
@@ -121,7 +139,13 @@
           <!--课时类型-->
           <el-col :span="12">
             <el-form-item label="课时类型" prop="type">
-              <el-select v-model="form.type" clearable class="lesson-input" placeholder="请选择课时类型">
+              <el-select
+                v-model="form.type"
+                :disabled="operationStatus === 1"
+                clearable
+                class="lesson-input"
+                placeholder="请选择课时类型"
+              >
                 <el-option
                   v-for="item in DIC.fileType"
                   :key="item.label"
@@ -136,6 +160,7 @@
             <el-form-item label="课时资源" prop="mediaUri">
               <el-input
                 v-model="form.mediaUri"
+                :disabled="operationStatus === 1"
                 placeholder="请输入课时资源"
                 clearable
                 class="lesson-input"
@@ -147,6 +172,7 @@
             <el-form-item label="课时简介" prop="content">
               <el-input
                 v-model="form.content"
+                :disabled="operationStatus === 1"
                 placeholder="请输入课时简介"
                 clearable
                 class="lesson-input"
@@ -165,12 +191,7 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  addObj,
-  putObj,
-  delObj
-} from '@/api/course/courselesson'
+import { fetchList, addObj, putObj, delObj } from '@/api/course/courselesson'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 
@@ -456,7 +477,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .lesson-input {
-    width: 100%;
-  }
+.lesson-input {
+  width: 100%;
+}
 </style>

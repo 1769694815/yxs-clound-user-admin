@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 14:54:48
+ * @LastEditTime: 2020-03-07 17:57:10
  * @Description: 文件管理
  -->
 <template>
@@ -79,6 +79,7 @@
             <el-form-item label="评论内容" prop="name">
               <el-input
                 v-model="form.content"
+                :disabled="operationStatus === 1"
                 placeholder="请输入评论内容"
                 clearable
                 class="comment-input"
@@ -90,6 +91,7 @@
             <el-form-item label="父类id" prop="parentId">
               <el-input
                 v-model="form.parentId"
+                :disabled="operationStatus === 1"
                 placeholder="请输入父类id"
                 clearable
                 class="comment-input"
@@ -101,6 +103,7 @@
             <el-form-item label="审核状态" prop="status">
               <el-select
                 v-model="form.status"
+                :disabled="operationStatus === 1"
                 clearable
                 class="comment-input"
                 placeholder="请选择审核状态"
@@ -119,6 +122,7 @@
             <el-form-item label="是否置顶" prop="topFlag">
               <el-select
                 v-model="form.topFlag"
+                :disabled="operationStatus === 1"
                 clearable
                 class="comment-input"
                 placeholder="请选择是否置顶"
@@ -144,10 +148,7 @@
 </template>
 
 <script>
-import {
-  fetchList,
-  delObj
-} from '@/api/course/coursecomment'
+import { fetchList, delObj } from '@/api/course/coursecomment'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 

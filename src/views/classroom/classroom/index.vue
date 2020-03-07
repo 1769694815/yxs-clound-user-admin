@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:44:33
+ * @LastEditTime: 2020-03-07 17:59:02
  * @Description: 文件管理
  -->
 <template>
@@ -60,6 +60,7 @@
             <el-form-item label="班级标题" prop="title">
               <el-input
                 v-model="form.title"
+                :disabled="operationStatus === 1"
                 placeholder="请输入班级标题"
                 clearable
                 class="classroom-input"
@@ -69,7 +70,7 @@
           <!--班级状态-->
           <el-col :span="12">
             <el-form-item label="课程状态" prop="status">
-              <el-radio-group v-model="form.status">
+              <el-radio-group v-model="form.status" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.courseStatus"
                   :key="item.value"
@@ -85,6 +86,7 @@
             <el-form-item label="班主任" prop="headmasterId">
               <el-select
                 v-model="form.headmasterId"
+                :disabled="operationStatus === 1"
                 clearable
                 class="classroom-input"
                 placeholder="请选择班主任"
@@ -103,6 +105,7 @@
             <el-form-item label="班级助教" prop="assistantId">
               <el-select
                 v-model="form.assistantId"
+                :disabled="operationStatus === 1"
                 clearable
                 class="classroom-input"
                 placeholder="请选择班级助教"
@@ -133,6 +136,7 @@
             <el-form-item label="授课方式" prop="teachingMethod">
               <el-select
                 v-model="form.teachingMethod"
+                :disabled="operationStatus === 1"
                 clearable
                 class="classroom-input"
                 placeholder="请选择授课方式"
@@ -151,6 +155,7 @@
             <el-form-item label="班级价格" prop="price">
               <el-input
                 v-model="form.price"
+                :disabled="operationStatus === 1"
                 placeholder="请输入班级价格"
                 clearable
                 class="classroom-input"
@@ -162,6 +167,7 @@
             <el-form-item label="填写人数" prop="learnNum">
               <el-input
                 v-model="form.learnNum"
+                :disabled="operationStatus === 1"
                 placeholder="请输入填写人数"
                 clearable
                 class="classroom-input"
@@ -175,6 +181,7 @@
             <el-form-item label="推荐序号" prop="recommendedSeq">
               <el-input
                 v-model="form.recommendedSeq"
+                :disabled="operationStatus === 1"
                 placeholder="请输入推荐序号"
                 clearable
                 class="classroom-input"
@@ -184,7 +191,7 @@
           <!--是否封闭班级-->
           <el-col :span="12">
             <el-form-item label="是否封闭班级" prop="privateFlag">
-              <el-radio-group v-model="form.privateFlag">
+              <el-radio-group v-model="form.privateFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -198,7 +205,7 @@
           <!--是否为推荐班级-->
           <el-col :span="12">
             <el-form-item label="是否为推荐班级" prop="recommendedFlag">
-              <el-radio-group v-model="form.recommendedFlag">
+              <el-radio-group v-model="form.recommendedFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -212,7 +219,7 @@
           <!--是否开放购买-->
           <el-col :span="12">
             <el-form-item label="是否开放购买" prop="buyFlag">
-              <el-radio-group v-model="form.buyFlag">
+              <el-radio-group v-model="form.buyFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -226,7 +233,7 @@
           <!--是否开放展示-->
           <el-col :span="12">
             <el-form-item label="是否开放展示" prop="showFlag">
-              <el-radio-group v-model="form.showFlag">
+              <el-radio-group v-model="form.showFlag" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.typeList"
                   :key="item.value"
@@ -240,7 +247,7 @@
           <!--学习有效期模式-->
           <el-col :span="12">
             <el-form-item label="学习有效期模式" prop="expiryMode">
-              <el-radio-group v-model="form.expiryMode">
+              <el-radio-group v-model="form.expiryMode" :disabled="operationStatus === 1">
                 <el-radio
                   v-for="item in DIC.expiryModeList"
                   :key="item.value"
@@ -256,6 +263,7 @@
             <el-form-item label="有效天数" prop="expiryDays">
               <el-input
                 v-model="form.expiryDays"
+                :disabled="operationStatus === 1"
                 placeholder="请输入有效天数"
                 clearable
                 class="classroom-input"
@@ -269,6 +277,7 @@
             <el-form-item label="报名截止日期" prop="closeDate">
               <el-date-picker
                 v-model="form.closeDate"
+                :disabled="operationStatus === 1"
                 type="date"
                 placeholder="请输入报名截止日期"
                 clearable
@@ -281,6 +290,7 @@
             <el-form-item label="班级简介" prop="about">
               <el-input
                 v-model="form.about"
+                :disabled="operationStatus === 1"
                 placeholder="请输入班级简介"
                 clearable
                 class="classroom-input"
@@ -292,6 +302,7 @@
             <el-form-item label="班级说明" prop="description">
               <el-input
                 v-model="form.description"
+                :disabled="operationStatus === 1"
                 placeholder="请输入班级说明"
                 clearable
                 class="classroom-input"
@@ -301,7 +312,11 @@
           <!-- 图片上传 -->
           <el-col :span="12">
             <el-form-item prop="smallPicture" label="图片上传:">
-              <single-image v-model="form.smallPicture" :type="6" />
+              <single-image
+                v-model="form.smallPicture"
+                :disabled="operationStatus === 1"
+                :type="6"
+              />
             </el-form-item>
           </el-col>
         </el-form>
