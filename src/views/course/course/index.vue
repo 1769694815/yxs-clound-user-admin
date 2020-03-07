@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-06 14:59:20
+ * @LastEditTime: 2020-03-07 10:35:07
  * @Description: 课程管理
  -->
 <template>
@@ -121,6 +121,7 @@
                 v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
+                title="课程分类"
                 placeholder="请选择课程分类"
                 @node-click="getNodeData"
               />
@@ -304,6 +305,12 @@
               <single-image v-model="form.smallPicture" :type="5" />
             </el-form-item>
           </el-col>
+          <!-- 附件上传 -->
+          <!-- <el-col :span="24">
+            <el-form-item label="附件上传">
+              <single-file v-model="fileUrl" />
+            </el-form-item>
+          </el-col> -->
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
@@ -522,9 +529,7 @@ export default {
         smallPicture: [
           { required: true, message: '请上传图片', trigger: 'change' }
         ]
-      },
-      dataObj: { token: '', key: '' },
-      imageUrl: '' // 图片地址
+      }
     }
   },
   computed: {
@@ -664,30 +669,6 @@ export default {
       this.operationStatus = 0
       this.form = {}
     },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      this.form.smallPicture = res.fileKey
-      // this.imageUrl = res.url
-    },
-    handleRemove() {},
     getNodeData() {}
   }
 }
