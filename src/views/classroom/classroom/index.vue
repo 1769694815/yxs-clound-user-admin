@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 14:46:34
+ * @LastEditTime: 2020-03-07 17:32:23
  * @Description: 文件管理
  -->
 <template>
@@ -54,7 +54,7 @@
       :title="operationStatus | dialogTitle"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
-        <el-form ref="dataForm" :model="form" :rules="rules">
+        <el-form ref="dataForm" :model="form" :rules="rules" label-width="120px">
           <!--班级标题-->
           <el-col :span="12">
             <el-form-item label="班级标题" prop="title">
@@ -300,7 +300,7 @@
           </el-col>
           <!-- 图片上传 -->
           <el-col :span="12">
-            <el-form-item prop="smallPicture" label="图片上传:" :label-width="formLabelWidth">
+            <el-form-item prop="smallPicture" label="图片上传:">
               <single-image v-model="form.smallPicture" :type="6" />
             </el-form-item>
           </el-col>
@@ -721,6 +721,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .classroom-input {
-  width: 250px;
+  width: 100%;
 }
 </style>

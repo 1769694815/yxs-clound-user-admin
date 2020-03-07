@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 15:48:26
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:58:09
+ * @LastEditTime: 2020-03-07 17:03:59
  * @Description: 可搜索树形组件
  -->
 <template>
@@ -23,10 +23,9 @@
       :show-checkbox="showCheckbox"
       default-expand-all
       :expand-on-click-node="false"
-      :filter-node-method="filterNode"
       :current-node-key="currentNodeKey"
+      :filter-node-method="filterNode"
       @node-click="getNodeData"
-      @check="handleCheckChage"
     />
   </div>
 </template>
@@ -57,6 +56,12 @@ export default {
       default: function() {
         return ''
       }
+    },
+    defalutCheckedKeys: {
+      type: [Number, String],
+      default: function() {
+        return ''
+      }
     }
   },
   data() {
@@ -73,6 +78,16 @@ export default {
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    defalutCheckedKeys: {
+      handler: function(val) {
+        if (this.showCheckbox) {
+          const arr = val.length > 0 ? val.split(',') : []
+          this.checkIdList = arr.map(Number)
+          this.setCheckedKeys(arr)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
@@ -86,30 +101,26 @@ export default {
       }
       this.$emit('node-click', data)
     },
+    getCurrentNode() {
+      return this.$refs.tree.getCurrentNode()
+    },
     handleCheckChage(data, checked) {
-      const checkList = []
-      const checkedNodes = checked.checkedNodes
-      const checkedKeys = checked.checkedKeys
-      // 判断id是否为选择
-      if (checkedKeys.includes(data.id)) {
-        // 选择的
-        this.checkIdList.push(data.id)
-      } else {
-        // 取消的
-        for (let i = 0; i < this.checkIdList.length; i++) {
-          if (!checkedKeys.includes(this.checkIdList[i])) {
-            this.checkIdList.splice(i, 1)
-          }
-        }
-      }
-      for (let i = 0; i < checkedNodes.length; i++) {
-        for (let j = 0; j < this.checkIdList.length; j++) {
-          if (this.checkIdList[j] === checkedNodes[i].id) {
-            checkList.push(checkedNodes[i])
-          }
-        }
-      }
-      this.$emit('check-change', checkList)
+      console.log('data', data)
+      console.log('checked', checked)
+      // const checkedNodes = checked.checkedNodes.filter(item => !item.children)
+      console.log(this.$refs.tree.getCheckedNodes().filter(item => !item.children))
+      this.$emit('check-change', [])
+    },
+    setCheckedKeys(val) {
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(val)
+      })
+    },
+    getCheckedKeys() {
+      return this.$refs.tree.getCheckedKeys()
+    },
+    getCheckedNodes() {
+      return this.$refs.tree.getCheckedNodes()
     }
   }
 }
