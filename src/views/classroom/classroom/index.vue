@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 12:36:21
+ * @LastEditTime: 2020-03-07 14:46:34
  * @Description: 文件管理
  -->
 <template>
@@ -399,7 +399,7 @@ export default {
       ],
       teachingMethodList: [
         {
-          label: '线上',
+          label: '网上',
           value: 0
         },
         {
@@ -407,7 +407,7 @@ export default {
           value: 1
         },
         {
-          label: '线上线下',
+          label: '网上+面授',
           value: 2
         }
       ]

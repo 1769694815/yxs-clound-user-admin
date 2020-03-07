@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:49:25
+ * @LastEditTime: 2020-03-07 15:01:58
  * @Description: 文件管理
  -->
 <template>
@@ -176,9 +176,9 @@
               <el-color-picker v-model="form.fontColor" />
             </el-form-item>
           </el-col>
-          <!--是否栏目推荐-->
+          <!--APP顶部导航-->
           <el-col :span="12">
-            <el-form-item label="是否栏目推荐" prop="columnFlag" label-width="120px">
+            <el-form-item label="APP顶部导航" prop="columnFlag" label-width="120px">
               <el-radio-group v-model="form.columnFlag">
                 <el-radio
                   v-for="item in DIC.typeList"
@@ -190,9 +190,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
-          <!--是否首页分类推荐-->
+          <!--APP首页分栏-->
           <el-col :span="12">
-            <el-form-item label="是否首页分类推荐" prop="recommendedFlag" label-width="140px">
+            <el-form-item label="APP首页分栏" prop="recommendedFlag" label-width="140px">
               <el-radio-group v-model="form.recommendedFlag">
                 <el-radio
                   v-for="item in DIC.typeList"
@@ -337,14 +337,14 @@ export default {
           dicData: DIC.typeList
         },
         {
-          label: '是否推荐首页',
+          label: 'APP首页分栏',
           prop: 'recommendedFlag',
           overHidden: true,
           width: '120',
           dicData: DIC.typeList
         },
         {
-          label: '是否栏目推荐',
+          label: 'APP顶部导航',
           prop: 'columnFlag',
           overHidden: true,
           width: '120',
