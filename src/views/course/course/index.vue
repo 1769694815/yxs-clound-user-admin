@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 10:35:07
+ * @LastEditTime: 2020-03-07 11:42:32
  * @Description: 课程管理
  -->
 <template>
@@ -121,6 +121,7 @@
                 v-model="form.categoryIds"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
+                multiline
                 title="课程分类"
                 placeholder="请选择课程分类"
                 @node-click="getNodeData"
@@ -533,17 +534,29 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
+  },
+  watch: {
+    // 联动需要监听主数据
+    'form.type': function(val) {
+      if (!val) {
+        this.treeData = []
+      } else {
+        this.groupTypeChange(val)
+      }
+    }
   },
   created() {
     this.getList()
     this.getTeacherList()
-    this.getCategoryTree()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
-    getCategoryTree() {
-      getCategoryTreeByNotType(1).then(res => {
+    groupTypeChange(type) {
+      this.getCategoryTree(type)
+      this.form.categoryIds = ''
+    },
+    getCategoryTree(type) {
+      getCategoryTreeByNotType(type).then(res => {
         this.treeData = res.data.data
       })
     },

@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 17:54:11
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 17:57:15
+ * @LastEditTime: 2020-03-07 12:03:08
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -23,15 +23,27 @@
       @focus="onFocus"
       @blur="onBlur"
     />
-    <Tree
-      v-if="showTree"
-      class="tree"
-      :option="treeOption"
-      :data="treeData"
-      :show-checkbox="multiline"
-      @node-click="nodeClick"
-      @check-change="checkChange"
-    />
+    <el-dialog
+      :title="title"
+      :visible.sync="showTree"
+      width="30%"
+      append-to-body
+    >
+      <Tree
+        ref="inputTree"
+        class="tree"
+        :option="treeOption"
+        :data="treeData"
+        :show-checkbox="multiline"
+        :current-node-key="value"
+        @node-click="nodeClick"
+        @check-change="checkChange"
+      />
+      <div slot="footer" class="dialog-footer">
+        <el-button size="mini" @click="showTree = false">取 消</el-button>
+        <el-button size="mini" type="primary" @click="submit">确 认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -47,9 +59,15 @@ export default {
   },
   props: {
     value: {
-      type: Number,
+      type: [Number, String],
       default: function() {
         return 0
+      }
+    },
+    title: {
+      type: String,
+      default: function() {
+        return ''
       }
     },
     treeData: {
@@ -91,6 +109,21 @@ export default {
       }
     }
   },
+  watch: {
+    value: {
+      handler: function(val) {
+        console.log(val)
+        if (!val) {
+          this.text = ''
+        } else {
+          // 数据回显
+          console.log(this.$refs)
+          // console.log(this.$refs.inputTree.tree.getCurrentNode())
+        }
+      },
+      immediate: true
+    }
+  },
   methods: {
     onFocus() {
       this.showTree = true
@@ -101,9 +134,6 @@ export default {
     nodeClick(data) {
       this.deptId = data.id
       this.text = data.name
-      this.$emit('input', this.deptId)
-      this.$refs.input.blur()
-      this.showTree = false
     },
     checkChange(list) {
       this.deptId = ''
@@ -117,8 +147,10 @@ export default {
           this.text += ',' + list[i].name
         }
       }
+    },
+    submit() {
       this.$emit('input', this.deptId)
-      this.$emit('node-click')
+      this.showTree = false
     }
   }
 }
@@ -147,5 +179,9 @@ export default {
     background-color: #fff;
     z-index: 2001;
   }
+}
+.dialog-footer {
+  display: flex;
+  justify-content: center;
 }
 </style>

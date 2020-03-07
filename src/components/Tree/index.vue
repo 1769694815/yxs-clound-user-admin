@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 15:48:26
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-03 17:29:28
+ * @LastEditTime: 2020-03-07 11:58:09
  * @Description: 可搜索树形组件
  -->
 <template>
@@ -24,6 +24,7 @@
       default-expand-all
       :expand-on-click-node="false"
       :filter-node-method="filterNode"
+      :current-node-key="currentNodeKey"
       @node-click="getNodeData"
       @check="handleCheckChage"
     />
@@ -49,6 +50,12 @@ export default {
       type: Boolean,
       default: function() {
         return false
+      }
+    },
+    currentNodeKey: {
+      type: [Number, String],
+      default: function() {
+        return ''
       }
     }
   },

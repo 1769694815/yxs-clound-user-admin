@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-06 15:54:15
+ * @LastEditTime: 2020-03-07 11:49:25
  * @Description: 文件管理
  -->
 <template>
@@ -121,11 +121,10 @@
           <el-col :span="12">
             <el-form-item label="父类类型" prop="parentId">
               <Input-tree
-                v-model="form.deptId"
+                v-model="form.parentId"
                 :tree-data="treeData"
                 :operation-status="operationStatus"
                 placeholder="请选择父类类型"
-                @node-click="getNodeData"
               />
             </el-form-item>
           </el-col>
@@ -419,7 +418,6 @@ export default {
         ],
         icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
-      dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
       treeData: [],
       defaultProps: {
@@ -429,11 +427,22 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions', 'access_token'])
+    ...mapGetters(['permissions'])
+  },
+  watch: {
+    // 联动需要监听主数据
+    'form.groupType': function(val) {
+      if (!val) {
+        this.form.parentId = ''
+        this.treeData = []
+      } else {
+        this.groupTypeChange(val)
+      }
+    }
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
+    this.dialogPvVisible = false
   },
   methods: {
     groupTypeChange(type) {
@@ -522,6 +531,7 @@ export default {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 2
+      console.log('form', this.form)
     },
     handleDelete(row, index) {
       var _this = this
@@ -546,32 +556,7 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {}
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      this.form.icon = res.fileKey
-      this.imageUrl = res.url
-    },
-    handleRemove() {},
-    getNodeData() {}
+    }
   }
 }
 </script>
