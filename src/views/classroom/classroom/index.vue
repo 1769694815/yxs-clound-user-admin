@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:00:03
+ * @LastEditTime: 2020-03-07 10:12:09
  * @Description: 文件管理
  -->
 <template>
@@ -49,10 +49,10 @@
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
+      menu-width="160"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
-      menu-width="160"
     >
       <template slot="role" slot-scope="scope">
         <el-tag>{{ scope.row.role }}</el-tag>
@@ -73,7 +73,8 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
-      :title="operationStatus | dialogTitle">
+      :title="operationStatus | dialogTitle"
+    >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
           <!--班级标题-->
@@ -358,7 +359,7 @@ import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 import { getTeacherList } from '@/api/user'
 import InputTree from '@/components/InputTree/index'
-import { getAllCategoryType } from '@/api/course/category'
+import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
 
 export default {
@@ -569,7 +570,7 @@ export default {
      * 班级分类
      */
     getCategoryTree() {
-      getAllCategoryType(2).then(res => {
+      getCategoryTreeByNotType(2).then(res => {
         this.treeData = res.data.data
       })
     },
