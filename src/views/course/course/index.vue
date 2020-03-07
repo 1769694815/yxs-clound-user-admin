@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:42:32
+ * @LastEditTime: 2020-03-07 14:50:38
  * @Description: 课程管理
  -->
 <template>
@@ -124,7 +124,6 @@
                 multiline
                 title="课程分类"
                 placeholder="请选择课程分类"
-                @node-click="getNodeData"
               />
             </el-form-item>
           </el-col>
@@ -540,9 +539,10 @@ export default {
     // 联动需要监听主数据
     'form.type': function(val) {
       if (!val) {
+        this.form.categoryIds = ''
         this.treeData = []
       } else {
-        this.groupTypeChange(val)
+        this.getCategoryTree(val)
       }
     }
   },
@@ -552,8 +552,8 @@ export default {
   },
   methods: {
     groupTypeChange(type) {
-      this.getCategoryTree(type)
       this.form.categoryIds = ''
+      this.getCategoryTree(type)
     },
     getCategoryTree(type) {
       getCategoryTreeByNotType(type).then(res => {

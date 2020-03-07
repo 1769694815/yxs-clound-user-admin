@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 17:54:11
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 12:03:08
+ * @LastEditTime: 2020-03-07 15:26:54
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -21,7 +21,6 @@
       readonly
       :placeholder="placeholder"
       @focus="onFocus"
-      @blur="onBlur"
     />
     <el-dialog
       :title="title"
@@ -36,6 +35,7 @@
         :data="treeData"
         :show-checkbox="multiline"
         :current-node-key="value"
+        :defalut-checked-keys="value"
         @node-click="nodeClick"
         @check-change="checkChange"
       />
@@ -115,21 +115,50 @@ export default {
         console.log(val)
         if (!val) {
           this.text = ''
+        }
+      },
+      immediate: true
+    },
+    treeData: {
+      handler: function(val) {
+        if (this.value === '' || this.value === null) {
+          return
+        }
+        console.log(!isNaN(this.value))
+        if (!isNaN(this.value)) {
+          // this.text = this.showName(this.value, val)
+          console.log('测试文化考试何炅', this.showName(this.value, val))
         } else {
-          // 数据回显
-          console.log(this.$refs)
-          // console.log(this.$refs.inputTree.tree.getCurrentNode())
+          const arr = this.value.split(',')
+          console.log(arr)
+          arr.forEach(ele => {
+            console.log(this.showName(ele, val))
+          })
         }
       },
       immediate: true
     }
   },
   methods: {
+    showName(val, list) {
+      console.log(val, list)
+      for (let i = 0; i < list.length; i++) {
+        const item = list[i]
+        if (item.children.length > 0) {
+          this.showName(val, item.children)
+          if (Number(val) === item.id) {
+            console.log(item.name)
+            return item.name
+          }
+        }
+      }
+    },
     onFocus() {
       this.showTree = true
-    },
-    onBlur(e) {
-      // this.showTree = false
+      // this.$nextTick(() => {
+      //   const result = this.$refs.inputTree.getCurrentNode() && this.$refs.inputTree.getCurrentNode().name
+      //   this.text = result
+      // })
     },
     nodeClick(data) {
       this.deptId = data.id

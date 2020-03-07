@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:49:25
+ * @LastEditTime: 2020-03-07 14:45:29
  * @Description: 文件管理
  -->
 <template>
@@ -436,7 +436,7 @@ export default {
         this.form.parentId = ''
         this.treeData = []
       } else {
-        this.groupTypeChange(val)
+        this.getCategoryTreeByNotType(val)
       }
     }
   },
@@ -446,6 +446,7 @@ export default {
   },
   methods: {
     groupTypeChange(type) {
+      this.form.parentId = ''
       this.getCategoryTreeByNotType(type)
     },
     getCategoryTreeByNotType(type) {

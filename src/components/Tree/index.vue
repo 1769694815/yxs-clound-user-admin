@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 15:48:26
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 11:58:09
+ * @LastEditTime: 2020-03-07 14:40:31
  * @Description: 可搜索树形组件
  -->
 <template>
@@ -23,8 +23,8 @@
       :show-checkbox="showCheckbox"
       default-expand-all
       :expand-on-click-node="false"
-      :filter-node-method="filterNode"
       :current-node-key="currentNodeKey"
+      :filter-node-method="filterNode"
       @node-click="getNodeData"
       @check="handleCheckChage"
     />
@@ -57,6 +57,12 @@ export default {
       default: function() {
         return ''
       }
+    },
+    defalutCheckedKeys: {
+      type: [Number, String],
+      default: function() {
+        return ''
+      }
     }
   },
   data() {
@@ -73,6 +79,15 @@ export default {
   watch: {
     filterText(val) {
       this.$refs.tree.filter(val)
+    },
+    defalutCheckedKeys: {
+      handler: function(val) {
+        if (this.showCheckbox) {
+          const arr = val.length > 0 ? val.split(',') : []
+          this.setCheckedKeys(arr)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
@@ -85,6 +100,9 @@ export default {
         return
       }
       this.$emit('node-click', data)
+    },
+    getCurrentNode() {
+      return this.$refs.tree.getCurrentNode()
     },
     handleCheckChage(data, checked) {
       const checkList = []
@@ -110,6 +128,11 @@ export default {
         }
       }
       this.$emit('check-change', checkList)
+    },
+    setCheckedKeys(val) {
+      this.$nextTick(() => {
+        this.$refs.tree.setCheckedKeys(val)
+      })
     }
   }
 }
