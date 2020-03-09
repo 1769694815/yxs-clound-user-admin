@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 18:01:09
+ * @LastEditTime: 2020-03-09 10:13:42
  * @Description: 题目表管理
  -->
 <template>
@@ -495,8 +495,28 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.getList()
+          if (this.form.typeId === 1 || this.form.typeId === 2 || this.form.typeId === 3) {
+            const optionsContent = []
+            for (let i = 0; i < this.singleArray.length; i++) {
+              const content = {
+                name: this.letterArray[i],
+                content: this.singleArray[i]
+              }
+              optionsContent.push(content)
+            }
+            const jsonstr = JSON.stringify(optionsContent)
+            this.form.optionsContent = jsonstr
+            const checkAnswer = []
+            if (this.form.typeId === 2 || this.form.typeId === 3) {
+              for (let i = 0; i < this.checkArray.length; i++) {
+                checkAnswer.push(this.checkArray[i])
+              }
+              const jsonAnswer = JSON.stringify(checkAnswer)
+              this.form.answer = jsonAnswer
+            }
+          }
           if (this.form.id != null) {
+            console.log(this.form)
             putObj(this.form).then(() => {
               this.$notify({
                 title: '成功',
@@ -515,6 +535,8 @@ export default {
               })
             })
           }
+          this.getList()
+          this.dialogPvVisible = false
         } else {
           return false
         }
@@ -559,13 +581,36 @@ export default {
       this.searchForm = {}
       this.getList()
     },
+    getOptionsContent(row) {
+      const json = JSON.parse(row.optionsContent)
+      const type = row.typeId
+      if (type === 2) {
+        if (json === null || json === '') {
+          this.checkArray = []
+        } else {
+          this.checkArray = JSON.parse(row.answer)
+        }
+      }
+      if (type === 1 || type === 2 || type === 3) {
+        if (json === null || json === '') {
+          this.singleArray = ['', '', '', '']
+        } else {
+          this.singleArray = []
+          for (let i = 0; i < json.length; i++) {
+            this.singleArray.push(json[i].content)
+          }
+        }
+      }
+    },
     handleView(row) {
       this.form = row
+      this.getOptionsContent(row)
       this.dialogPvVisible = true
       this.operationStatus = 1
     },
     handleUpdate(row) {
       this.form = row
+      this.getOptionsContent(row)
       this.dialogPvVisible = true
       this.operationStatus = 2
     },
