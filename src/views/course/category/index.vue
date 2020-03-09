@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:56:15
+ * @LastEditTime: 2020-03-09 13:42:47
  * @Description: 文件管理
  -->
 <template>
@@ -169,6 +169,34 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <!--是否网课-->
+          <el-col :span="12">
+            <el-form-item label="是否网课" prop="onlineCourseFlag">
+              <el-radio-group v-model="form.onlineCourseFlag" :disabled="operationStatus === 1">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <!--是否面授-->
+          <el-col :span="12">
+            <el-form-item label="是否面授" prop="faceToFaceFlag">
+              <el-radio-group v-model="form.faceToFaceFlag" :disabled="operationStatus === 1">
+                <el-radio
+                  v-for="item in DIC.typeList"
+                  :key="item.value"
+                  :label="item.value"
+                  border
+                  size="medium"
+                >{{ item.label }}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
@@ -217,6 +245,25 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          <!--跳转类型-->
+          <el-col :span="12">
+            <el-form-item label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+              <el-select
+                v-model="form.jumpType"
+                :disabled="operationStatus === 1"
+                clearable
+                class="category-input"
+                placeholder="请选择跳转类型"
+              >
+                <el-option
+                  v-for="item in jumpTypeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+          </el-col>
           <!--显示顺序-->
           <el-col :span="12">
             <el-form-item label="显示顺序" prop="sort">
@@ -254,6 +301,7 @@ import {
   delObj,
   getCategoryTreeByNotType
 } from '@/api/course/category'
+import { remote } from '@/api/admin/dict'
 import { mapGetters } from 'vuex'
 import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
@@ -308,6 +356,7 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
+      jumpTypeList: [],
       headers: {
         Authorization: 'Bearer ' + getToken
       },
@@ -456,9 +505,15 @@ export default {
   },
   created() {
     this.getList()
+    this.getJumpTypeList()
     this.dialogPvVisible = false
   },
   methods: {
+    getJumpTypeList() {
+      remote('jump_type').then(res => {
+        this.jumpTypeList = res.data.data
+      })
+    },
     groupTypeChange(type) {
       this.form.parentId = ''
       this.getCategoryTreeByNotType(type)
@@ -497,6 +552,7 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
+          this.dialogPvVisible = false
           this.getList()
           if (this.form.id != null) {
             putObj(this.form).then(() => {

@@ -635,8 +635,8 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
+          this.dialogPvVisible = false
           this.getList()
-          console.log('form', this.form)
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {

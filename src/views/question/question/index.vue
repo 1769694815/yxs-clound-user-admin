@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-09 10:13:42
+ * @LastEditTime: 2020-03-09 10:58:40
  * @Description: 题目表管理
  -->
 <template>
@@ -495,7 +495,12 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          if (this.form.typeId === 1 || this.form.typeId === 2 || this.form.typeId === 3) {
+          this.dialogPvVisible = false
+          if (
+            this.form.typeId === 1 ||
+            this.form.typeId === 2 ||
+            this.form.typeId === 3
+          ) {
             const optionsContent = []
             for (let i = 0; i < this.singleArray.length; i++) {
               const content = {
