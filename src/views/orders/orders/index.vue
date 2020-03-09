@@ -44,10 +44,27 @@
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
-      @handle-create="handleCreate"
+      :add-btn="false"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+        <!-- <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button> -->
+        <el-button
+          :loading="downloadLoading"
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleDownload"
+        >
+          导出 Excel
+        </el-button>
+      </template>
       <template
         slot="role"
         slot-scope="scope"
@@ -412,6 +429,7 @@
 <script>
 import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/orders'
 import { mapGetters } from 'vuex'
+import { parseTime } from '@/utils'
 
 export default {
   filters: {
@@ -501,7 +519,8 @@ export default {
       dialogDictItem: false,
       operationStatus: 0,
       form: {},
-      formLabelWidth: '90px'
+      formLabelWidth: '90px',
+      downloadLoading: false
     }
   },
   computed: {
@@ -640,8 +659,33 @@ export default {
           _this.$message.success('删除成功')
           this.getList()
         })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = this.tableOption.map(item => { return item.label })
+        const filterVal = this.tableOption.map(item => { return item.prop })
+        const list = this.tableData
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '订单列表',
+          autoWidth: true,
+          bookType: 'xlsx'
+        })
+        this.downloadLoading = false
+      })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
     }
-
   }
 }
 </script>
