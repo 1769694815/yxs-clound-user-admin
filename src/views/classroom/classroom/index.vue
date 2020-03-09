@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:59:02
+ * @LastEditTime: 2020-03-09 14:46:27
  * @Description: 文件管理
  -->
 <template>
@@ -604,7 +604,7 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.getList()
+          console.log(this.form)
           if (this.form.id != null) {
             putObj(this.form).then(() => {
               this.$notify({
@@ -624,6 +624,8 @@ export default {
               })
             })
           }
+          this.dialogPvVisible = false
+          this.getList()
         } else {
           return false
         }
