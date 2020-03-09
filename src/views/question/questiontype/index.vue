@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 18:00:01
+ * @LastEditTime: 2020-03-09 10:58:19
  * @Description: 文件管理
  -->
 <template>
@@ -234,6 +234,7 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
+          this.dialogPvVisible = false
           this.getList()
           if (this.form.id != null) {
             putObj(this.form).then(() => {
