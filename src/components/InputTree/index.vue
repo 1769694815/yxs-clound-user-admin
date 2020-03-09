@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 17:54:11
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:19:01
+ * @LastEditTime: 2020-03-09 14:52:20
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -34,8 +34,8 @@
         :option="treeOption"
         :data="treeData"
         :show-checkbox="multiline"
-        :current-node-key="value"
-        :defalut-checked-keys="value"
+        :current-node-key="value === null ? '' : value"
+        :defalut-checked-keys="value === null ? '' : value"
         @node-click="nodeClick"
         @check-change="checkChange"
       />
