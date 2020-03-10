@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-10 10:16:05
+ * @LastEditTime: 2020-03-10 14:58:13
  * @Description: 文件管理
  -->
 <template>
@@ -214,8 +214,10 @@
           </el-col>
           <!--字体颜色-->
           <el-col :span="12">
-            <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" />
+            <el-form-item label="字体颜色" prop="fontColor">
+              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
+              <!-- 颜色格式： hsl / hsv / hex / rgb -->
+              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
@@ -248,7 +250,23 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+            <el-form-item v-if="!form.parentId" label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+              <el-select
+                v-model="form.jumpType"
+                :disabled="operationStatus === 1"
+                clearable
+                class="category-input"
+                placeholder="请选择跳转类型"
+              >
+                <el-option
+                  v-for="item in jumpTypeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-else label="跳转类型" :disabled="operationStatus === 1">
               <el-select
                 v-model="form.jumpType"
                 :disabled="operationStatus === 1"
@@ -479,6 +497,9 @@ export default {
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
+        ],
+        jumpType: [
+          { required: true, message: '请选择跳转类型', trigger: 'change' }
         ]
         // icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
