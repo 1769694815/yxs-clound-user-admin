@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-10 11:03:10
+ * @LastEditTime: 2020-03-10 14:09:30
  * @Description: 表格组件
  -->
 <template>
@@ -333,7 +333,6 @@ export default {
         this.tableOption.map(val => {
           if (val.dicData && val.dicData.length > 0) {
             item[val.prop] = this.statusFilter(item[val.prop], val.dicData, val.dicProp)
-            console.log(item[val.prop])
           }
         })
       })

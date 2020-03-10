@@ -541,6 +541,7 @@ export default {
       form: {},
       formLabelWidth: '90px',
       downloadLoading: false,
+      loading: null,
       exportExcel: false,
       excelTableData: [],
       multipleSelection: []
@@ -685,6 +686,12 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
+      this.loading = this.$loading({
+        lock: true,
+        text: '数据导出中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       // 获取所有表格数据
       fetchList(
         Object.assign(
@@ -725,6 +732,7 @@ export default {
           autoWidth: true,
           bookType: 'xlsx'
         })
+        this.loading.close()
         this.downloadLoading = false
         this.exportExcel = false
       })
