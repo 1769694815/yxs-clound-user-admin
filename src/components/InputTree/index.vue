@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 17:54:11
- * @LastEditors: xwen
+ * @LastEditors: Please set LastEditors
  * @Author: xw
- * @LastEditTime: 2020-03-10 15:49:02
+ * @LastEditTime: 2020-03-10 16:20:22
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -135,25 +135,22 @@ export default {
     getText() {
       if (!isNaN(this.value)) {
         this.text = this.showName(this.value, this.treeData)
-        console.log(this.text)
       } else {
+        this.text = ''
         const arr = this.value.split(',')
-        console.log(arr)
-        arr.forEach(ele => {
-          this.text += this.showName(ele, this.treeData)
+        arr.forEach((ele, i) => {
+          this.text += i > 0 ? ',' + this.showName(ele, this.treeData) : this.showName(ele, this.treeData)
         })
       }
     },
     showName(val, list) {
       let result = null
       for (let i = 0; i < list.length; i++) {
-        if (result !== null) {
-          break
-        }
-        const item = list[i]
-        console.log('item', item)
+        if (result !== null) break
+        let item = list[i]
         if (Number(val) === item.id) {
           result = item.name
+          console.log('item', item.name)
           break
         } else {
           if (item.children.length > 0) {
@@ -161,7 +158,6 @@ export default {
           }
         }
       }
-      console.log(result)
       return result
     },
     onFocus() {
