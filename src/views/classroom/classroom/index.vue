@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-09 16:35:06
+ * @LastEditTime: 2020-03-10 10:17:04
  * @Description: 文件管理
  -->
 <template>
@@ -535,10 +535,10 @@ export default {
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
-        ],
-        smallPicture: [
-          { required: true, message: '请上传图标', trigger: 'change' }
         ]
+        // smallPicture: [
+        //   { required: true, message: '请上传图标', trigger: 'change' }
+        // ]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址

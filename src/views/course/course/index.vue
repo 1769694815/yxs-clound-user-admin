@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:55:03
+ * @LastEditTime: 2020-03-10 10:15:48
  * @Description: 课程管理
  -->
 <template>
@@ -565,10 +565,10 @@ export default {
         ],
         newwinFlag: [
           { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
-        ],
-        smallPicture: [
-          { required: true, message: '请上传图片', trigger: 'change' }
         ]
+        // smallPicture: [
+        //   { required: true, message: '请上传图片', trigger: 'change' }
+        // ]
       }
     }
   },
