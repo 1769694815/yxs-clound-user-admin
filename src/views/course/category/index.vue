@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-09 13:42:47
+ * @LastEditTime: 2020-03-10 10:16:05
  * @Description: 文件管理
  -->
 <template>
@@ -182,6 +182,7 @@
                 >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
+
           </el-col>
           <!--是否面授-->
           <el-col :span="12">
@@ -478,8 +479,8 @@ export default {
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
-        ],
-        icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        ]
+        // icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       imageUrl: '', // 图片地址
       treeData: [],
