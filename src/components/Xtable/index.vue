@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-10 10:44:54
+ * @LastEditTime: 2020-03-10 11:03:10
  * @Description: 表格组件
  -->
 <template>
@@ -56,7 +56,15 @@
       border
       stripe
       highlight-current-row
+      @selection-change="handleSelectionChange"
     >
+      <!-- 复选框 -->
+      <el-table-column
+        v-if="selection"
+        type="selection"
+        align="center"
+        width="55"
+      />
       <el-table-column
         v-if="index"
         type="index"
@@ -186,6 +194,12 @@ export default {
     }
   },
   props: {
+    selection: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
+    },
     index: {
       type: Boolean,
       default: function() {
@@ -334,6 +348,9 @@ export default {
         }
       }
       return result
+    },
+    handleSelectionChange(val) {
+      this.$emit('selection-change', val)
     }
   }
 }

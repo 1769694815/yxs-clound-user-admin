@@ -38,7 +38,9 @@
         </el-button>
       </el-form-item>
     </el-form>
+    <!-- selection: 是否展示复选框 @selection-change="handleSelectionChange" 复选框选择回调 -->
     <Xtable
+      :selection="true"
       :table-key="tableKey"
       :table-loading="tableLoading"
       :table-data="tableData"
@@ -50,6 +52,7 @@
       @excel-data="excelData"
       @refresh-change="handleFilter"
       @page-change="getList"
+      @selection-change="handleSelectionChange"
     >
       <template slot="menuLeft">
         <!-- <el-button
@@ -58,14 +61,28 @@
           size="mini"
           @click="handleCreate"
         >新 增</el-button> -->
-        <el-button
-          :loading="downloadLoading"
-          type="primary"
-          icon="el-icon-document"
-          size="mini"
-          @click="handleDownload"
+        <el-tooltip
+          effect="dark"
+          content="导出全部数据"
+          placement="top"
         >
-          导出 Excel
+          <el-button
+            :loading="downloadLoading"
+            type="primary"
+            icon="el-icon-document"
+            size="mini"
+            @click="handleDownload"
+          >
+            导出 Excel
+          </el-button>
+        </el-tooltip>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          @click="handleBatchDelete"
+        >
+          批量删除
         </el-button>
       </template>
       <template
@@ -525,7 +542,8 @@ export default {
       formLabelWidth: '90px',
       downloadLoading: false,
       exportExcel: false,
-      excelTableData: []
+      excelTableData: [],
+      multipleSelection: []
     }
   },
   computed: {
@@ -710,6 +728,26 @@ export default {
         this.downloadLoading = false
         this.exportExcel = false
       })
+    },
+    // 批量删除
+    handleBatchDelete() {
+      if (this.multipleSelection.length <= 0) {
+        this.$message({
+          message: '请勾选需要删除的数据',
+          type: 'error'
+        })
+      } else {
+        // DOTO 删除操作
+        this.$message({
+          message: '正在拼命开发中~',
+          type: 'success'
+        })
+      }
+    },
+    // 复选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log('选择的数据', val)
     }
   }
 }
