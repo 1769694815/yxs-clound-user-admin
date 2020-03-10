@@ -45,6 +45,9 @@
       :page="page"
       :table-option.sync="tableOption"
       :add-btn="false"
+      :excel="exportExcel"
+      :excel-table-data="excelTableData"
+      @excel-data="excelData"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
@@ -520,7 +523,9 @@ export default {
       operationStatus: 0,
       form: {},
       formLabelWidth: '90px',
-      downloadLoading: false
+      downloadLoading: false,
+      exportExcel: false,
+      excelTableData: []
     }
   },
   computed: {
@@ -662,20 +667,23 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = this.tableOption.map(item => { return item.label })
-        const filterVal = this.tableOption.map(item => { return item.prop })
-        const list = this.tableData
-        const data = this.formatJson(filterVal, list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '订单列表',
-          autoWidth: true,
-          bookType: 'xlsx'
+      // 获取所有表格数据
+      fetchList(
+        Object.assign(
+          {
+            descs: 'create_time',
+            current: 1,
+            size: this.page.total
+          },
+          this.searchForm
+        )
+      )
+        .then(res => {
+          this.excelTableData = res.data.data.records
+          console.log('excelTableData', this.excelTableData)
+          // 通知表格组件处理接口返回数据
+          this.exportExcel = true
         })
-        this.downloadLoading = false
-      })
     },
     formatJson(filterVal, jsonData) {
       return jsonData.map(v => filterVal.map(j => {
@@ -685,6 +693,23 @@ export default {
           return v[j]
         }
       }))
+    },
+    excelData(list) {
+      console.log('list', list)
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = this.tableOption.map(item => { return item.label })
+        const filterVal = this.tableOption.map(item => { return item.prop })
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '订单列表',
+          autoWidth: true,
+          bookType: 'xlsx'
+        })
+        this.downloadLoading = false
+        this.exportExcel = false
+      })
     }
   }
 }

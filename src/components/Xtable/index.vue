@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:53:59
+ * @LastEditTime: 2020-03-10 10:44:54
  * @Description: 表格组件
  -->
 <template>
@@ -243,6 +243,17 @@ export default {
       default: function() {
         return 'right'
       }
+    },
+    excelTableData: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    // 导出数据
+    excel: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -251,6 +262,15 @@ export default {
       checkList: [],
       imgVisible: false,
       imgUrl: ''
+    }
+  },
+  watch: {
+    excel: function(val) {
+      if (val) {
+        // 处理原数据，根据关键字枚举
+        const data = JSON.parse(JSON.stringify(this.excelTableData))
+        this.createTableData(data)
+      }
     }
   },
   created() {
@@ -293,6 +313,27 @@ export default {
     imgView(url) {
       this.imgUrl = url
       this.imgVisible = true
+    },
+    createTableData(data) {
+      data.map(item => {
+        this.tableOption.map(val => {
+          if (val.dicData && val.dicData.length > 0) {
+            item[val.prop] = this.statusFilter(item[val.prop], val.dicData, val.dicProp)
+            console.log(item[val.prop])
+          }
+        })
+      })
+      this.$emit('excel-data', data)
+    },
+    statusFilter(status, list, prop = { value: 'value', label: 'label' }) {
+      let result
+      for (const i in list) {
+        const item = list[i]
+        if (status === item[prop.value]) {
+          result = item[prop.label]
+        }
+      }
+      return result
     }
   }
 }
