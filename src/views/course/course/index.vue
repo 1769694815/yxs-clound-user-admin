@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 10:15:48
+ * @LastEditTime: 2020-03-10 16:00:37
  * @Description: 课程管理
  -->
 <template>
@@ -15,36 +15,30 @@
       </el-form-item>
       <!--是否推荐-->
       <el-form-item label="是否推荐:" label-width="80px">
-        <el-select v-model="searchForm.recommend" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.recommend"
+          :operation-status="operationStatus"
+          status-type="common_flag"
+          type="select"
+        />
       </el-form-item>
       <!--开售标志-->
       <el-form-item label="开售标志:" label-width="130px">
-        <el-select v-model="searchForm.buyFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.buyFlag"
+          :operation-status="operationStatus"
+          status-type="common_flag"
+          type="select"
+        />
       </el-form-item>
       <!--课程类型-->
       <el-form-item label="课程类型:" label-width="80px">
-        <el-select v-model="searchForm.type" clearable>
-          <el-option
-            v-for="item in DIC.courseTypeList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.type"
+          :operation-status="operationStatus"
+          status-type="course_type"
+          type="select"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -87,10 +81,10 @@
       :title="operationStatus | dialogTitle"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
-        <el-form ref="dataForm" :model="form" :rules="rules" :label-width="labelWidth">
+        <el-form ref="dataForm" :model="form" :rules="rules">
           <!--课程标题-->
           <el-col :span="12">
-            <el-form-item label="课程标题" prop="title">
+            <el-form-item label="课程标题" prop="title" :label-width="formLabelWidth">
               <el-input
                 v-model="form.title"
                 :disabled="operationStatus === 1"
@@ -102,7 +96,7 @@
           </el-col>
           <!--副标题-->
           <el-col :span="12">
-            <el-form-item label="副标题" prop="brife">
+            <el-form-item label="副标题" prop="brife" :label-width="formLabelWidth">
               <el-input
                 v-model="form.brife"
                 :disabled="operationStatus === 1"
@@ -114,27 +108,19 @@
           </el-col>
           <!--课程类型-->
           <el-col :span="12">
-            <el-form-item label="课程类型" prop="type">
-              <el-select
+            <el-form-item label="课程类型" prop="type" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.type"
-                :disabled="operationStatus === 1"
-                clearable
-                class="course-input"
-                placeholder="请选择课程类型"
-              >
-                <el-option
-                  v-for="item in DIC.courseTypeList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                :operation-status="operationStatus"
+                status-type="course_type"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--课程分类-->
-          <!-- TODO: 注释树形组件多选 multiline -->
           <el-col :span="12">
-            <el-form-item label="课程分类" prop="categoryIds">
+            <el-form-item label="课程分类" prop="categoryIds" :label-width="formLabelWidth">
               <Input-tree
                 v-model="form.categoryIds"
                 :tree-data="treeData"
@@ -147,7 +133,7 @@
           </el-col>
           <!--课程讲师-->
           <el-col :span="12">
-            <el-form-item label="课程讲师" prop="teacherId">
+            <el-form-item label="课程讲师" prop="teacherId" :label-width="formLabelWidth">
               <el-select
                 v-model="form.teacherId"
                 clearable
@@ -166,7 +152,7 @@
           </el-col>
           <!--课程价格-->
           <el-col :span="12">
-            <el-form-item label="课程价格" prop="price">
+            <el-form-item label="课程价格" prop="price" :label-width="formLabelWidth">
               <el-input
                 v-model="form.price"
                 :disabled="operationStatus === 1"
@@ -178,96 +164,79 @@
           </el-col>
           <!--课程状态-->
           <el-col :span="12">
-            <el-form-item label="课程状态" prop="status">
-              <el-radio-group v-model="form.status" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.courseStatus"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="课程状态" prop="status" :label-width="formLabelWidth">
+              <single-change
+                v-model="form.status"
+                :operation-status="operationStatus"
+                status-type="course_release_status"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--连载状态-->
           <el-col :span="12">
-            <el-form-item label="连载状态" prop="serialStatus">
-              <el-select
+            <el-form-item label="连载状态" prop="serialStatus" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.serialStatus"
-                clearable
-                class="course-input"
-                :disabled="operationStatus === 1"
-                placeholder="请选择连载状态"
-              >
-                <el-option
-                  v-for="item in DIC.serialStatusList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                :operation-status="operationStatus"
+                status-type="course_serial_status"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否推荐-->
           <el-col :span="12">
-            <el-form-item label="是否推荐" prop="recommend">
-              <el-radio-group v-model="form.recommend" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="是否推荐" prop="recommend" :label-width="formLabelWidth">
+              <single-change
+                v-model="form.recommend"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--开售标志-->
           <el-col :span="12">
-            <el-form-item label="开售标志" prop="buyFlag">
-              <el-radio-group v-model="form.buyFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="开售标志" prop="buyFlag" :label-width="formLabelWidth">
+              <single-change
+                v-model="form.buyFlag"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--视频拖动-->
           <el-col :span="12">
-            <el-form-item label="视频拖动" prop="drag">
-              <el-radio-group v-model="form.drag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="视频拖动" prop="drag" :label-width="formLabelWidth">
+              <single-change
+                v-model="form.drag"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--倍速播放-->
           <el-col :span="12">
-            <el-form-item label="倍速播放" prop="doubleSpeed">
-              <el-radio-group v-model="form.doubleSpeed" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="倍速播放" prop="doubleSpeed" :label-width="formLabelWidth">
+              <single-change
+                v-model="form.doubleSpeed"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--有效天数-->
           <el-col :span="12">
-            <el-form-item label="有效天数" prop="effectiveDays">
+            <el-form-item label="有效天数" prop="effectiveDays" :label-width="formLabelWidth">
               <el-input
                 v-model="form.effectiveDays"
                 :disabled="operationStatus === 1"
@@ -281,7 +250,7 @@
           </el-col>
           <!--课程排序-->
           <el-col :span="12">
-            <el-form-item label="课程排序" prop="sort">
+            <el-form-item label="课程排序" prop="sort" :label-width="formLabelWidth">
               <el-input
                 v-model="form.sort"
                 :disabled="operationStatus === 1"
@@ -293,7 +262,7 @@
           </el-col>
           <!--填写人数-->
           <el-col :span="12">
-            <el-form-item label="填写人数" prop="learnNum">
+            <el-form-item label="填写人数" prop="learnNum" :label-width="formLabelWidth">
               <el-input
                 v-model="form.learnNum"
                 :disabled="operationStatus === 1"
@@ -308,7 +277,7 @@
 
           <!--课程简叙-->
           <el-col :span="24">
-            <el-form-item label="课程简叙" prop="subtitle">
+            <el-form-item label="课程简叙" prop="subtitle" :label-width="formLabelWidth">
               <el-input
                 v-model="form.subtitle"
                 :disabled="operationStatus === 1"
@@ -322,7 +291,7 @@
           </el-col>
           <!--课程简介-->
           <el-col :span="24">
-            <el-form-item label="课程简介" prop="about">
+            <el-form-item label="课程简介" prop="about" :label-width="formLabelWidth">
               <el-input
                 v-model="form.about"
                 :disabled="operationStatus === 1"
@@ -345,17 +314,10 @@
               />
             </el-form-item>
           </el-col>
-          <!-- 附件上传 -->
-          <!-- <el-col :span="24">
-            <el-form-item label="附件上传">
-              <single-file v-model="fileUrl" />
-            </el-form-item>
-          </el-col>-->
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -395,62 +357,7 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      typeList: [
-        {
-          value: 0,
-          label: '否'
-        },
-        {
-          value: 1,
-          label: '是'
-        }
-      ],
-      courseTypeList: [
-        {
-          label: '普通课程',
-          value: 1
-        },
-        {
-          label: '直播课程',
-          value: 2
-        },
-        {
-          label: '录播公开课',
-          value: 3
-        },
-        {
-          label: '直播公开课',
-          value: 4
-        }
-      ],
-      courseStatus: [
-        {
-          label: '未发布',
-          value: 0
-        },
-        {
-          label: '发布',
-          value: 1
-        }
-      ],
-      serialStatusList: [
-        {
-          label: '非连载课程',
-          value: 1
-        },
-        {
-          label: '更新中',
-          value: 2
-        },
-        {
-          label: '已完结',
-          value: 3
-        }
-      ]
-    }
     return {
-      DIC: DIC,
       tableKey: 0,
       headers: {
         Authorization: 'Bearer ' + getToken
@@ -467,7 +374,10 @@ export default {
         {
           label: '课程类型',
           prop: 'type',
-          width: '80'
+          width: '80',
+          dicUrl: 'course_type',
+          dicData: []
+
         },
         {
           label: '课程分类',
@@ -478,36 +388,34 @@ export default {
           label: '课程状态',
           prop: 'status',
           width: '80',
-          dicData: DIC.courseStatus
+          dicUrl: 'course_release_status',
+          dicData: []
         },
         {
           label: '连载状态',
           prop: 'serialStatus',
           width: '120',
-          dicData: DIC.serialStatusList
+          dicUrl: 'course_serial_status',
+          dicData: []
         },
         {
           label: '是否推荐',
           prop: 'recommend',
           width: '80',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '开售标志',
           prop: 'buyFlag',
           width: '80',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '价格',
           prop: 'price',
           width: '80'
-        },
-        {
-          label: '删除标记',
-          prop: 'delFlag',
-          width: '80',
-          dicData: DIC.typeList
         },
         {
           label: '有效天数',
@@ -528,13 +436,15 @@ export default {
           label: '视频拖动',
           prop: 'drag',
           width: '80',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '倍速播放',
           prop: 'doubleSpeed',
           width: '80',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '创建时间',
@@ -636,31 +546,37 @@ export default {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
           this.dialogPvVisible = false
-          this.getList()
           if (this.form.id != null) {
             putObj(this.form)
               .then(() => {
+                this.dialogPvVisible = false
                 this.$notify({
                   title: '成功',
                   message: '修改成功',
                   type: 'success',
                   duration: 2000
                 })
+                this.getList()
               })
-              .catch(() => {})
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
             addObj(this.form)
               .then(() => {
+                this.dialogPvVisible = false
                 this.$notify({
                   title: '成功',
                   message: '创建成功',
                   type: 'success',
                   duration: 2000
                 })
+                this.getList()
               })
-              .catch(() => {})
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
-          this.dialogPvVisible = false
         } else {
           return false
         }
@@ -728,8 +644,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-.course-input {
-  width: 100%;
-}
-</style>
