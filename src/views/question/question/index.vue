@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-09 10:58:40
+ * @LastEditTime: 2020-03-10 16:15:15
  * @Description: 题目表管理
  -->
 <template>
@@ -222,7 +222,7 @@
             <el-form-item label="题目答案" prop="answer">
               <!-- 非选择题 -->
               <el-input
-                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 5"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
@@ -258,7 +258,7 @@
               </el-checkbox-group>
               <!-- 判断题 -->
               <el-radio-group
-                v-if="form.typeId === 4"
+                v-if="form.typeId === 5"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
               >

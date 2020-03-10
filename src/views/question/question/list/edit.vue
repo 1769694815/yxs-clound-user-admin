@@ -76,7 +76,7 @@
           <el-form-item label="题目答案" prop="answer">
             <!-- 非选择 -->
             <el-input
-              v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
+              v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 5"
               v-model="form.answer"
               :autosize="{ minRows: 2, maxRows: 6}"
               type="textarea"
@@ -99,7 +99,7 @@
               >{{ letterArray[index] }}</el-checkbox>
             </el-checkbox-group>
             <!-- 判断题 -->
-            <el-radio-group v-if="form.typeId === 4" v-model="form.answer">
+            <el-radio-group v-if="form.typeId === 5" v-model="form.answer">
               <el-radio :label="'true'">正确</el-radio>
               <el-radio :label="'false'">错误</el-radio>
             </el-radio-group>
