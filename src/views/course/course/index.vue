@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 17:44:52
+ * @LastEditTime: 2020-03-11 19:24:58
  * @Description: 课程管理
  -->
 <template>
@@ -310,7 +310,7 @@
               <single-image
                 v-model="form.smallPicture"
                 :disabled="operationStatus === 1"
-                :type="5"
+                status="5"
               />
             </el-form-item>
           </el-col>
