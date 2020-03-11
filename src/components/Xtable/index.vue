@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 17:09:18
- * @LastEditors: Please set LastEditors
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-11 14:10:46
+ * @LastEditTime: 2020-03-11 17:44:17
  * @Description: 表格组件
  -->
 <template>
@@ -53,6 +53,8 @@
       :key="tableKey"
       v-loading="tableLoading"
       :data="tableData"
+      row-key="id"
+      :tree-props="treeProps"
       border
       stripe
       highlight-current-row
@@ -268,6 +270,13 @@ export default {
     excel: {
       type: Boolean,
       default: false
+    },
+    // 树形表格
+    treeProps: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
