@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 16:00:37
+ * @LastEditTime: 2020-03-11 17:34:56
  * @Description: 课程管理
  -->
 <template>
@@ -153,12 +153,13 @@
           <!--课程价格-->
           <el-col :span="12">
             <el-form-item label="课程价格" prop="price" :label-width="formLabelWidth">
-              <el-input
+              <el-input-number
                 v-model="form.price"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入课程价格"
-                clearable
-                class="course-input"
+                :disabled="operationStatus === 1"
+                style="width: 336px;"
+                min="0"
               />
             </el-form-item>
           </el-col>
@@ -237,13 +238,12 @@
           <!--有效天数-->
           <el-col :span="12">
             <el-form-item label="有效天数" prop="effectiveDays" :label-width="formLabelWidth">
-              <el-input
+              <el-input-number
                 v-model="form.effectiveDays"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入有效天数"
-                clearable
-                class="course-input"
-                type="number"
+                :disabled="operationStatus === 1"
+                style="width: 336px;"
                 min="0"
               />
             </el-form-item>
@@ -251,25 +251,25 @@
           <!--课程排序-->
           <el-col :span="12">
             <el-form-item label="课程排序" prop="sort" :label-width="formLabelWidth">
-              <el-input
+              <el-input-number
                 v-model="form.sort"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入课程排序"
-                clearable
-                class="course-input"
+                :disabled="operationStatus === 1"
+                style="width: 336px;"
+                min="0"
               />
             </el-form-item>
           </el-col>
           <!--填写人数-->
           <el-col :span="12">
             <el-form-item label="填写人数" prop="learnNum" :label-width="formLabelWidth">
-              <el-input
+              <el-input-number
                 v-model="form.learnNum"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入填写人数"
-                clearable
-                class="course-input"
-                type="number"
+                :disabled="operationStatus === 1"
+                style="width: 336px;"
                 min="0"
               />
             </el-form-item>
@@ -467,18 +467,57 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: '导航名称不能为空', trigger: 'blur' }
+          { required: true, message: '请输入课程标题', trigger: 'blur' }
         ],
-        code: [{ required: true, message: '请选择类型', trigger: 'change' }],
-        openFlag: [
-          { required: true, message: '请选择是否启用', trigger: 'change' }
+        type: [
+          { required: true, message: '请选择课程类型', trigger: 'blur' }
         ],
-        newwinFlag: [
-          { required: true, message: '请选择是否打开新窗口', trigger: 'change' }
+        categoryIds: [
+          { required: true, message: '请选择课程分类', trigger: 'blur' }
+        ],
+        teacherId: [
+          { required: true, message: '请选择课程讲师', trigger: 'blur' }
+        ],
+        price: [
+          { required: true, message: '请输入课程价格', trigger: 'blur' }
+        ],
+        status: [
+          { required: true, message: '请选择课程状态', trigger: 'blur' }
+        ],
+        serialStatus: [
+          { required: true, message: '请选择连载状态', trigger: 'blur' }
+        ],
+        recommend: [
+          { required: true, message: '请选择是否推荐', trigger: 'blur' }
+        ],
+        buyFlag: [
+          { required: true, message: '请选择开售标志', trigger: 'blur' }
+        ],
+        drag: [
+          { required: true, message: '请选择是否允许视频拖动', trigger: 'blur' }
+        ],
+        doubleSpeed: [
+          { required: true, message: '请选择是否允许倍速播放', trigger: 'blur' }
+        ],
+        effectiveDays: [
+          { required: true, message: '请输入有效天数', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, message: '请输入课程排序', trigger: 'blur' }
+        ],
+        learnNum: [
+          { required: true, message: '请输入填写人数', trigger: 'blur' }
+        ],
+        subtitle: [
+          { required: true, message: '请输入课程简叙', trigger: 'blur' }
+        ],
+        about: [
+          { required: true, message: '请输入课程简介', trigger: 'blur' }
+        ],
+        smallPicture: [
+          { required: true, message: '请上传课程图片', trigger: 'blur' }
         ]
-        // smallPicture: [
-        //   { required: true, message: '请上传图片', trigger: 'change' }
-        // ]
+
       }
     }
   },
@@ -638,7 +677,24 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
+      let defaultTeacherId = null
+      if (this.tearcherList.length > 0) {
+        defaultTeacherId = this.tearcherList[0].userId
+      }
+      this.form = {
+        type: '1',
+        status: '1',
+        serialStatus: '1',
+        recommend: '0',
+        buyFlag: '1',
+        price: 0,
+        sort: 0,
+        drag: '0',
+        doubleSpeed: '0',
+        effectiveDays: 365,
+        learnNum: 0,
+        teacherId: defaultTeacherId
+      }
     },
     getNodeData() {}
   }
