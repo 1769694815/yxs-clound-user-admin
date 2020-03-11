@@ -265,7 +265,7 @@
             >
               <single-image
                 v-model="form.thumb"
-                :type="3"
+                status="3"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>

@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 17:34:56
+ * @LastEditTime: 2020-03-11 17:44:52
  * @Description: 课程管理
  -->
 <template>
@@ -470,34 +470,34 @@ export default {
           { required: true, message: '请输入课程标题', trigger: 'blur' }
         ],
         type: [
-          { required: true, message: '请选择课程类型', trigger: 'blur' }
+          { required: true, message: '请选择课程类型', trigger: 'change' }
         ],
         categoryIds: [
-          { required: true, message: '请选择课程分类', trigger: 'blur' }
+          { required: true, message: '请选择课程分类', trigger: 'change' }
         ],
         teacherId: [
-          { required: true, message: '请选择课程讲师', trigger: 'blur' }
+          { required: true, message: '请选择课程讲师', trigger: 'change' }
         ],
         price: [
           { required: true, message: '请输入课程价格', trigger: 'blur' }
         ],
         status: [
-          { required: true, message: '请选择课程状态', trigger: 'blur' }
+          { required: true, message: '请选择课程状态', trigger: 'change' }
         ],
         serialStatus: [
-          { required: true, message: '请选择连载状态', trigger: 'blur' }
+          { required: true, message: '请选择连载状态', trigger: 'change' }
         ],
         recommend: [
-          { required: true, message: '请选择是否推荐', trigger: 'blur' }
+          { required: true, message: '请选择是否推荐', trigger: 'change' }
         ],
         buyFlag: [
-          { required: true, message: '请选择开售标志', trigger: 'blur' }
+          { required: true, message: '请选择开售标志', trigger: 'change' }
         ],
         drag: [
-          { required: true, message: '请选择是否允许视频拖动', trigger: 'blur' }
+          { required: true, message: '请选择是否允许视频拖动', trigger: 'change' }
         ],
         doubleSpeed: [
-          { required: true, message: '请选择是否允许倍速播放', trigger: 'blur' }
+          { required: true, message: '请选择是否允许倍速播放', trigger: 'change' }
         ],
         effectiveDays: [
           { required: true, message: '请输入有效天数', trigger: 'blur' }
@@ -515,7 +515,7 @@ export default {
           { required: true, message: '请输入课程简介', trigger: 'blur' }
         ],
         smallPicture: [
-          { required: true, message: '请上传课程图片', trigger: 'blur' }
+          { required: true, message: '请上传课程图片', trigger: 'change' }
         ]
 
       }
