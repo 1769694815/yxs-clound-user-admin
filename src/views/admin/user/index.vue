@@ -1,14 +1,14 @@
 <!--
  * @Date: 2020-02-11 19:09:58
- * @LastEditors: xw
+ * @LastEditors: Please set LastEditors
  * @Author: xw
- * @LastEditTime : 2020-02-15 16:40:35
+ * @LastEditTime: 2020-03-11 16:31:10
  * @Description: 用户管理
  -->
 <template>
   <div class="user app-container calendar-list-container">
     <el-row :span="24">
-      <el-col
+      <!-- <el-col
         :xs="24"
         :sm="24"
         :md="5"
@@ -21,11 +21,11 @@
             @node-click="nodeClick"
           />
         </div>
-      </el-col>
+      </el-col> -->
       <el-col
         :xs="24"
         :sm="24"
-        :md="19"
+        :md="24"
         class="user__main"
       >
         <!-- 头部菜单 -->
@@ -43,6 +43,15 @@
               type="text"
               size="small"
               placeholder="请输入用户名"
+            />
+          </el-form-item>
+          <el-form-item label="用户" prop="parentId">
+            <Input-tree
+              v-model="searchForm.deptId"
+              :tree-data="treeData"
+              :operation-status="operationStatus"
+              placeholder="请选择用户类型"
+              @input="getList"
             />
           </el-form-item>
           <el-form-item>
@@ -462,6 +471,7 @@ export default {
       ).then(res => {
         this.list = res.data.data.records
         this.page.total = res.data.data.total
+        console.log(this.searchForm.deptId)
         this.tableLoading = false
       })
     },
