@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 16:01:30
+ * @LastEditTime: 2020-03-11 15:32:44
  * @Description: 文件管理
  -->
 <template>
@@ -102,7 +102,7 @@
                 v-model="form.free"
                 :operation-status="operationStatus"
                 status-type="common_flag"
-                type="select"
+                type="radio"
                 size="medium"
               />
             </el-form-item>

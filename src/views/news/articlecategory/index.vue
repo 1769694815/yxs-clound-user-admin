@@ -146,32 +146,27 @@
               prop="publishArticle"
               label-width="100px"
             >
-              <el-radio
+              <single-change
                 v-model="form.publishArticle"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
                 :disabled="formEdit"
-                label="0"
-              >是</el-radio>
-              <el-radio
-                v-model="form.publishArticle"
-                :disabled="formEdit"
-                label="1"
-              >否</el-radio>
+              />
             </el-form-item>
             <el-form-item
               label="启用:"
               prop="published"
               label-width="100px"
             >
-              <el-radio
+              <single-change
                 v-model="form.published"
-                :disabled="formEdit"
-                label="0"
-              >是</el-radio>
-              <el-radio
-                v-model="form.published"
-                :disabled="formEdit"
-                label="1"
-              >否</el-radio>
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
             <el-form-item v-if="formStatus === 'update'">
               <el-button
@@ -207,6 +202,7 @@ export default {
       formStatus: '',
       loading: null,
       showElement: false,
+      operationStatus: 1,
       form: {
         name: undefined,
         parentId: undefined,
@@ -221,7 +217,7 @@ export default {
         menuId: [{ required: true, message: '节点ID不合法', trigger: 'blur' }],
         name: [{ required: true, message: '标题不合法', trigger: 'blur' }],
         seoTitle: [{ required: true, message: 'SEO标题不合法', trigger: 'blur' }],
-        seoKeyword: [{ required: true, message: 'EO关键字不合法', trigger: 'blur' }],
+        seoKeyword: [{ required: true, message: 'SEO关键字不合法', trigger: 'blur' }],
         code: [{ required: true, message: 'URL目录名称不合法', trigger: 'blur' }],
         seoDesc: [{ required: true, message: 'URL描述不合法', trigger: 'blur' }],
         weight: [{ required: true, message: '排序不合法', trigger: 'blur' }],
@@ -319,11 +315,13 @@ export default {
       this.resetForm()
       this.formEdit = false
       this.formStatus = 'create'
+      this.operationStatus = 0
     },
     handlerEdit() {
       if (this.form.id) {
         this.formEdit = false
         this.formStatus = 'update'
+        this.operationStatus = 2
       }
     },
     handleDelete() {
