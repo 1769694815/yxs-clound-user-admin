@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 17:09:18
- * @LastEditors: xwen
+ * @LastEditors: Please set LastEditors
  * @Author: xw
- * @LastEditTime: 2020-03-10 14:09:30
+ * @LastEditTime: 2020-03-11 14:10:46
  * @Description: 表格组件
  -->
 <template>
@@ -95,7 +95,7 @@
             />
             <!-- 有默认数据 -->
             <span v-else-if="(item.dicData && item.dicData.length) || item.dicUrl">
-              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
+              <el-tag v-if="scope.row[scope.column.property] !== null || scope.row[scope.column.property] !== ''">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
             <span
