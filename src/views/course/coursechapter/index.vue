@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 15:27:38
+ * @LastEditTime: 2020-03-11 17:36:21
  * @Description: 文件管理
  -->
 <template>
@@ -74,12 +74,13 @@
           <!--章节排序-->
           <el-col :span="12">
             <el-form-item label="章节排序" prop="sort">
-              <el-input
+              <el-input-number
                 v-model="form.sort"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入章节排序"
-                clearable
-                class="chapter-input"
+                :disabled="operationStatus === 1"
+                style="width: 336px;"
+                min="0"
               />
             </el-form-item>
           </el-col>
@@ -172,6 +173,9 @@ export default {
         // 表单校验
         title: [
           { required: true, message: '章节名称不能为空', trigger: 'blur' }
+        ],
+        sort: [
+          { required: true, message: '章节排序不能为空', trigger: 'blur' }
         ]
       },
       dataObj: { token: '', key: '' }
