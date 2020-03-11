@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-10 14:09:30
+ * @LastEditTime: 2020-03-11 15:50:28
  * @Description: 表格组件
  -->
 <template>
@@ -53,6 +53,8 @@
       :key="tableKey"
       v-loading="tableLoading"
       :data="tableData"
+      row-key="id"
+      :tree-props="treeProps"
       border
       stripe
       highlight-current-row
@@ -95,7 +97,7 @@
             />
             <!-- 有默认数据 -->
             <span v-else-if="(item.dicData && item.dicData.length) || item.dicUrl">
-              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
+              <el-tag v-if="scope.row[scope.column.property] !== null || scope.row[scope.column.property] !== ''">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
             <span
@@ -268,6 +270,13 @@ export default {
     excel: {
       type: Boolean,
       default: false
+    },
+    // 树形表格
+    treeProps: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
