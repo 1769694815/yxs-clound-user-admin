@@ -14,8 +14,6 @@ export function getRoleAdmin() {
     method: 'get'
   })
 }
-
-
 export function addObj(obj) {
   return request({
     url: '/admin/user',
