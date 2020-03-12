@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:28:12
+ * @LastEditTime: 2020-03-12 17:31:52
  * @Description: 文件管理
  -->
 <template>
@@ -168,35 +168,11 @@
               />
             </el-form-item>
           </el-col>
-          <!--是否封闭班级-->
-          <el-col :span="12">
-            <el-form-item label="封闭班级" prop="privateFlag">
-              <single-change
-                v-model="form.privateFlag"
-                :operation-status="operationStatus"
-                status-type="common_flag"
-                type="radio"
-                size="medium"
-              />
-            </el-form-item>
-          </el-col>
           <!--是否为推荐班级-->
           <el-col :span="12">
-            <el-form-item label="推荐班级" prop="recommendedFlag">
+            <el-form-item label="推荐首页" prop="recommendedFlag">
               <single-change
                 v-model="form.recommendedFlag"
-                :operation-status="operationStatus"
-                status-type="common_flag"
-                type="radio"
-                size="medium"
-              />
-            </el-form-item>
-          </el-col>
-          <!--是否开放购买-->
-          <el-col :span="12">
-            <el-form-item label="开放购买" prop="buyFlag">
-              <single-change
-                v-model="form.buyFlag"
                 :operation-status="operationStatus"
                 status-type="common_flag"
                 type="radio"
@@ -405,11 +381,12 @@ export default {
           label: '封闭班级',
           prop: 'privateFlag',
           dicUrl: 'common_flag',
-          dicData: []
+          dicData: [],
+          hide: true
         },
         {
           width: 120,
-          label: '推荐班级',
+          label: '推荐首页',
           prop: 'recommendedFlag',
           dicUrl: 'common_flag',
           dicData: []
@@ -426,7 +403,8 @@ export default {
           width: 110,
           prop: 'buyFlag',
           dicUrl: 'common_flag',
-          dicData: []
+          dicData: [],
+          hide: true
         },
         {
           width: 160,
@@ -471,16 +449,16 @@ export default {
           { required: true, message: '请输入推荐序号', trigger: 'blur' }
         ],
         privateFlag: [
-          { required: true, message: '请选择是否封闭', trigger: 'change' }
+          { required: false, message: '请选择是否封闭', trigger: 'change' }
         ],
         recommendedFlag: [
-          { required: true, message: '请选择是否推荐', trigger: 'change' }
+          { required: true, message: '请选择是否推荐到首页', trigger: 'change' }
         ],
         showFlag: [
           { required: true, message: '请选择是否开放展示', trigger: 'change' }
         ],
         buyFlag: [
-          { required: true, message: '请选择是否开放购买', trigger: 'change' }
+          { required: false, message: '请选择是否开放购买', trigger: 'change' }
         ],
         expiryMode: [
           { required: true, message: '请选择有效期', trigger: 'change' }
