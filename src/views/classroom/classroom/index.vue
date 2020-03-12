@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 09:40:50
+ * @LastEditTime: 2020-03-12 09:50:22
  * @Description: 文件管理
  -->
 <template>
@@ -82,29 +82,27 @@
           <!--班主任-->
           <el-col :span="12">
             <el-form-item label="班主任" prop="headmasterId">
-              <!-- <single-change
+              <single-change
                 v-model="form.headmasterId"
                 :operation-status="operationStatus"
-                url="/admin/user/getTeacherList"
-                label="username"
-                value="userId"
+                :dic-prop="{ label: 'username', value: 'userId' }"
+                dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
-              /> -->
+              />
             </el-form-item>
           </el-col>
           <!--班级助教-->
           <el-col :span="12">
             <el-form-item label="班级助教" prop="assistantId">
-              <!-- <single-change
+              <single-change
                 v-model="form.assistantId"
                 :operation-status="operationStatus"
-                url="/admin/user/getTeacherList"
-                label="username"
-                value="userId"
+                :dic-prop="{ label: 'username', value: 'userId' }"
+                dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
-              /> -->
+              />
             </el-form-item>
           </el-col>
           <!--班级分类-->
