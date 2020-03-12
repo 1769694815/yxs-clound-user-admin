@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 18:03:51
+ * @LastEditTime: 2020-03-12 20:10:22
  * @Description: 课程管理
  -->
 <template>
@@ -377,14 +377,19 @@ export default {
         {
           label: '课程类型',
           prop: 'type',
-          width: '80',
+          width: '100',
           dicUrl: 'course_type',
-          dicData: []
-
+          dicData: [],
+          hide: true
         },
         {
           label: '课程分类',
           prop: 'categoryName',
+          width: '100'
+        },
+        {
+          label: '课时数',
+          prop: 'lessonNum',
           width: '100'
         },
         {
@@ -399,7 +404,8 @@ export default {
           prop: 'serialStatus',
           width: '120',
           dicUrl: 'course_serial_status',
-          dicData: []
+          dicData: [],
+          hide: true
         },
         {
           label: '是否推荐',
