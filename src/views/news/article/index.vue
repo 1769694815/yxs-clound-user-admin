@@ -196,7 +196,7 @@
               label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
+              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 100%;">
                 <el-option
                   v-for="item in categoryTypeList"
                   :key="item.id"
@@ -251,7 +251,7 @@
                 autocomplete="off"
                 placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
