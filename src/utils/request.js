@@ -93,6 +93,10 @@ service.interceptors.response.use(
     return res
   },
   error => {
+    Message({
+      message: '网络错误，请稍后重试',
+      type: 'error'
+    })
     return Promise.reject(error)
   }
 )
