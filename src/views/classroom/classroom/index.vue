@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 09:50:22
+ * @LastEditTime: 2020-03-12 10:10:14
  * @Description: 文件管理
  -->
 <template>
@@ -291,8 +291,7 @@
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -572,7 +571,8 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(this.form)
+          this.dialogPvVisible = false
+          this.tableLoading = true
           if (this.form.id != null) {
             putObj(this.form).then(() => {
               this.$notify({
@@ -581,6 +581,9 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           } else {
             addObj(this.form).then(() => {
@@ -590,10 +593,11 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           }
-          this.dialogPvVisible = false
-          this.getList()
         } else {
           return false
         }
