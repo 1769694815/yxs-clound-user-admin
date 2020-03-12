@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-12 09:52:36
+ * @LastEditTime: 2020-03-12 10:38:57
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -53,7 +53,7 @@ export default {
   name: 'SingleChange',
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       default: function() {
         return ''
       }

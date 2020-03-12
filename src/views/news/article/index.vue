@@ -415,6 +415,8 @@ export default {
     const tinymceValidate = (rule, value, callback) => {
       if (this.form.body === '') {
         callback(new Error(rule.message))
+      } else {
+        callback()
       }
     }
     return {
