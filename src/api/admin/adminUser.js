@@ -15,10 +15,9 @@ export function getRoleAdmin() {
   })
 }
 
-
 export function addObj(obj) {
   return request({
-    url: '/admin/user',
+    url: '/admin/user/adminUserSave',
     method: 'post',
     data: obj
   })
@@ -31,17 +30,18 @@ export function getObj(id) {
   })
 }
 
-export function delObj(id) {
+export function delObj(obj) {
   return request({
-    url: '/admin/user/' + id,
-    method: 'delete'
+    url: '/admin/user/adminUserDelete',
+    method: 'post',
+    data: obj
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/user',
-    method: 'put',
+    url: '/admin/user/adminUserUpdate',
+    method: 'post',
     data: obj
   })
 }

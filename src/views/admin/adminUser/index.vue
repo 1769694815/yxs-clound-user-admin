@@ -185,12 +185,28 @@
             :span="12"
           >
             <el-form-item
+              prop="phone"
+              label="手机号:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.phone"
+                autocomplete="off"
+                placeholder="请输入手机号码"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
               prop="sex"
               label="性别:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.sex" label="1" :disabled="operationStatus === 1">男</el-radio>
-              <el-radio v-model="form.sex" label="0" :disabled="operationStatus === 1">女</el-radio>
+              <el-radio v-model="form.sex" label="0" :disabled="operationStatus === 1">男</el-radio>
+              <el-radio v-model="form.sex" label="1" :disabled="operationStatus === 1">女</el-radio>
             </el-form-item>
           </el-col>
           <el-col
@@ -346,6 +362,11 @@ export default {
           message: '请输入用户名',
           trigger: 'blur'
         }],
+        phone: [{
+          required: true,
+          message: '请输入手机号',
+          trigger: 'blur'
+        }],
         realName: [{
           required: true,
           message: '请输入真实姓名',
@@ -442,8 +463,9 @@ export default {
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
-      getObj(row.id).then(data => {
+      getObj(row.userId).then(data => {
         this.form = data.data.data
+        this.form.roleId = data.data.data.roleList[0].roleId
       })
     },
     /**
@@ -453,8 +475,9 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
-      getObj(row.id).then(data => {
+      getObj(row.userId).then(data => {
         this.form = data.data.data
+        this.form.roleId = data.data.data.roleList[0].roleId
       })
     },
     /**
@@ -463,6 +486,9 @@ export default {
     create() {
       // 默认密码
       if (this.form.password === null && this.form.password === '') {
+        this.form.password = '123456'
+      }
+      if (typeof (this.form.password) === 'undefined') {
         this.form.password = '123456'
       }
       this.$refs
@@ -517,7 +543,7 @@ export default {
      */
     handleDelete(row, index) {
       var _this = this
-      this.$confirm('是否确认删除ID为' + row.id, '提示', {
+      this.$confirm('是否确认删除ID为' + row.userId, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
