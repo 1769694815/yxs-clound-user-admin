@@ -18,7 +18,7 @@
       <el-form-item label="是否免费:" label-width="80px">
         <single-change
           v-model="searchForm.free"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -28,7 +28,7 @@
       <el-form-item label="课时状态:" label-width="130px">
         <single-change
           v-model="searchForm.status"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_release_status"
           type="select"
           size="small"
@@ -38,7 +38,7 @@
       <el-form-item label="课时类型:" label-width="80px">
         <single-change
           v-model="searchForm.type"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="lesson_type"
           type="select"
           size="small"
@@ -100,7 +100,7 @@
             <el-form-item label="是否免费" prop="free" :label-width="formLabelWidth">
               <single-change
                 v-model="form.free"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -112,7 +112,7 @@
             <el-form-item label="课时状态" prop="status" :label-width="formLabelWidth">
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_release_status"
                 type="select"
                 size="medium"
@@ -124,7 +124,7 @@
             <el-form-item label="课时类型" prop="type" :label-width="formLabelWidth">
               <single-change
                 v-model="form.type"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="lesson_type"
                 type="select"
                 size="medium"

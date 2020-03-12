@@ -25,7 +25,7 @@
       >
         <single-change
           v-model="searchForm.status"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_release_status"
           type="select"
           size="small"
@@ -38,7 +38,7 @@
       >
         <single-change
           v-model="searchForm.featured"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -50,7 +50,7 @@
       >
         <single-change
           v-model="searchForm.promoted"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -62,7 +62,7 @@
       >
         <single-change
           v-model="searchForm.sticky"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -191,7 +191,7 @@
             >
               <single-change
                 v-model="form.categoryId"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 :dic-prop="{ label: 'name', value: 'id' }"
                 dic-url="/news/articlecategory/getCategoryType"
                 type="select"
@@ -273,7 +273,7 @@
             >
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_release_status"
                 type="radio"
                 size="medium"
@@ -290,7 +290,7 @@
             >
               <single-change
                 v-model="form.featured"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -307,7 +307,7 @@
             >
               <single-change
                 v-model="form.promoted"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -324,7 +324,7 @@
             >
               <single-change
                 v-model="form.sticky"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"

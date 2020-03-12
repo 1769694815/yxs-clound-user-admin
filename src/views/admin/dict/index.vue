@@ -32,7 +32,7 @@
       >
         <single-change
           v-model="searchForm.system"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="dict_type"
           type="select"
         />

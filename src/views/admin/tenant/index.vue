@@ -31,7 +31,7 @@
       >
         <single-change
           v-model="form.status"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="status_type"
           type="select"
         />
@@ -201,7 +201,7 @@
             >
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="status_type"
                 type="radio"
               />

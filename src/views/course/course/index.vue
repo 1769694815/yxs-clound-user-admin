@@ -17,7 +17,7 @@
       <el-form-item label="是否推荐:" label-width="80px">
         <single-change
           v-model="searchForm.recommend"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
         />
@@ -26,7 +26,7 @@
       <el-form-item label="开售标志:" label-width="130px">
         <single-change
           v-model="searchForm.buyFlag"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
         />
@@ -35,7 +35,7 @@
       <el-form-item label="课程类型:" label-width="80px">
         <single-change
           v-model="searchForm.type"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="course_type"
           type="select"
         />
@@ -111,7 +111,7 @@
             <el-form-item label="课程类型" prop="type" :label-width="formLabelWidth">
               <single-change
                 v-model="form.type"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="course_type"
                 type="select"
                 size="medium"
@@ -124,7 +124,7 @@
               <Input-tree
                 v-model="form.categoryIds"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 multiline
                 title="课程分类"
                 placeholder="请选择课程分类"
@@ -168,7 +168,7 @@
             <el-form-item label="课程状态" prop="status" :label-width="formLabelWidth">
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_release_status"
                 type="radio"
                 size="medium"
@@ -180,7 +180,7 @@
             <el-form-item label="连载状态" prop="serialStatus" :label-width="formLabelWidth">
               <single-change
                 v-model="form.serialStatus"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="course_serial_status"
                 type="select"
                 size="medium"
@@ -192,7 +192,7 @@
             <el-form-item label="是否推荐" prop="recommend" :label-width="formLabelWidth">
               <single-change
                 v-model="form.recommend"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -204,7 +204,7 @@
             <el-form-item label="开售标志" prop="buyFlag" :label-width="formLabelWidth">
               <single-change
                 v-model="form.buyFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -216,7 +216,7 @@
             <el-form-item label="视频拖动" prop="drag" :label-width="formLabelWidth">
               <single-change
                 v-model="form.drag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -228,7 +228,7 @@
             <el-form-item label="倍速播放" prop="doubleSpeed" :label-width="formLabelWidth">
               <single-change
                 v-model="form.doubleSpeed"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"

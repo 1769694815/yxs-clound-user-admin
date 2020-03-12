@@ -150,7 +150,7 @@
               <Input-tree
                 v-model="form.parentId"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 title="上级菜单"
                 placeholder="请选择上级菜单"
               />
