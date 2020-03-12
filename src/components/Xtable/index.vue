@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 17:09:18
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:53:59
+ * @LastEditTime: 2020-03-11 17:44:17
  * @Description: 表格组件
  -->
 <template>
@@ -53,10 +53,20 @@
       :key="tableKey"
       v-loading="tableLoading"
       :data="tableData"
+      row-key="id"
+      :tree-props="treeProps"
       border
       stripe
       highlight-current-row
+      @selection-change="handleSelectionChange"
     >
+      <!-- 复选框 -->
+      <el-table-column
+        v-if="selection"
+        type="selection"
+        align="center"
+        width="55"
+      />
       <el-table-column
         v-if="index"
         type="index"
@@ -87,7 +97,7 @@
             />
             <!-- 有默认数据 -->
             <span v-else-if="(item.dicData && item.dicData.length) || item.dicUrl">
-              <el-tag v-if="scope.row[scope.column.property]">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
+              <el-tag v-if="scope.row[scope.column.property] !== null || scope.row[scope.column.property] !== ''">{{ scope.row[scope.column.property] | statusFilter(item.dicData, item.dicProp) }}</el-tag>
             </span>
             <!-- 链接跳转 -->
             <span
@@ -186,6 +196,12 @@ export default {
     }
   },
   props: {
+    selection: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
+    },
     index: {
       type: Boolean,
       default: function() {
@@ -243,6 +259,24 @@ export default {
       default: function() {
         return 'right'
       }
+    },
+    excelTableData: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    // 导出数据
+    excel: {
+      type: Boolean,
+      default: false
+    },
+    // 树形表格
+    treeProps: {
+      type: Object,
+      default: function() {
+        return {}
+      }
     }
   },
   data() {
@@ -251,6 +285,15 @@ export default {
       checkList: [],
       imgVisible: false,
       imgUrl: ''
+    }
+  },
+  watch: {
+    excel: function(val) {
+      if (val) {
+        // 处理原数据，根据关键字枚举
+        const data = JSON.parse(JSON.stringify(this.excelTableData))
+        this.createTableData(data)
+      }
     }
   },
   created() {
@@ -293,6 +336,29 @@ export default {
     imgView(url) {
       this.imgUrl = url
       this.imgVisible = true
+    },
+    createTableData(data) {
+      data.map(item => {
+        this.tableOption.map(val => {
+          if (val.dicData && val.dicData.length > 0) {
+            item[val.prop] = this.statusFilter(item[val.prop], val.dicData, val.dicProp)
+          }
+        })
+      })
+      this.$emit('excel-data', data)
+    },
+    statusFilter(status, list, prop = { value: 'value', label: 'label' }) {
+      let result
+      for (const i in list) {
+        const item = list[i]
+        if (status === item[prop.value]) {
+          result = item[prop.label]
+        }
+      }
+      return result
+    },
+    handleSelectionChange(val) {
+      this.$emit('selection-change', val)
     }
   }
 }

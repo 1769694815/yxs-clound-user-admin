@@ -16,7 +16,7 @@ axios.defaults.withCredentials = true
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 30000 // request timeout
+  timeout: 120000 // request timeout
 })
 
 service.defaults.headers['Content-Type'] = 'application/json'
@@ -73,7 +73,7 @@ service.interceptors.response.use(
     const message = res.data.msg
     if (status === 401) {
       Message({
-        message: message,
+        message: message || '登录超时，请重新登录',
         type: 'error'
       })
       store.dispatch('user/fedLogOut').then(() => {
@@ -84,7 +84,7 @@ service.interceptors.response.use(
 
     if (status !== 200 || res.data.code === 1) {
       Message({
-        message: message,
+        message: message || '网络错误，请稍后重试',
         type: 'error'
       })
       return Promise.reject(new Error(message))

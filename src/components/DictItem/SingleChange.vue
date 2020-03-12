@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-04 15:04:10
+ * @LastEditTime: 2020-03-12 09:52:36
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -25,9 +25,9 @@
     >
       <el-option
         v-for="item in statusList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        :key="item[dicProp.value]"
+        :label="item[dicProp.label]"
+        :value="item[dicProp.value]"
       />
     </el-select>
     <el-radio-group
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { remote } from '@/api/admin/dict'
+import { remote, http } from '@/api/admin/dict'
 export default {
   name: 'SingleChange',
   props: {
@@ -87,6 +87,21 @@ export default {
       default: function() {
         return 0
       }
+    },
+    dicUrl: {
+      type: String,
+      default: function() {
+        return ''
+      }
+    },
+    dicProp: {
+      type: Object,
+      default: function() {
+        return {
+          label: 'label',
+          value: 'value'
+        }
+      }
     }
   },
   data() {
@@ -108,9 +123,17 @@ export default {
   },
   methods: {
     getStatusList() {
-      remote(this.statusType).then(res => {
-        this.statusList = res.data.data
-      })
+      if (this.statusType) {
+        remote(this.statusType).then(res => {
+          this.statusList = res.data.data
+        })
+      } else if (this.dicUrl) {
+        http(this.dicUrl).then(res => {
+          this.statusList = res.data.data
+        })
+      } else {
+        new Error('必传status-type或者dic-url')
+      }
     },
     singleChange(e) {
       this.$emit('input', e)

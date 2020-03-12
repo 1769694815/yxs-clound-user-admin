@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 15:48:26
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:03:59
+ * @LastEditTime: 2020-03-11 16:50:55
  * @Description: 可搜索树形组件
  -->
 <template>
@@ -21,7 +21,6 @@
       :props="defaultProps"
       :node-key="option.nodeKey"
       :show-checkbox="showCheckbox"
-      default-expand-all
       :expand-on-click-node="false"
       :current-node-key="currentNodeKey"
       :filter-node-method="filterNode"

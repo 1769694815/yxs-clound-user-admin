@@ -79,6 +79,18 @@ export const constantRoutes = [
       component: () => import('@/views/course/coursechapter'),
       meta: { title: '章节管理' }
     }]
+  },
+  {
+    path: '/course/courselesson',
+    component: Layout,
+    redirect: '/course/courselesson/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Courselesson',
+      component: () => import('@/views/course/courselesson'),
+      meta: { title: '课时管理' }
+    }]
   }
 
 ]

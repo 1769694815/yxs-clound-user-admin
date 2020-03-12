@@ -196,7 +196,7 @@
               label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
+              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 100%;">
                 <el-option
                   v-for="item in categoryTypeList"
                   :key="item.id"
@@ -251,7 +251,7 @@
                 autocomplete="off"
                 placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -265,7 +265,7 @@
             >
               <single-image
                 v-model="form.thumb"
-                :type="3"
+                status="3"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -320,8 +320,8 @@
           </el-col>
           <el-col :span="24">
             <el-form-item
-              prop="body"
               label="文章描述:"
+              prop="body"
               :label-width="formLabelWidth"
             >
               <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
@@ -411,6 +411,11 @@ export default {
           value: '0'
         }
       ]
+    }
+    const tinymceValidate = (rule, value, callback) => {
+      if (this.form.body === '') {
+        callback(new Error(rule.message))
+      }
     }
     return {
       headers: {},
@@ -552,6 +557,7 @@ export default {
         }],
         body: [{
           required: true,
+          validator: tinymceValidate,
           message: '请输入文章描述',
           trigger: 'blur'
         }]
@@ -657,7 +663,6 @@ export default {
     create() {
       this.$refs
         .dataForm.validate(valid => {
-          console.log(this.form)
           if (valid) {
             this.dialogPvVisible = false
             this.tableLoading = true
@@ -731,6 +736,7 @@ export default {
     closeDialog() {
       this.$nextTick(() => {
         if (this.$refs.tinymce.hasInit) {
+          // this.form.body = ''
           this.$refs.tinymce.destroyTinymce()
         }
       })

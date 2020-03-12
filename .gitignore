@@ -5,6 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+vue.config.js
 tests/**/coverage/
 
 # Editor directories and files

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-09 13:42:47
+ * @LastEditTime: 2020-03-11 19:13:54
  * @Description: 文件管理
  -->
 <template>
@@ -182,6 +182,7 @@
                 >{{ item.label }}</el-radio>
               </el-radio-group>
             </el-form-item>
+
           </el-col>
           <!--是否面授-->
           <el-col :span="12">
@@ -213,8 +214,10 @@
           </el-col>
           <!--字体颜色-->
           <el-col :span="12">
-            <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" />
+            <el-form-item label="字体颜色" prop="fontColor">
+              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
+              <!-- 颜色格式： hsl / hsv / hex / rgb -->
+              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
@@ -247,7 +250,23 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+            <el-form-item v-if="!form.parentId" label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+              <el-select
+                v-model="form.jumpType"
+                :disabled="operationStatus === 1"
+                clearable
+                class="category-input"
+                placeholder="请选择跳转类型"
+              >
+                <el-option
+                  v-for="item in jumpTypeList"
+                  :key="item.label"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item v-else label="跳转类型" :disabled="operationStatus === 1">
               <el-select
                 v-model="form.jumpType"
                 :disabled="operationStatus === 1"
@@ -279,7 +298,11 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.icon" :type="8" :disabled="operationStatus === 1" />
+              <single-image
+                v-model="form.icon"
+                status="8"
+                :disabled="operationStatus === 1"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -479,7 +502,10 @@ export default {
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
         ],
-        icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
+        jumpType: [
+          { required: true, message: '请选择跳转类型', trigger: 'change' }
+        ]
+        // icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
       imageUrl: '', // 图片地址
       treeData: [],

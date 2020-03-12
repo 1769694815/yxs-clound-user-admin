@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-03 14:43:59
+ * @LastEditTime: 2020-03-10 15:43:57
  * @Description: 字典管理
  -->
 <template>
@@ -408,7 +408,9 @@ export default {
         label: '字典类型',
         prop: 'system',
         type: 'select',
-        dicUrl: 'dict_type'
+        dicUrl: 'dict_type',
+        dicData: []
+
       }, {
         label: '备注信息',
         prop: 'remarks'

@@ -38,16 +38,53 @@
         </el-button>
       </el-form-item>
     </el-form>
+    <!-- selection: 是否展示复选框 @selection-change="handleSelectionChange" 复选框选择回调 -->
     <Xtable
+      :selection="true"
       :table-key="tableKey"
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
-      @handle-create="handleCreate"
+      :add-btn="false"
+      :excel="exportExcel"
+      :excel-table-data="excelTableData"
+      @excel-data="excelData"
       @refresh-change="handleFilter"
       @page-change="getList"
+      @selection-change="handleSelectionChange"
     >
+      <template slot="menuLeft">
+        <!-- <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button> -->
+        <el-tooltip
+          effect="dark"
+          content="导出全部数据"
+          placement="top"
+        >
+          <el-button
+            :loading="downloadLoading"
+            type="primary"
+            icon="el-icon-document"
+            size="mini"
+            @click="handleDownload"
+          >
+            导出 Excel
+          </el-button>
+        </el-tooltip>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="mini"
+          @click="handleBatchDelete"
+        >
+          批量删除
+        </el-button>
+      </template>
       <template
         slot="role"
         slot-scope="scope"
@@ -412,6 +449,7 @@
 <script>
 import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/orders'
 import { mapGetters } from 'vuex'
+import { parseTime } from '@/utils'
 
 export default {
   filters: {
@@ -501,7 +539,12 @@ export default {
       dialogDictItem: false,
       operationStatus: 0,
       form: {},
-      formLabelWidth: '90px'
+      formLabelWidth: '90px',
+      downloadLoading: false,
+      loading: null,
+      exportExcel: false,
+      excelTableData: [],
+      multipleSelection: []
     }
   },
   computed: {
@@ -640,8 +683,80 @@ export default {
           _this.$message.success('删除成功')
           this.getList()
         })
+    },
+    handleDownload() {
+      this.downloadLoading = true
+      this.loading = this.$loading({
+        lock: true,
+        text: '数据导出中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      // 获取所有表格数据
+      fetchList(
+        Object.assign(
+          {
+            descs: 'create_time',
+            current: 1,
+            size: this.page.total
+          },
+          this.searchForm
+        )
+      )
+        .then(res => {
+          this.excelTableData = res.data.data.records
+          console.log('excelTableData', this.excelTableData)
+          // 通知表格组件处理接口返回数据
+          this.exportExcel = true
+        })
+    },
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
+    },
+    excelData(list) {
+      console.log('list', list)
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = this.tableOption.map(item => { return item.label })
+        const filterVal = this.tableOption.map(item => { return item.prop })
+        const data = this.formatJson(filterVal, list)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: '订单列表',
+          autoWidth: true,
+          bookType: 'xlsx'
+        })
+        this.loading.close()
+        this.downloadLoading = false
+        this.exportExcel = false
+      })
+    },
+    // 批量删除
+    handleBatchDelete() {
+      if (this.multipleSelection.length <= 0) {
+        this.$message({
+          message: '请勾选需要删除的数据',
+          type: 'error'
+        })
+      } else {
+        // DOTO 删除操作
+        this.$message({
+          message: '正在拼命开发中~',
+          type: 'success'
+        })
+      }
+    },
+    // 复选
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+      console.log('选择的数据', val)
     }
-
   }
 }
 </script>

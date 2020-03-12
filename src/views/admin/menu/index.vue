@@ -1,78 +1,134 @@
 <!--
  * @Date: 2020-02-14 12:01:46
- * @LastEditors  : xw
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime : 2020-02-14 12:48:31
+ * @LastEditTime: 2020-03-11 17:33:59
  * @Description: 菜单管理
  -->
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-button-group>
+    <Xtable
+      :table-key="tableKey"
+      :table-loading="tableLoading"
+      :table-data="tableData"
+      :page="page"
+      :table-option.sync="tableOption"
+      :add-btn="false"
+      :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+    >
+      <template slot="menuLeft">
         <el-button
           v-if="menuManager_btn_add"
           type="primary"
-          icon="plus"
-          @click="handlerAdd"
-        >添加
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+      </template>
+      <template
+        slot="type"
+        slot-scope="scope"
+      >
+        <el-tag v-if="scope.row.type === '1'" type="info">按钮</el-tag>
+        <el-tag v-else>菜单</el-tag>
+      </template>
+      <template
+        slot="icon"
+        slot-scope="scope"
+      >
+        <svg-icon :icon-class="scope.row.icon" :class-name="scope.row.icon" />
+      </template>
+      <template
+        slot="menu"
+        slot-scope="scope"
+      >
+        <el-button
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >查看
         </el-button>
         <el-button
           v-if="menuManager_btn_edit"
-          type="primary"
-          icon="edit"
-          @click="handlerEdit"
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleUpdate(scope.row)"
         >编辑
         </el-button>
         <el-button
           v-if="menuManager_btn_del"
-          type="primary"
-          icon="delete"
-          @click="handleDelete"
+          type="text"
+          size="mini"
+          icon="el-icon-delete"
+          @click="handleDelete(scope.row, scope.index)"
         >删除
         </el-button>
-      </el-button-group>
-    </div>
-
-    <el-row>
-      <el-col
-        :span="8"
-        style="margin-top: 15px"
+      </template>
+    </Xtable>
+    <!-- 表单弹窗 -->
+    <el-dialog
+      :visible.sync="dialogPvVisible"
+      :title="operationStatus | dialogTitle"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
       >
-        <el-tree
-          :data="treeData"
-          :default-expanded-keys="aExpandedKeys"
-          :filter-node-method="filterNode"
-          :props="defaultProps"
-          class="filter-tree"
-          node-key="id"
-          highlight-current
-          @node-click="getNodeData"
-          @node-expand="nodeExpand"
-          @node-collapse="nodeCollapse"
-        />
-      </el-col>
-      <el-col
-        :span="16"
-        style="margin-top: 15px;"
-      >
-        <div class="box-card">
-          <el-form
-            ref="form"
-            :label-position="labelPosition"
-            :model="form"
-            :rules="rules"
-            label-width="80px"
-          >
+        <el-form
+          ref="dataForm"
+          :rules="rules"
+          :model="form"
+          :label-width="formLabelWidth"
+        >
+          <el-col :span="12">
             <el-form-item
-              label="父级节点"
-              prop="parentId"
+              label="名称:"
+              prop="name"
             >
               <el-input
-                v-model="form.parentId"
-                :disabled="true"
-                placeholder="请输入父级节点"
+                v-model="form.name"
+                auto-complete="off"
+                placeholder="请输入名称"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="类型:"
+              prop="type"
+            >
+              <el-radio
+                v-model="form.type"
+                :disabled="operationStatus === 1"
+                label="0"
+                border
+              >菜单</el-radio>
+              <el-radio
+                v-model="form.type"
+                :disabled="operationStatus === 1"
+                label="1"
+                border
+              >按钮</el-radio>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="路由路径:"
+              prop="path"
+            >
+              <el-input
+                v-model="form.path"
+                auto-complete="off"
+                placeholder="/xx/xxx || http://"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
               v-if="form.menuId"
               label="节点ID"
@@ -80,81 +136,68 @@
             >
               <el-input
                 v-model="form.menuId"
-                :disabled="formEdit || formStatus === 'update'"
+                :disabled="operationStatus === 1"
                 type="number"
                 placeholder="请输入节点ID"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
-              label="标题"
-              prop="name"
+              label="上级菜单:"
+              prop="parentId"
             >
-              <el-input
-                v-model="form.name"
-                :disabled="formEdit"
-                placeholder="请输入标题"
+              <Input-tree
+                v-model="form.parentId"
+                :tree-data="treeData"
+                :operation-status="operationStatus"
+                title="上级菜单"
+                placeholder="请选择上级菜单"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
-              label="类型"
-              prop="type"
-            >
-              <el-radio
-                v-model="form.type"
-                :disabled="formEdit"
-                label="0"
-              >菜单</el-radio>
-              <el-radio
-                v-model="form.type"
-                :disabled="formEdit"
-                label="1"
-              >按钮</el-radio>
-            </el-form-item>
-            <el-form-item
-              v-if="form.type === '1'"
-              label="权限标识"
-              prop="permission"
-            >
-              <el-input
-                v-model="form.permission"
-                :disabled="formEdit"
-                placeholder="请输入权限标识"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="form.type === '0'"
-              label="地址"
-              prop="path"
-            >
-              <el-input
-                v-model="form.path"
-                :disabled="formEdit"
-                placeholder="/xx/xxx || http://"
-              />
-            </el-form-item>
-            <el-form-item
-              v-if="form.type === '0'"
-              label="图标"
+              label="图标:"
               prop="icon"
             >
               <el-input
                 v-model="form.icon"
-                :disabled="formEdit"
+                auto-complete="off"
                 placeholder="请输入图标"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              label="权限标识:"
+              prop="permission"
+            >
+              <el-input
+                v-model="form.permission"
+                auto-complete="off"
+                type="number"
+                placeholder="请输入权限标识"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
               v-if="form.type === '0'"
-              label="排序"
+              label="排序:"
               prop="sort"
             >
               <el-input
                 v-model="form.sort"
-                :disabled="formEdit"
+                auto-complete="off"
                 type="number"
-                placeholder="请输入排序"
+                :disabled="operationStatus === 1"
               />
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
               v-if="form.type === '0'"
               label="路由缓冲"
@@ -162,44 +205,66 @@
             >
               <el-switch
                 v-model="form.keepAlive"
-                :disabled="formEdit"
+                :disabled="operationStatus === 1"
                 :active-value="&quot;0&quot;"
                 :inactive-value="&quot;1&quot;"
                 active-color="#13ce66"
                 inactive-color="#ff4949"
               />
             </el-form-item>
-            <el-form-item v-if="formStatus === 'update'">
-              <el-button
-                type="primary"
-                @click="update"
-              >更新
-              </el-button>
-              <el-button @click="onCancel">取消</el-button>
-            </el-form-item>
-            <el-form-item v-if="formStatus === 'create'">
-              <el-button
-                type="primary"
-                @click="create"
-              >保存
-              </el-button>
-              <el-button @click="onCancel">取消</el-button>
-            </el-form-item>
-          </el-form>
-        </div>
-      </el-col>
-    </el-row>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          v-if="operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="create"
+        >保 存
+        </el-button>
+        <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改
+        </el-button>
+        <el-button
+          size="small"
+          @click="dialogPvVisible = false"
+        >取 消
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { addObj, delObj, fetchMenuTree, getObj, putObj } from '@/api/admin/menu'
 import { mapGetters } from 'vuex'
+import InputTree from '@/components/InputTree/index'
 export default {
   name: 'Menu',
+  components: {
+    InputTree
+  },
+  filters: {
+    dialogTitle(type) {
+      const titleMap = {
+        0: '新 增',
+        1: '查 看',
+        2: '编 辑',
+        3: '删 除'
+      }
+      return titleMap[type]
+    }
+  },
   data() {
     return {
-      formEdit: true,
       formAdd: true,
       formStatus: '',
       showElement: false,
@@ -237,7 +302,40 @@ export default {
         children: 'children',
         label: 'name'
       },
-      labelPosition: 'right'
+      labelPosition: 'right',
+      tableKey: 0,
+      tableLoading: false,
+      tableOption: [{
+        label: '名称',
+        prop: 'label'
+      }, {
+        label: '类型',
+        prop: 'type',
+        slot: true
+      }, {
+        label: '路由路径',
+        prop: 'path',
+        width: 200
+      }, {
+        label: '图标',
+        prop: 'icon'
+      }, {
+        label: '权限标识',
+        prop: 'code'
+      }, {
+        label: '排序',
+        prop: 'sort'
+      }],
+      tableData: [],
+      page: {
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      searchForm: {},
+      dialogPvVisible: false,
+      operationStatus: 0,
+      formLabelWidth: '90px'
     }
   },
   computed: {
@@ -251,23 +349,16 @@ export default {
   },
   methods: {
     getList() {
+      this.tableLoading = true
       fetchMenuTree().then(response => {
         this.treeData = response.data.data
+        this.tableData = response.data.data
+        this.tableLoading = false
       })
     },
     filterNode(value, data) {
       if (!value) return true
       return data.label.indexOf(value) !== -1
-    },
-    getNodeData(data) {
-      if (!this.formEdit) {
-        this.formStatus = 'update'
-      }
-      getObj(data.id).then(response => {
-        this.form = response.data.data
-      })
-      this.currentId = data.id
-      this.showElement = true
     },
     nodeExpand(data) {
       const aChildren = data.children
@@ -303,27 +394,15 @@ export default {
         }
       }
     },
-    handlerAdd() {
-      this.resetForm()
-      this.formEdit = false
-      this.formStatus = 'create'
-    },
-    handlerEdit() {
-      if (this.form.menuId) {
-        this.formEdit = false
-        this.formStatus = 'update'
-      }
-    },
-    handleDelete() {
+    handleDelete(row) {
       this.$confirm('此操作将永久删除, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(this.currentId).then(() => {
+        delObj(row.parentId).then(() => {
           this.getList()
           this.resetForm()
-          this.onCancel()
           this.$notify({
             title: '成功',
             message: '删除成功',
@@ -334,11 +413,11 @@ export default {
       })
     },
     update() {
-      this.$refs.form.validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
           putObj(this.form).then(() => {
             this.getList()
-            this.formEdit = false
+            this.dialogPvVisible = false
             this.$notify({
               title: '成功',
               message: '更新成功',
@@ -350,11 +429,11 @@ export default {
       })
     },
     create() {
-      this.$refs.form.validate(valid => {
+      this.$refs.dataForm.validate(valid => {
         if (valid) {
           addObj(this.form).then(() => {
             this.getList()
-            this.formEdit = false
+            this.dialogPvVisible = false
             this.$notify({
               title: '成功',
               message: '创建成功',
@@ -364,10 +443,6 @@ export default {
           })
         }
       })
-    },
-    onCancel() {
-      this.formEdit = true
-      this.formStatus = ''
     },
     resetForm() {
       this.form = {
@@ -381,6 +456,27 @@ export default {
         type: undefined,
         path: undefined
       }
+    },
+    handleCreate() {
+      this.dialogPvVisible = true
+      this.operationStatus = 0
+      this.form = {}
+    },
+    handleView(row) {
+      this.dialogPvVisible = true
+      this.operationStatus = 1
+      getObj(row.id).then(res => {
+        console.log('res', res)
+        this.form = res.data.data
+      })
+    },
+    handleUpdate(row) {
+      this.dialogPvVisible = true
+      this.operationStatus = 2
+      getObj(row.id).then(res => {
+        console.log('res', res)
+        this.form = res.data.data
+      })
     }
   }
 }

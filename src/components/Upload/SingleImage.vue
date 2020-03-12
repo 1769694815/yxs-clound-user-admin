@@ -2,7 +2,7 @@
  * @Date: 2020-02-17 18:17:06
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-06 10:26:49
+ * @LastEditTime: 2020-03-10 16:28:39
  * @Description: 图片上传  action上传图片接口，为空的话自传七牛云
  -->
 
@@ -49,7 +49,7 @@
           </div>
         </el-image>
         <!-- <img :src="imageUrl" class="avatar"> -->
-        <div :class="['image-preview-action', { 'not-allowed': disabled }]">
+        <div :class="['image-preview-action', { 'not-allowed': disabled }]" @click="handleRemove">
           <i
             v-show="!disabled"
             class="el-icon-delete"
@@ -138,6 +138,9 @@ export default {
   },
   methods: {
     handleRemove() {
+      if (this.disabled) {
+        return
+      }
       this.imageUrl = ''
       this.$emit('input', this.imageUrl)
     },
