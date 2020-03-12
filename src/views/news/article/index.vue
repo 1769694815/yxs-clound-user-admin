@@ -274,7 +274,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="common_release_flag"
+                status-type="common_release_status"
                 type="radio"
                 size="medium"
               />
@@ -483,6 +483,10 @@ export default {
           prop: 'upsNum',
           hide: true
         }, {
+          label: '发布时间',
+          prop: 'publishedTime',
+          width: '200px'
+        }, {
           label: '创建时间',
           prop: 'createTime',
           width: '200px'
@@ -615,7 +619,13 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
+      this.form = {
+        status: '1',
+        featured: '0',
+        promoted: '0',
+        sticky: '0',
+        inventedNum: 0
+      }
       this.form.body = ''
       this.init()
     },
