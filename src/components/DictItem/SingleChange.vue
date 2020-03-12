@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-12 11:22:09
+ * @LastEditTime: 2020-03-12 17:52:04
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -33,7 +33,7 @@
     <el-radio-group
       v-if="type === 'radio'"
       v-model="status"
-      :disabled="operationStatus === 1"
+      :disabled="disabled"
       @change="singleChange"
     >
       <el-radio
@@ -80,12 +80,6 @@ export default {
       type: String,
       default: function() {
         return 'small'
-      }
-    },
-    operationStatus: {
-      type: [String, Number],
-      default: function() {
-        return 0
       }
     },
     dicUrl: {

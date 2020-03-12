@@ -171,6 +171,8 @@
                 autocomplete="off"
                 placeholder="请输入显示顺序"
                 :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -187,7 +189,6 @@
                 :disabled="operationStatus === 1"
                 status-type="navigation_type"
                 type="select"
-                :disabled="operationStatus === 1"
                 size="medium"
               />
             </el-form-item>

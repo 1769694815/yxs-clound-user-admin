@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 12:08:49
+ * @LastEditTime: 2020-03-12 17:48:57
  * @Description: 文件管理
  -->
 <template>
@@ -109,7 +109,7 @@
           </el-col>
           <!--分类类型-->
           <el-col :span="12">
-            <el-form-item label="分类类型" :disabled="operationStatus === 1" prop="groupType">
+            <el-form-item label="分类类型" prop="groupType">
               <single-change
                 v-model="form.groupType"
                 :disabled="operationStatus === 1"
@@ -225,7 +225,7 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item v-if="!form.parentId" label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+            <el-form-item v-if="!form.parentId" label="跳转类型" prop="jumpType">
               <single-change
                 v-model="form.jumpType"
                 :disabled="operationStatus === 1"
@@ -234,7 +234,7 @@
                 size="medium"
               />
             </el-form-item>
-            <el-form-item v-else label="跳转类型" :disabled="operationStatus === 1">
+            <el-form-item v-else label="跳转类型">
               <single-change
                 v-model="form.jumpType"
                 :disabled="operationStatus === 1"
@@ -248,11 +248,12 @@
           <el-col :span="12">
             <el-form-item label="显示顺序" prop="sort">
               <el-input-number
-                v-model="form.sequence"
+                v-model="form.sort"
+                autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入显示顺序"
-                clearable
-                class="category-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>

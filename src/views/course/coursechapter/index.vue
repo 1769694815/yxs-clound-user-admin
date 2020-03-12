@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 14:35:00
+ * @LastEditTime: 2020-03-12 17:27:27
  * @Description: 文件管理
  -->
 <template>
@@ -79,8 +79,8 @@
                 autocomplete="off"
                 placeholder="请输入章节排序"
                 :disabled="operationStatus === 1"
-                class="chapter-input"
                 :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
