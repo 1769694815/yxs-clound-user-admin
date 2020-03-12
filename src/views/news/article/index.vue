@@ -45,7 +45,7 @@
         />
       </el-form-item>
       <el-form-item
-        label="是否推荐:"
+        label="推荐热门:"
         :label-width="formLabelWidth"
       >
         <single-change
@@ -302,7 +302,7 @@
           >
             <el-form-item
               prop="promoted"
-              label="是否推荐:"
+              label="推荐热门:"
               :label-width="formLabelWidth"
             >
               <single-change
@@ -465,7 +465,7 @@ export default {
           dicUrl: 'common_flag',
           dicData: []
         }, {
-          label: '是否推荐',
+          label: '推荐热门',
           prop: 'promoted',
           dicUrl: 'common_flag',
           dicData: []
@@ -541,7 +541,7 @@ export default {
         }],
         promoted: [{
           required: true,
-          message: '请选择是否推荐',
+          message: '请选择是否推荐热门',
           trigger: 'blur'
         }],
         sticky: [{
