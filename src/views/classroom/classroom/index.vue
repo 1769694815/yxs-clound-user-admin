@@ -137,7 +137,7 @@
                 autocomplete="off"
                 placeholder="请输入班级价格"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -150,7 +150,7 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -163,7 +163,7 @@
                 autocomplete="off"
                 placeholder="请输入推荐序号"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -236,7 +236,7 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>

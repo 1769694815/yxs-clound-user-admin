@@ -176,7 +176,7 @@
               label="角色:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.roleId" placeholder="请选择角色" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
+              <el-select v-model="form.roleId" placeholder="请选择角色" :disabled="operationStatus === 1" autocomplete="off" style="width: 100%;">
                 <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
               </el-select>
             </el-form-item>
