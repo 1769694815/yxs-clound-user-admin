@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 15:32:44
+ * @LastEditTime: 2020-03-11 20:11:43
  * @Description: 文件管理
  -->
 <template>
@@ -202,11 +202,11 @@ export default {
         },
         {
           label: '课程',
-          prop: 'courseId'
+          prop: 'courseTitle'
         },
         {
           label: '章节',
-          prop: 'chapterId'
+          prop: 'courseChapterTitle'
         },
         {
           label: '排序',
@@ -401,7 +401,7 @@ export default {
       this.dialogPvVisible = true
       this.form = {
         free: '0',
-        status: '0',
+        status: '1',
         type: '1'
       }
     },
