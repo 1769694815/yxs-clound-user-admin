@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 10:54:58
+ * @LastEditTime: 2020-03-12 17:26:47
  * @Description: 文件管理
  -->
 <template>
@@ -152,6 +152,18 @@
                 placeholder="请输入课时简介"
                 clearable
                 class="lesson-input"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort" :label-width="formLabelWidth">
+              <el-input-number
+                v-model="form.sort"
+                autocomplete="off"
+                placeholder="请输入排序"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -402,7 +414,8 @@ export default {
       this.form = {
         free: '0',
         status: '1',
-        type: '1'
+        type: '1',
+        sort: 0
       }
     },
     handleRemove() {}

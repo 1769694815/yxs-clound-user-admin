@@ -244,6 +244,7 @@
                 autocomplete="off"
                 placeholder="请输入虚拟数"
                 :disabled="operationStatus === 1"
+                :min="0"
                 style="width: 100%;"
               />
             </el-form-item>

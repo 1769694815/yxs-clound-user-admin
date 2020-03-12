@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 12:08:49
+ * @LastEditTime: 2020-03-12 17:26:54
  * @Description: 文件管理
  -->
 <template>
@@ -248,11 +248,12 @@
           <el-col :span="12">
             <el-form-item label="显示顺序" prop="sort">
               <el-input-number
-                v-model="form.sequence"
+                v-model="form.sort"
+                autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入显示顺序"
-                clearable
-                class="category-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>

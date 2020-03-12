@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 14:34:10
+ * @LastEditTime: 2020-03-12 17:27:47
  * @Description: 课程管理
  -->
 <template>
@@ -158,8 +158,8 @@
                 autocomplete="off"
                 placeholder="请输入课程价格"
                 :disabled="operationStatus === 1"
-                class="course-input"
                 :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -243,8 +243,8 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                class="course-input"
                 :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -256,8 +256,8 @@
                 autocomplete="off"
                 placeholder="请输入课程排序"
                 :disabled="operationStatus === 1"
-                class="course-input"
                 :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -269,8 +269,8 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                class="course-input"
                 :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>

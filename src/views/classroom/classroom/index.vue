@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 16:47:45
+ * @LastEditTime: 2020-03-12 17:28:12
  * @Description: 文件管理
  -->
 <template>
@@ -137,8 +137,8 @@
                 autocomplete="off"
                 placeholder="请输入班级价格"
                 :disabled="operationStatus === 1"
-                ::min="0"
-                class="classroom-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -150,8 +150,8 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                ::min="0"
-                class="classroom-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -163,8 +163,8 @@
                 autocomplete="off"
                 placeholder="请输入推荐序号"
                 :disabled="operationStatus === 1"
-                ::min="0"
-                class="classroom-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
@@ -236,8 +236,8 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                ::min="0"
-                class="classroom-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
