@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-12 09:52:36
+ * @LastEditTime: 2020-03-12 11:22:09
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -53,7 +53,7 @@ export default {
   name: 'SingleChange',
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       default: function() {
         return ''
       }
@@ -126,10 +126,12 @@ export default {
       if (this.statusType) {
         remote(this.statusType).then(res => {
           this.statusList = res.data.data
+          this.$emit('status-list', this.statusList)
         })
       } else if (this.dicUrl) {
         http(this.dicUrl).then(res => {
           this.statusList = res.data.data
+          this.$emit('status-list', this.statusList)
         })
       } else {
         new Error('必传status-type或者dic-url')

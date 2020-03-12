@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 10:10:14
+ * @LastEditTime: 2020-03-12 11:05:48
  * @Description: 文件管理
  -->
 <template>
@@ -73,7 +73,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="classroom_release_status"
+                status-type="common_release_status"
                 type="radio"
                 size="medium"
               />
@@ -137,7 +137,7 @@
                 autocomplete="off"
                 placeholder="请输入班级价格"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -150,7 +150,7 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -163,7 +163,7 @@
                 autocomplete="off"
                 placeholder="请输入推荐序号"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -236,7 +236,7 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                :min="0"
+                ::min="0"
                 class="classroom-input"
               />
             </el-form-item>
@@ -370,7 +370,7 @@ export default {
           width: 100,
           label: '状态',
           prop: 'status',
-          dicUrl: 'classroom_release_status',
+          dicUrl: 'common_release_status',
           dicData: []
         },
         {
@@ -674,6 +674,7 @@ export default {
     handleCourse(row, index) {
       this.modalShow = true
       this.classroomId = row.id
+      console.log('classroomId', this.classroomId)
       getCourseSimpleList().then(res => {
         this.courseList = res.data.data
       })

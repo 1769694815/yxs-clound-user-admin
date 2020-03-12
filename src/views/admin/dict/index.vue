@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 15:43:57
+ * @LastEditTime: 2020-03-12 13:50:54
  * @Description: 字典管理
  -->
 <template>
@@ -60,10 +60,27 @@
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
+      :add-btn="false"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+        <el-button
+          type="warning"
+          icon="el-icon-refresh"
+          size="mini"
+          @click="handleRefresh"
+        >
+          刷新缓存
+        </el-button>
+      </template>
       <template
         slot="role"
         slot-scope="scope"
@@ -371,7 +388,7 @@
 </template>
 
 <script>
-import { addItemObj, addObj, delItemObj, delObj, fetchItemList, fetchList, putItemObj, putObj } from '@/api/admin/dict'
+import { addItemObj, addObj, delItemObj, delObj, fetchItemList, fetchList, putItemObj, putObj, refresh } from '@/api/admin/dict'
 import { mapGetters } from 'vuex'
 export default {
   filters: {
@@ -635,6 +652,20 @@ export default {
         .then(data => {
           _this.$message.success('删除成功')
           this.getList()
+        })
+    },
+    handleRefresh() {
+      var _this = this
+      this.$confirm('是否确认刷新字典缓存吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return refresh()
+        })
+        .then(data => {
+          _this.$message.success('刷新成功')
         })
     },
     dictItemGetList() {

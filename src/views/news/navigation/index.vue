@@ -23,14 +23,13 @@
         label="是否启用:"
         label-width="80px"
       >
-        <el-select v-model="searchForm.openFlag" clearable placeholder="请选择是否启用">
-          <el-option
-            v-for="item in DIC.openFlag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.openFlag"
+          :operation-status="operationStatus"
+          status-type="common_enable_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -189,6 +188,7 @@
                 status-type="navigation_type"
                 type="select"
                 :disabled="operationStatus === 1"
+                size="medium"
               />
             </el-form-item>
           </el-col>
@@ -200,8 +200,13 @@
               label="是否启用:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.openFlag" label="1" :disabled="operationStatus === 1">启用</el-radio>
-              <el-radio v-model="form.openFlag" label="0" :disabled="operationStatus === 1">禁用</el-radio>
+              <single-change
+                v-model="form.openFlag"
+                :operation-status="operationStatus"
+                status-type="common_enable_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <el-col
@@ -212,8 +217,13 @@
               :label-width="formLabelWidth"
               label="打开方式:"
             >
-              <el-radio v-model="form.newWinFlag" label="1" :disabled="operationStatus === 1">新窗口</el-radio>
-              <el-radio v-model="form.newWinFlag" label="0" :disabled="operationStatus === 1">当前窗口</el-radio>
+              <single-change
+                v-model="form.newWinFlag"
+                :operation-status="operationStatus"
+                status-type="new_win_flag"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
         </el-form>
@@ -272,26 +282,6 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      openFlag: [
-        {
-          label: '启用',
-          value: '1'
-        }, {
-          label: '禁用',
-          value: '0'
-        }
-      ],
-      newWinFlag: [
-        {
-          label: '是',
-          value: '1'
-        }, {
-          label: '否',
-          value: '0'
-        }
-      ]
-    }
     return {
       headers: {},
       tableKey: 0,
@@ -319,11 +309,13 @@ export default {
         }, {
           label: '是否启用',
           prop: 'openFlag',
-          dicData: DIC.openFlag
+          dicUrl: 'common_enable_flag',
+          dicData: []
         }, {
           label: '新窗口打开',
           prop: 'newWinFlag',
-          dicData: DIC.newWinFlag
+          dicUrl: 'new_win_flag',
+          dicData: []
         }, {
           label: '创建时间',
           prop: 'createTime'
@@ -389,8 +381,7 @@ export default {
       form: {
         pic: ''
       },
-      formLabelWidth: '90px',
-      DIC: DIC
+      formLabelWidth: '90px'
     }
   },
   computed: {
@@ -398,7 +389,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**

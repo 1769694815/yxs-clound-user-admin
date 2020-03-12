@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-11 19:24:58
+ * @LastEditTime: 2020-03-12 14:34:10
  * @Description: 课程管理
  -->
 <template>
@@ -158,8 +158,8 @@
                 autocomplete="off"
                 placeholder="请输入课程价格"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                class="course-input"
+                :min="0"
               />
             </el-form-item>
           </el-col>
@@ -169,7 +169,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="course_release_status"
+                status-type="common_release_status"
                 type="radio"
                 size="medium"
               />
@@ -243,8 +243,8 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                class="course-input"
+                :min="0"
               />
             </el-form-item>
           </el-col>
@@ -256,8 +256,8 @@
                 autocomplete="off"
                 placeholder="请输入课程排序"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                class="course-input"
+                :min="0"
               />
             </el-form-item>
           </el-col>
@@ -269,8 +269,8 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                class="course-input"
+                :min="0"
               />
             </el-form-item>
           </el-col>
@@ -388,7 +388,7 @@ export default {
           label: '课程状态',
           prop: 'status',
           width: '80',
-          dicUrl: 'course_release_status',
+          dicUrl: 'common_release_status',
           dicData: []
         },
         {
