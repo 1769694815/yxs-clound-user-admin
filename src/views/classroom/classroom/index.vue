@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 11:05:48
+ * @LastEditTime: 2020-03-12 16:47:45
  * @Description: 文件管理
  -->
 <template>
@@ -454,12 +454,6 @@ export default {
         ],
         status: [
           { required: true, message: '请选择班级状态', trigger: 'change' }
-        ],
-        headmasterId: [
-          { required: true, message: '请选择班主任', trigger: 'change' }
-        ],
-        assistantId: [
-          { required: true, message: '请选择班级助教', trigger: 'change' }
         ],
         categoryIds: [
           { required: true, message: '请选择班级分类', trigger: 'change' }
