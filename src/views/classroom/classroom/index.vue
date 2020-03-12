@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:31:52
+ * @LastEditTime: 2020-03-12 18:13:53
  * @Description: 文件管理
  -->
 <template>
@@ -52,6 +52,7 @@
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
       :title="operationStatus | dialogTitle"
+      :before-close="closeDialog"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules" label-width="120px">
@@ -230,18 +231,6 @@
               />
             </el-form-item>
           </el-col>
-          <!--班级简介-->
-          <el-col :span="12">
-            <el-form-item label="班级简介" prop="about">
-              <el-input
-                v-model="form.about"
-                :disabled="operationStatus === 1"
-                placeholder="请输入班级简介"
-                clearable
-                class="classroom-input"
-              />
-            </el-form-item>
-          </el-col>
           <!--班级说明-->
           <el-col :span="12">
             <el-form-item label="班级说明" prop="description">
@@ -264,11 +253,17 @@
               />
             </el-form-item>
           </el-col>
+          <!--班级简介-->
+          <el-col :span="24">
+            <el-form-item label="班级简介" prop="about">
+              <tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />
+            </el-form-item>
+          </el-col>
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
         <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
+        <el-button size="small" @click="closeDialog">取 消</el-button>
       </div>
     </el-dialog>
 
@@ -293,16 +288,16 @@ import {
 } from '@/api/classroom/classroom'
 import { getCourseSimpleList } from '@/api/course/course'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
-import { getTeacherList } from '@/api/user'
 import InputTree from '@/components/InputTree/index'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
+import Tinymce from '@/components/Tinymce/index'
 
 export default {
   components: {
     InputTree,
-    CourseModal
+    CourseModal,
+    Tinymce
   },
   filters: {
     statusFilter(type, list) {
@@ -325,11 +320,15 @@ export default {
     }
   },
   data() {
+    const tinymceValidate = (rule, value, callback) => {
+      if (this.form.about === '') {
+        callback(new Error(rule.message))
+      } else {
+        callback()
+      }
+    }
     return {
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       modalShow: false,
@@ -470,7 +469,7 @@ export default {
           { required: true, message: '请输入报名截止时间', trigger: 'blur' }
         ],
         about: [
-          { required: true, message: '请输入班级简介', trigger: 'blur' }
+          { required: true, validator: tinymceValidate, message: '请输入班级简介', trigger: 'blur' }
         ],
         description: [
           { required: true, message: '请输入班级说明', trigger: 'blur' }
@@ -493,7 +492,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getTeacherList()
     this.getCategoryTree()
     this.headers.Authorization = 'Bearer ' + this.access_token
   },
@@ -504,14 +502,6 @@ export default {
     getCategoryTree() {
       getCategoryTreeByNotType(2).then(res => {
         this.treeData = res.data.data
-      })
-    },
-    /**
-     * 教师
-     */
-    getTeacherList() {
-      getTeacherList().then(res => {
-        this.tearcherList = res.data.data
       })
     },
     getList() {
@@ -594,11 +584,13 @@ export default {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 1
+      this.init()
     },
     handleUpdate(row) {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 2
+      this.init()
     },
     handleDelete(row, index) {
       var _this = this
@@ -635,6 +627,8 @@ export default {
         expiryMode: '0',
         expiryDays: 365
       }
+      this.form.about = ''
+      this.init()
     },
     getNodeData() {},
     hideModal() {
@@ -646,7 +640,6 @@ export default {
     handleCourse(row, index) {
       this.modalShow = true
       this.classroomId = row.id
-      console.log('classroomId', this.classroomId)
       getCourseSimpleList().then(res => {
         this.courseList = res.data.data
       })
@@ -657,6 +650,24 @@ export default {
     success() {
       this.modalShow = false
       this.getList()
+    },
+    /**
+     * 初始化富文本编辑器
+     */
+    init() {
+      this.$nextTick(() => {
+        this.$refs.tinymce.init()
+      })
+    },
+    closeDialog() {
+      this.$nextTick(() => {
+        if (this.$refs.tinymce.hasInit) {
+          // this.form.body = ''
+          this.$refs.tinymce.destroyTinymce()
+        }
+      })
+      this.$refs.dataForm.resetFields()
+      this.dialogPvVisible = false
     }
   }
 }

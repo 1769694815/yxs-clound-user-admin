@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:27:47
+ * @LastEditTime: 2020-03-12 18:03:51
  * @Description: 课程管理
  -->
 <template>
@@ -79,6 +79,7 @@
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
       :title="operationStatus | dialogTitle"
+      :before-close="closeDialog"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules">
@@ -292,14 +293,11 @@
           <!--课程简介-->
           <el-col :span="24">
             <el-form-item label="课程简介" prop="about" :label-width="formLabelWidth">
-              <el-input
+              <tinymce
+                ref="tinymce"
                 v-model="form.about"
-                :disabled="operationStatus === 1"
-                :autosize="{ minRows: 2, maxRows: 4}"
-                placeholder="请输入课程简介"
-                clearable
-                class="course-input"
-                type="textarea"
+                :readonly="operationStatus === 1"
+                :height="300"
               />
             </el-form-item>
           </el-col>
@@ -318,7 +316,7 @@
       </el-row>
       <div slot="footer" class="doalog-footer">
         <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
+        <el-button size="small" @click="closeDialog">取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -329,12 +327,13 @@ import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
 import { getTeacherList } from '@/api/user'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
+import Tinymce from '@/components/Tinymce/index'
 
 export default {
   components: {
-    InputTree
+    InputTree,
+    Tinymce
   },
   filters: {
     statusFilter(type, list) {
@@ -357,11 +356,15 @@ export default {
     }
   },
   data() {
+    const tinymceValidate = (rule, value, callback) => {
+      if (this.form.about === '') {
+        callback(new Error(rule.message))
+      } else {
+        callback()
+      }
+    }
     return {
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],
@@ -512,7 +515,7 @@ export default {
           { required: true, message: '请输入课程简叙', trigger: 'blur' }
         ],
         about: [
-          { required: true, message: '请输入课程简介', trigger: 'blur' }
+          { required: true, validator: tinymceValidate, message: '请输入课程简介', trigger: 'blur' }
         ],
         smallPicture: [
           { required: true, message: '请上传课程图片', trigger: 'change' }
@@ -524,17 +527,6 @@ export default {
   computed: {
     ...mapGetters(['permissions'])
   },
-  // watch: {
-  //   // 联动需要监听主数据
-  //   'form.type': function(val) {
-  //     if (!val) {
-  //       this.form.categoryIds = ''
-  //       this.treeData = []
-  //     } else {
-  //       this.getCategoryTree(val)
-  //     }
-  //   }
-  // },
   created() {
     this.getList()
     this.getTeacherList()
@@ -640,11 +632,13 @@ export default {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 1
+      this.init()
     },
     handleUpdate(row) {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 2
+      this.init()
     },
     handleChapterList(row, index) {
       this.$router.push({
@@ -695,8 +689,27 @@ export default {
         learnNum: 0,
         teacherId: defaultTeacherId
       }
+      this.form.about = ''
+      this.init()
     },
-    getNodeData() {}
+    /**
+     * 初始化富文本编辑器
+     */
+    init() {
+      this.$nextTick(() => {
+        this.$refs.tinymce.init()
+      })
+    },
+    closeDialog() {
+      this.$nextTick(() => {
+        if (this.$refs.tinymce.hasInit) {
+          // this.form.body = ''
+          this.$refs.tinymce.destroyTinymce()
+        }
+      })
+      this.$refs.dataForm.resetFields()
+      this.dialogPvVisible = false
+    }
   }
 }
 </script>
