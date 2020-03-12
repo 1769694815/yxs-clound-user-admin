@@ -14,7 +14,7 @@
       >
         <single-change
           v-model="searchForm.code"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="navigation_type"
           type="select"
         />
@@ -25,7 +25,7 @@
       >
         <single-change
           v-model="searchForm.openFlag"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_enable_flag"
           type="select"
           size="small"
@@ -186,10 +186,9 @@
             >
               <single-change
                 v-model="form.code"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="navigation_type"
                 type="select"
-                :disabled="operationStatus === 1"
                 size="medium"
               />
             </el-form-item>
@@ -204,7 +203,7 @@
             >
               <single-change
                 v-model="form.openFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_enable_flag"
                 type="radio"
                 size="medium"
@@ -221,7 +220,7 @@
             >
               <single-change
                 v-model="form.newWinFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="new_win_flag"
                 type="select"
                 size="medium"

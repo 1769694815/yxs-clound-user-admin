@@ -73,7 +73,7 @@
             <el-form-item label="班级状态" prop="status">
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_release_status"
                 type="radio"
                 size="medium"
@@ -85,7 +85,7 @@
             <el-form-item label="班主任" prop="headmasterId">
               <single-change
                 v-model="form.headmasterId"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 :dic-prop="{ label: 'username', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
@@ -98,7 +98,7 @@
             <el-form-item label="班级助教" prop="assistantId">
               <single-change
                 v-model="form.assistantId"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 :dic-prop="{ label: 'username', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
@@ -112,7 +112,7 @@
               <Input-tree
                 v-model="form.categoryIds"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 multiline
                 placeholder="请选择班级分类"
               />
@@ -123,7 +123,7 @@
             <el-form-item label="授课方式" prop="teachingMethod">
               <single-change
                 v-model="form.teachingMethod"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="teaching_method"
                 type="select"
                 size="medium"
@@ -174,7 +174,7 @@
             <el-form-item label="推荐首页" prop="recommendedFlag">
               <single-change
                 v-model="form.recommendedFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -186,7 +186,7 @@
             <el-form-item label="开放展示" prop="showFlag">
               <single-change
                 v-model="form.showFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -198,7 +198,7 @@
             <el-form-item label="有效期" prop="expiryMode">
               <single-change
                 v-model="form.expiryMode"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="classroom_expiry_mode"
                 type="radio"
                 size="medium"

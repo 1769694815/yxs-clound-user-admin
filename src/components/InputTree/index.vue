@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 17:54:11
- * @LastEditors: Please set LastEditors
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-10 16:20:22
+ * @LastEditTime: 2020-03-12 17:56:03
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -17,7 +17,7 @@
       v-model="text"
       clearable
       autocomplete="off"
-      :disabled="operationStatus === 1"
+      :disabled="disabled"
       readonly
       :placeholder="placeholder"
       @focus="onFocus"
@@ -76,10 +76,10 @@ export default {
         return []
       }
     },
-    operationStatus: {
-      type: Number,
+    disabled: {
+      type: Boolean,
       default: function() {
-        return 0
+        return false
       }
     },
     placeholder: {

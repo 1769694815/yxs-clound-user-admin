@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:26:54
+ * @LastEditTime: 2020-03-12 17:48:57
  * @Description: 文件管理
  -->
 <template>
@@ -18,7 +18,7 @@
       <el-form-item label="是否最热:" label-width="80px">
         <single-change
           v-model="searchForm.hotFlag"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -28,7 +28,7 @@
       <el-form-item label="是否置顶:" label-width="130px">
         <single-change
           v-model="searchForm.topFlag"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
           size="small"
@@ -38,7 +38,7 @@
       <el-form-item label="分类类型:" label-width="80px">
         <single-change
           v-model="searchForm.groupType"
-          :operation-status="operationStatus"
+          :disabled="operationStatus === 1"
           status-type="category_group_type"
           type="select"
           size="small"
@@ -109,10 +109,10 @@
           </el-col>
           <!--分类类型-->
           <el-col :span="12">
-            <el-form-item label="分类类型" :disabled="operationStatus === 1" prop="groupType">
+            <el-form-item label="分类类型" prop="groupType">
               <single-change
                 v-model="form.groupType"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="category_group_type"
                 type="select"
                 size="medium"
@@ -125,7 +125,7 @@
               <Input-tree
                 v-model="form.parentId"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 placeholder="请选择父类类型"
               />
             </el-form-item>
@@ -135,7 +135,7 @@
             <el-form-item label="是否最热" prop="hotFlag">
               <single-change
                 v-model="form.hotFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -147,7 +147,7 @@
             <el-form-item label="是否置顶" prop="topFlag">
               <single-change
                 v-model="form.topFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -159,7 +159,7 @@
             <el-form-item label="是否网课" prop="onlineCourseFlag">
               <single-change
                 v-model="form.onlineCourseFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -172,7 +172,7 @@
             <el-form-item label="是否面授" prop="faceToFaceFlag">
               <single-change
                 v-model="form.faceToFaceFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -184,7 +184,7 @@
             <el-form-item label="是否展示" prop="showFlag">
               <single-change
                 v-model="form.showFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -204,7 +204,7 @@
             <el-form-item label="APP顶部导航" prop="columnFlag" label-width="120px">
               <single-change
                 v-model="form.columnFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -216,7 +216,7 @@
             <el-form-item label="APP首页分栏" prop="recommendedFlag" label-width="140px">
               <single-change
                 v-model="form.recommendedFlag"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
                 size="medium"
@@ -225,19 +225,19 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item v-if="!form.parentId" label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
+            <el-form-item v-if="!form.parentId" label="跳转类型" prop="jumpType">
               <single-change
                 v-model="form.jumpType"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="category_jump_type"
                 type="select"
                 size="medium"
               />
             </el-form-item>
-            <el-form-item v-else label="跳转类型" :disabled="operationStatus === 1">
+            <el-form-item v-else label="跳转类型">
               <single-change
                 v-model="form.jumpType"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="category_jump_type"
                 type="select"
                 size="medium"

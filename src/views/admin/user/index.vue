@@ -49,7 +49,7 @@
             <Input-tree
               v-model="searchForm.deptId"
               :tree-data="treeData"
-              :operation-status="operationStatus"
+              :disabled="operationStatus === 1"
               placeholder="请选择用户类型"
               @input="getList"
             />
@@ -175,7 +175,7 @@
               <Input-tree
                 v-model="form.deptId"
                 :tree-data="treeDeptData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 placeholder="请选择所属部门"
                 @node-click="getNodeData"
               />
