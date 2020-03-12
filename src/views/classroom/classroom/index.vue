@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-11 19:11:39
+ * @LastEditTime: 2020-03-12 09:40:50
  * @Description: 文件管理
  -->
 <template>
@@ -82,7 +82,7 @@
           <!--班主任-->
           <el-col :span="12">
             <el-form-item label="班主任" prop="headmasterId">
-              <single-change
+              <!-- <single-change
                 v-model="form.headmasterId"
                 :operation-status="operationStatus"
                 url="/admin/user/getTeacherList"
@@ -90,13 +90,13 @@
                 value="userId"
                 type="select"
                 size="medium"
-              />
+              /> -->
             </el-form-item>
           </el-col>
           <!--班级助教-->
           <el-col :span="12">
             <el-form-item label="班级助教" prop="assistantId">
-              <single-change
+              <!-- <single-change
                 v-model="form.assistantId"
                 :operation-status="operationStatus"
                 url="/admin/user/getTeacherList"
@@ -104,7 +104,7 @@
                 value="userId"
                 type="select"
                 size="medium"
-              />
+              /> -->
             </el-form-item>
           </el-col>
           <!--班级分类-->
@@ -139,8 +139,8 @@
                 autocomplete="off"
                 placeholder="请输入班级价格"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                :min="0"
+                class="classroom-input"
               />
             </el-form-item>
           </el-col>
@@ -152,8 +152,8 @@
                 autocomplete="off"
                 placeholder="请输入填写人数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                :min="0"
+                class="classroom-input"
               />
             </el-form-item>
           </el-col>
@@ -165,8 +165,8 @@
                 autocomplete="off"
                 placeholder="请输入推荐序号"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                :min="0"
+                class="classroom-input"
               />
             </el-form-item>
           </el-col>
@@ -238,8 +238,8 @@
                 autocomplete="off"
                 placeholder="请输入有效天数"
                 :disabled="operationStatus === 1"
-                style="width: 336px;"
-                min="0"
+                :min="0"
+                class="classroom-input"
               />
             </el-form-item>
           </el-col>
