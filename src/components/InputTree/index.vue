@@ -147,7 +147,7 @@ export default {
       let result = null
       for (let i = 0; i < list.length; i++) {
         if (result !== null) break
-        let item = list[i]
+        const item = list[i]
         if (Number(val) === item.id) {
           result = item.name
           console.log('item', item.name)

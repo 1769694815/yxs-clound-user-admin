@@ -1,6 +1,6 @@
 <template>
   <div class="app-container calendar-list-container">
-    
+
     <!-- 搜索栏 -->
     <el-form
       ref="search"
@@ -48,7 +48,8 @@
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
-      @page-change="getList">
+      @page-change="getList"
+    >
       <template
         slot="role"
         slot-scope="scope"
@@ -86,7 +87,8 @@
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
       :close-on-click-modal="false"
-      :before-close="closeDialog">
+      :before-close="closeDialog"
+    >
       <el-row
         style="padding: 0 20px;"
         :span="24"
@@ -175,7 +177,7 @@
 import { addObj, delObj, fetchArticleCategoryTree, getObj, putObj } from '@/api/news/articlecategory'
 import { mapGetters } from 'vuex'
 export default {
-   filters: {
+  filters: {
     dialogTitle(type) {
       const titleMap = {
         0: '新 增',
@@ -187,7 +189,7 @@ export default {
     }
   },
   data() {
-     const DIC = {
+    const DIC = {
       flag: [
         {
           label: '是',
@@ -292,7 +294,7 @@ export default {
         this.tableData = response.data.data
       })
     },
-     /**
+    /**
      * 搜索
      */
     handleFilter() {
@@ -341,25 +343,25 @@ export default {
      */
     create() {
       this.$refs.dataForm.validate(valid => {
-          console.log(this.form)
-          if (valid) {
-            this.dialogPvVisible = false
-            this.tableLoading = true
-            addObj(this.form)
-              .then(res => {
-                this.tableLoading = false
-                this.$message({
-                  showClose: true,
-                  message: '添加成功',
-                  type: 'success'
-                })
-                this.getList()
+        console.log(this.form)
+        if (valid) {
+          this.dialogPvVisible = false
+          this.tableLoading = true
+          addObj(this.form)
+            .then(res => {
+              this.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
               })
-              .catch(() => {
-                this.tableLoading = false
-              })
-          }
-        })
+              this.getList()
+            })
+            .catch(() => {
+              this.tableLoading = false
+            })
+        }
+      })
     },
     /**
      * 编辑保存
@@ -454,7 +456,6 @@ export default {
         }
       }
     },
-    
     closeDialog() {
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
