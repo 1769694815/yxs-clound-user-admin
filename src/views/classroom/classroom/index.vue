@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 09:50:22
+ * @LastEditTime: 2020-03-12 10:31:51
  * @Description: 文件管理
  -->
 <template>
@@ -670,6 +670,7 @@ export default {
     handleCourse(row, index) {
       this.modalShow = true
       this.classroomId = row.id
+      console.log('classroomId', this.classroomId)
       getCourseSimpleList().then(res => {
         this.courseList = res.data.data
       })
