@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 14:58:13
+ * @LastEditTime: 2020-03-11 19:13:54
  * @Description: 文件管理
  -->
 <template>
@@ -298,7 +298,11 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.icon" :type="8" :disabled="operationStatus === 1" />
+              <single-image
+                v-model="form.icon"
+                status="8"
+                :disabled="operationStatus === 1"
+              />
             </el-form-item>
           </el-col>
         </el-form>
