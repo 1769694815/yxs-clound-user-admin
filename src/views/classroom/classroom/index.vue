@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 10:10:14
+ * @LastEditTime: 2020-03-12 10:54:25
  * @Description: 文件管理
  -->
 <template>
@@ -73,7 +73,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="classroom_release_status"
+                status-type="common_release_status"
                 type="radio"
                 size="medium"
               />
@@ -370,7 +370,7 @@ export default {
           width: 100,
           label: '状态',
           prop: 'status',
-          dicUrl: 'classroom_release_status',
+          dicUrl: 'common_release_status',
           dicData: []
         },
         {

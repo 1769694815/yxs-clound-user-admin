@@ -23,57 +23,50 @@
         label="状态:"
         label-width="60px"
       >
-        <el-select v-model="searchForm.status" clearable placeholder="请选择是否发布">
-          <el-option
-            v-for="item in DIC.status"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+        <single-change
+          v-model="searchForm.status"
+          :operation-status="operationStatus"
+          status-type="common_release_status"
+          type="select"
+          size="small"
+        />
 
-        </el-select>
       </el-form-item>
       <el-form-item
         label="是否头条:"
         :label-width="formLabelWidth"
       >
-        <el-select v-model="searchForm.featured" clearable placeholder="请选择是否头条">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
+        <single-change
+          v-model="searchForm.featured"
+          :operation-status="operationStatus"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item
         label="是否推荐:"
         :label-width="formLabelWidth"
       >
-        <el-select v-model="searchForm.promoted" clearable placeholder="请选择是否推荐">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
+        <single-change
+          v-model="searchForm.promoted"
+          :operation-status="operationStatus"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item
         label="是否置顶:"
         :label-width="formLabelWidth"
       >
-        <el-select v-model="searchForm.sticky" clearable placeholder="请选择是否置顶">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
+        <single-change
+          v-model="searchForm.sticky"
+          :operation-status="operationStatus"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button
@@ -196,15 +189,15 @@
               label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 100%;">
-                <el-option
-                  v-for="item in categoryTypeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-
-              </el-select></el-form-item>
+              <single-change
+                v-model="form.categoryId"
+                :operation-status="operationStatus"
+                :dic-prop="{ label: 'name', value: 'id' }"
+                dic-url="/news/articlecategory/getCategoryType"
+                type="select"
+                size="medium"
+              />
+            </el-form-item>
           </el-col>
           <el-col
             :span="12"
@@ -278,8 +271,13 @@
               label="状态:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.status" label="1" :disabled="operationStatus === 1">发布</el-radio>
-              <el-radio v-model="form.status" label="0" :disabled="operationStatus === 1">未发布</el-radio>
+              <single-change
+                v-model="form.status"
+                :operation-status="operationStatus"
+                status-type="common_release_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <el-col
@@ -290,8 +288,13 @@
               label="是否头条:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.featured" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.featured" label="0" :disabled="operationStatus === 1">否</el-radio>
+              <single-change
+                v-model="form.featured"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <el-col
@@ -302,8 +305,13 @@
               label="是否推荐:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.promoted" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.promoted" label="0" :disabled="operationStatus === 1">否</el-radio>
+              <single-change
+                v-model="form.promoted"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <el-col
@@ -314,8 +322,13 @@
               label="是否置顶:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.sticky" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.sticky" label="0" :disabled="operationStatus === 1">否</el-radio>
+              <single-change
+                v-model="form.sticky"
+                :operation-status="operationStatus"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -359,7 +372,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj, getCategoryType } from '@/api/news/article'
+import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
 import Tinymce from '@/components/Tinymce/index'
 
@@ -389,29 +402,6 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      status: [
-        {
-          label: '已发布',
-          value: '1'
-        }, {
-          label: '未发布',
-          value: '0'
-        }, {
-          label: '已删除',
-          value: '9'
-        }
-      ],
-      flag: [
-        {
-          label: '是',
-          value: '1'
-        }, {
-          label: '否',
-          value: '0'
-        }
-      ]
-    }
     const tinymceValidate = (rule, value, callback) => {
       if (this.form.body === '') {
         callback(new Error(rule.message))
@@ -421,7 +411,6 @@ export default {
       headers: {},
       tableKey: 0,
       tableLoading: false,
-      DIC: DIC,
       tableOption: [
         {
           label: '文章标题',
@@ -460,7 +449,8 @@ export default {
         }, {
           label: '状态',
           prop: 'status',
-          dicData: DIC.status
+          dicUrl: 'common_release_status',
+          dicData: []
         }, {
           label: '点击量',
           prop: 'hits'
@@ -470,15 +460,18 @@ export default {
         }, {
           label: '是否头条',
           prop: 'featured',
-          dicData: DIC.flag
+          dicUrl: 'common_flag',
+          dicData: []
         }, {
           label: '是否推荐',
           prop: 'promoted',
-          dicData: DIC.flag
+          dicUrl: 'common_flag',
+          dicData: []
         }, {
           label: '是否置顶',
           prop: 'sticky',
-          dicData: DIC.flag
+          dicUrl: 'common_flag',
+          dicData: []
         }, {
           label: '回复数',
           prop: 'postNum',
@@ -574,9 +567,7 @@ export default {
     ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getCategoryType()
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
@@ -602,14 +593,6 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
-    },
-    /**
-     * 栏目列表
-     */
-    getCategoryType() {
-      getCategoryType().then(data => {
-        this.categoryTypeList = data.data.data
-      })
     },
     /**
      * 搜索

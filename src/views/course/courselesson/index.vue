@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 20:11:43
+ * @LastEditTime: 2020-03-12 10:54:58
  * @Description: 文件管理
  -->
 <template>
@@ -21,7 +21,7 @@
           :operation-status="operationStatus"
           status-type="common_flag"
           type="select"
-          size="medium"
+          size="small"
         />
       </el-form-item>
       <!--课时状态-->
@@ -29,9 +29,9 @@
         <single-change
           v-model="searchForm.status"
           :operation-status="operationStatus"
-          status-type="lesson_release_status"
+          status-type="common_release_status"
           type="select"
-          size="medium"
+          size="small"
         />
       </el-form-item>
       <!--课时类型-->
@@ -41,7 +41,7 @@
           :operation-status="operationStatus"
           status-type="lesson_type"
           type="select"
-          size="medium"
+          size="small"
         />
       </el-form-item>
       <el-form-item>
@@ -113,7 +113,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="lesson_release_status"
+                status-type="common_release_status"
                 type="select"
                 size="medium"
               />
@@ -221,7 +221,7 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          dicUrl: 'lesson_release_status',
+          dicUrl: 'common_release_status',
           dicData: []
         },
         {

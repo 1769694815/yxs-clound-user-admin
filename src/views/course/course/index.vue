@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 19:24:58
+ * @LastEditTime: 2020-03-12 10:54:44
  * @Description: 课程管理
  -->
 <template>
@@ -169,7 +169,7 @@
               <single-change
                 v-model="form.status"
                 :operation-status="operationStatus"
-                status-type="course_release_status"
+                status-type="common_release_status"
                 type="radio"
                 size="medium"
               />
@@ -388,7 +388,7 @@ export default {
           label: '课程状态',
           prop: 'status',
           width: '80',
-          dicUrl: 'course_release_status',
+          dicUrl: 'common_release_status',
           dicData: []
         },
         {
