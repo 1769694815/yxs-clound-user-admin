@@ -320,8 +320,8 @@
           </el-col>
           <el-col :span="24">
             <el-form-item
-              prop="body"
               label="文章描述:"
+              prop="body"
               :label-width="formLabelWidth"
             >
               <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
@@ -411,6 +411,11 @@ export default {
           value: '0'
         }
       ]
+    }
+    const tinymceValidate = (rule, value, callback) => {
+      if (this.form.body === '') {
+        callback(new Error(rule.message))
+      }
     }
     return {
       headers: {},
@@ -552,6 +557,7 @@ export default {
         }],
         body: [{
           required: true,
+          validator: tinymceValidate,
           message: '请输入文章描述',
           trigger: 'blur'
         }]
@@ -657,7 +663,6 @@ export default {
     create() {
       this.$refs
         .dataForm.validate(valid => {
-          console.log(this.form)
           if (valid) {
             this.dialogPvVisible = false
             this.tableLoading = true
@@ -731,6 +736,7 @@ export default {
     closeDialog() {
       this.$nextTick(() => {
         if (this.$refs.tinymce.hasInit) {
+          // this.form.body = ''
           this.$refs.tinymce.destroyTinymce()
         }
       })
