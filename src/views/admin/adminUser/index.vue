@@ -9,70 +9,34 @@
     >
 
       <el-form-item
-        label="标题:"
-        label-width="60px"
+        label="用户名:"
+        :label-width="formLabelWidth"
       >
         <el-input
-          v-model="searchForm.title"
+          v-model="searchForm.username"
           type="text"
           size="small"
-          placeholder="请输入文章标题"
+          placeholder="请输入用户名"
         />
       </el-form-item>
       <el-form-item
-        label="状态:"
-        label-width="60px"
-      >
-        <el-select v-model="searchForm.status" clearable placeholder="请选择是否发布">
-          <el-option
-            v-for="item in DIC.status"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="是否头条:"
+        label="真实姓名:"
         :label-width="formLabelWidth"
       >
-        <el-select v-model="searchForm.featured" clearable placeholder="请选择是否头条">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
+        <el-input
+          v-model="searchForm.realName"
+          type="text"
+          size="small"
+          placeholder="请输入真实姓名"
+        />
       </el-form-item>
       <el-form-item
-        label="是否推荐:"
+        prop="roleId"
+        label="角色:"
         :label-width="formLabelWidth"
       >
-        <el-select v-model="searchForm.promoted" clearable placeholder="请选择是否推荐">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
-        </el-select>
-      </el-form-item>
-      <el-form-item
-        label="是否置顶:"
-        :label-width="formLabelWidth"
-      >
-        <el-select v-model="searchForm.sticky" clearable placeholder="请选择是否置顶">
-          <el-option
-            v-for="item in DIC.flag"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
-
+        <el-select v-model="searchForm.roleId" placeholder="请选择角色">
+          <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -106,10 +70,10 @@
       @page-change="getList"
     >
       <template
-        slot="role"
+        slot="roleList"
         slot-scope="scope"
       >
-        <el-tag>{{ scope.row.role }}</el-tag>
+        <el-tag>{{ scope.row.roleList[0].roleName }}</el-tag>
       </template>
       <template
         slot="menu"
@@ -160,14 +124,14 @@
             :span="12"
           >
             <el-form-item
-              prop="title"
-              label="文章标题:"
+              prop="username"
+              label="用户名:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.title"
+                v-model="form.username"
                 autocomplete="off"
-                placeholder="请输入文章标题"
+                placeholder="请输入用户名"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -176,14 +140,14 @@
             :span="12"
           >
             <el-form-item
-              prop="brIfe"
-              label="简叙:"
+              prop="realName"
+              label="真实姓名:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.brIfe"
+                v-model="form.realName"
                 autocomplete="off"
-                placeholder="请输入简叙"
+                placeholder="请输入真实姓名"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -192,32 +156,14 @@
             :span="12"
           >
             <el-form-item
-              prop="categoryId"
-              label="所属栏目:"
-              :label-width="formLabelWidth"
-            >
-              <el-select v-model="form.categoryId" placeholder="请选择所属栏目" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
-                <el-option
-                  v-for="item in categoryTypeList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                />
-
-              </el-select></el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="source"
-              label="来源:"
+              prop="password"
+              label="密码:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.source"
+                v-model="form.password"
                 autocomplete="off"
-                placeholder="请输入来源"
+                placeholder="如果不填写密码，默认为123456"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
@@ -226,108 +172,42 @@
             :span="12"
           >
             <el-form-item
-              prop="sourceUrl"
-              label="来源URL:"
+              prop="roleId"
+              label="角色:"
               :label-width="formLabelWidth"
             >
-              <el-input
-                v-model="form.sourceUrl"
-                autocomplete="off"
-                placeholder="请输入来源URL"
-                :disabled="operationStatus === 1"
-              />
+              <el-select v-model="form.roleId" placeholder="请选择角色" :disabled="operationStatus === 1" autocomplete="off" style="width: 336px;">
+                <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col
             :span="12"
           >
             <el-form-item
-              prop="inventedNum"
-              label="虚拟数:"
+              prop="sex"
+              label="性别:"
               :label-width="formLabelWidth"
             >
-              <el-input-number
-                v-model="form.inventedNum"
-                autocomplete="off"
-                placeholder="请输入虚拟数"
-                :disabled="operationStatus === 1"
-                style="width: 336px;"
-              />
+              <el-radio v-model="form.sex" label="1" :disabled="operationStatus === 1">男</el-radio>
+              <el-radio v-model="form.sex" label="0" :disabled="operationStatus === 1">女</el-radio>
             </el-form-item>
           </el-col>
           <el-col
             :span="12"
           >
             <el-form-item
-              prop="thumb"
-              label="缩略图:"
+              prop="avatar"
+              label="头像:"
               :label-width="formLabelWidth"
             >
               <single-image
-                v-model="form.thumb"
+                v-model="form.avatar"
                 :type="3"
                 :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="status"
-              label="状态:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.status" label="1" :disabled="operationStatus === 1">发布</el-radio>
-              <el-radio v-model="form.status" label="0" :disabled="operationStatus === 1">未发布</el-radio>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="featured"
-              label="是否头条:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.featured" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.featured" label="0" :disabled="operationStatus === 1">否</el-radio>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="promoted"
-              label="是否推荐:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.promoted" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.promoted" label="0" :disabled="operationStatus === 1">否</el-radio>
-            </el-form-item>
-          </el-col>
-          <el-col
-            :span="12"
-          >
-            <el-form-item
-              prop="sticky"
-              label="是否置顶:"
-              :label-width="formLabelWidth"
-            >
-              <el-radio v-model="form.sticky" label="1" :disabled="operationStatus === 1">是</el-radio>
-              <el-radio v-model="form.sticky" label="0" :disabled="operationStatus === 1">否</el-radio>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item
-              prop="body"
-              label="文章描述:"
-              :label-width="formLabelWidth"
-            >
-              <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
-            </el-form-item>
-          </el-col>
-
         </el-form>
       </el-row>
       <div
@@ -359,15 +239,11 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj, getCategoryType } from '@/api/news/article'
+import { fetchList, getRoleAdmin, getObj, addObj, delObj, putObj } from '@/api/admin/adminUser'
 import { mapGetters } from 'vuex'
-import Tinymce from '@/components/Tinymce/index'
 
 export default {
-  name: 'Article',
-  components: {
-    Tinymce
-  },
+  name: 'Index',
   filters: {
     statusFilter(type, list) {
       let result
@@ -390,16 +266,32 @@ export default {
   },
   data() {
     const DIC = {
-      status: [
+      source: [
         {
-          label: '已发布',
-          value: '1'
-        }, {
-          label: '未发布',
+          label: '手机',
           value: '0'
         }, {
-          label: '已删除',
-          value: '9'
+          label: '微信',
+          value: '1'
+        }, {
+          label: 'QQ',
+          value: '2'
+        },
+        {
+          label: 'PC',
+          value: '3'
+        },
+        {
+          label: '移动端',
+          value: '4'
+        },
+        {
+          label: '管理员',
+          value: '5'
+        },
+        {
+          label: '游客',
+          value: '6'
         }
       ],
       flag: [
@@ -415,73 +307,28 @@ export default {
     return {
       headers: {},
       tableKey: 0,
+      roleList: [],
       tableLoading: false,
       DIC: DIC,
       tableOption: [
         {
-          label: '文章标题',
-          prop: 'title'
+          label: '用户名',
+          prop: 'username'
         }, {
-          label: '简叙',
-          prop: 'brIfe',
-          hide: true
+          label: '真实姓名',
+          prop: 'realName'
         }, {
-          label: '栏目ID',
-          prop: 'categoryId',
-          dicUrl: '/news/articlecategory/getCategoryType',
-          dicData: [],
-          dicProp: { label: 'name', value: 'id' }
-
+          label: '手机号',
+          prop: 'phone'
         }, {
-          label: '来源',
+          label: '角色',
+          prop: 'roleList',
+          slot: true
+        },
+        {
+          label: '注册来源',
           prop: 'source',
-          hide: true
-        }, {
-          label: '来源URL',
-          prop: 'sourceUrl',
-          hide: true
-        }, {
-          label: '生成URL',
-          prop: 'url'
-        }, {
-          label: '缩略图',
-          prop: 'thumb',
-          width: '140',
-          img: true
-        }, {
-          label: '文章头图',
-          prop: 'picture',
-          hide: true
-        }, {
-          label: '状态',
-          prop: 'status',
-          dicData: DIC.status
-        }, {
-          label: '点击量',
-          prop: 'hits'
-        }, {
-          label: '虚拟数',
-          prop: 'inventedNum'
-        }, {
-          label: '是否头条',
-          prop: 'featured',
-          dicData: DIC.flag
-        }, {
-          label: '是否推荐',
-          prop: 'promoted',
-          dicData: DIC.flag
-        }, {
-          label: '是否置顶',
-          prop: 'sticky',
-          dicData: DIC.flag
-        }, {
-          label: '回复数',
-          prop: 'postNum',
-          hide: true
-        }, {
-          label: '点赞数',
-          prop: 'upsNum',
-          hide: true
+          dicData: DIC.source
         }, {
           label: '创建时间',
           prop: 'createTime',
@@ -493,67 +340,31 @@ export default {
         current: 1,
         size: 10
       },
-      categoryTypeList: [],
       formRules: {
-        title: [{
+        username: [{
           required: true,
-          message: '请输入文章标题',
+          message: '请输入用户名',
           trigger: 'blur'
         }],
-        brIfe: [{
+        realName: [{
           required: true,
-          message: '请输入简叙',
+          message: '请输入真实姓名',
           trigger: 'blur'
         }],
-        categoryId: [{
+        avatar: [{
           required: true,
-          message: '请选择所属栏目',
-          trigger: 'blur'
+          message: '请上传头像',
+          trigger: 'change'
         }],
-        source: [{
+        sex: [{
           required: true,
-          message: '请输入来源',
-          trigger: 'blur'
+          message: '请选择性别',
+          trigger: 'change'
         }],
-        sourceUrl: [{
+        roleId: [{
           required: true,
-          message: '请输入来源URL',
-          trigger: 'blur'
-        }],
-        inventedNum: [{
-          required: true,
-          message: '请输入虚拟数',
-          trigger: 'blur'
-        }],
-        thumb: [{
-          required: true,
-          message: '请上传缩略图',
-          trigger: 'blur'
-        }],
-        featured: [{
-          required: true,
-          message: '请选择是否头条',
-          trigger: 'blur'
-        }],
-        promoted: [{
-          required: true,
-          message: '请选择是否推荐',
-          trigger: 'blur'
-        }],
-        sticky: [{
-          required: true,
-          message: '请选择是否置顶',
-          trigger: 'blur'
-        }],
-        status: [{
-          required: true,
-          message: '请选择状态',
-          trigger: 'blur'
-        }],
-        body: [{
-          required: true,
-          message: '请输入文章描述',
-          trigger: 'blur'
+          message: '请选择角色',
+          trigger: 'change'
         }]
       },
       searchForm: {},
@@ -568,8 +379,8 @@ export default {
     ...mapGetters(['permissions', 'access_token'])
   },
   created() {
-    this.getCategoryType()
     this.getList()
+    this.getRoleAdmin()
     this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
@@ -581,7 +392,6 @@ export default {
       fetchList(
         Object.assign(
           {
-            descs: 'create_time',
             current: this.page.current,
             size: this.page.size
           },
@@ -598,11 +408,11 @@ export default {
         })
     },
     /**
-     * 栏目列表
+     * 获取角色列表
      */
-    getCategoryType() {
-      getCategoryType().then(data => {
-        this.categoryTypeList = data.data.data
+    getRoleAdmin() {
+      getRoleAdmin().then(data => {
+        this.roleList = data.data.data
       })
     },
     /**
@@ -625,8 +435,6 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
-      this.form.body = ''
-      this.init()
     },
     /**
      * 点击查看
@@ -636,7 +444,6 @@ export default {
       this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
-        this.init()
       })
     },
     /**
@@ -648,13 +455,16 @@ export default {
       this.form = row
       getObj(row.id).then(data => {
         this.form = data.data.data
-        this.init()
       })
     },
     /**
      * 新增保存
      */
     create() {
+      // 默认密码
+      if (this.form.password === null && this.form.password === '') {
+        this.form.password = '123456'
+      }
       this.$refs
         .dataForm.validate(valid => {
           console.log(this.form)
@@ -720,20 +530,7 @@ export default {
           this.getList()
         })
     },
-    /**
-     * 初始化富文本编辑器
-     */
-    init() {
-      this.$nextTick(() => {
-        this.$refs.tinymce.init()
-      })
-    },
     closeDialog() {
-      this.$nextTick(() => {
-        if (this.$refs.tinymce.hasInit) {
-          this.$refs.tinymce.destroyTinymce()
-        }
-      })
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
     }
