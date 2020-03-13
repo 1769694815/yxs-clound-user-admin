@@ -123,9 +123,6 @@ export default {
   data() {
     return {
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       typeList: [
         {

@@ -135,20 +135,14 @@
           <!--课程讲师-->
           <el-col :span="12">
             <el-form-item label="课程讲师" prop="teacherId" :label-width="formLabelWidth">
-              <el-select
+              <single-change
                 v-model="form.teacherId"
-                clearable
                 :disabled="operationStatus === 1"
-                class="course-input"
-                placeholder="请选择课程讲师"
-              >
-                <el-option
-                  v-for="item in tearcherList"
-                  :key="item.username"
-                  :label="item.username"
-                  :value="item.userId"
-                />
-              </el-select>
+                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                dic-url="/admin/user/getTeacherList"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--课程价格-->
@@ -366,7 +360,6 @@ export default {
     return {
       tableKey: 0,
       tableLoading: false,
-      tearcherList: [],
       treeData: [],
       tableOption: [
         {
@@ -535,7 +528,6 @@ export default {
   },
   created() {
     this.getList()
-    this.getTeacherList()
     this.getCategoryTree(1)
   },
   methods: {
@@ -546,11 +538,6 @@ export default {
     getCategoryTree(type) {
       getCategoryTreeByNotType(type).then(res => {
         this.treeData = res.data.data
-      })
-    },
-    getTeacherList() {
-      getTeacherList().then(res => {
-        this.tearcherList = res.data.data
       })
     },
     getList() {
@@ -677,10 +664,7 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      let defaultTeacherId = null
-      if (this.tearcherList.length > 0) {
-        defaultTeacherId = this.tearcherList[0].userId
-      }
+      const defaultTeacherId = null
       this.form = {
         type: '1',
         status: '1',

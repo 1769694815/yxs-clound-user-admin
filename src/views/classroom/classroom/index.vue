@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 18:13:53
+ * @LastEditTime: 2020-03-13 20:08:21
  * @Description: 文件管理
  -->
 <template>
@@ -86,7 +86,7 @@
               <single-change
                 v-model="form.headmasterId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'username', value: 'userId' }"
+                :dic-prop="{ label: 'nickName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
@@ -99,7 +99,7 @@
               <single-change
                 v-model="form.assistantId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'username', value: 'userId' }"
+                :dic-prop="{ label: 'nickName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
@@ -493,7 +493,6 @@ export default {
   created() {
     this.getList()
     this.getCategoryTree()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**

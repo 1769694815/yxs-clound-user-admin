@@ -367,9 +367,6 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],

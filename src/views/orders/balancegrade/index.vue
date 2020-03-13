@@ -219,7 +219,6 @@ export default {
   },
   data() {
     return {
-      headers: {},
       tableKey: 0,
       tableLoading: false,
       tableOption: [
@@ -279,7 +278,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**

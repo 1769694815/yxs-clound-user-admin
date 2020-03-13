@@ -321,7 +321,6 @@ export default {
       ]
     }
     return {
-      headers: {},
       tableKey: 0,
       roleList: [],
       tableLoading: false,
@@ -402,7 +401,6 @@ export default {
   created() {
     this.getList()
     this.getRoleAdmin()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
