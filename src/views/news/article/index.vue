@@ -203,6 +203,24 @@
             :span="12"
           >
             <el-form-item
+              prop="levelId"
+              label="所属层次:"
+              :label-width="formLabelWidth"
+            >
+              <single-change
+                v-model="form.levelId"
+                :disabled="operationStatus === 1"
+                status-type="level_type"
+                placeholder="当栏目选择“考试日历”时，必须选择此项"
+                type="select"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="12"
+          >
+            <el-form-item
               prop="source"
               label="来源:"
               :label-width="formLabelWidth"
@@ -453,6 +471,13 @@ export default {
           label: '状态',
           prop: 'status',
           dicUrl: 'common_release_status',
+          dicData: []
+        },
+        {
+          label: '层次',
+          prop: 'levelId',
+          width: '120',
+          dicUrl: 'level_type',
           dicData: []
         }, {
           label: '点击量',
