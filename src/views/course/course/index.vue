@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 20:10:22
+ * @LastEditTime: 2020-03-14 14:58:15
  * @Description: 课程管理
  -->
 <template>
@@ -318,7 +318,6 @@
 
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
-import { getTeacherList } from '@/api/user'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'

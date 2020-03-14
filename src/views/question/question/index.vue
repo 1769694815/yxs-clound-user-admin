@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-11 19:26:08
+ * @LastEditTime: 2020-03-14 14:57:28
  * @Description: 题目表管理
  -->
 <template>
@@ -310,7 +310,6 @@ import {
   getAllQuestion
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
