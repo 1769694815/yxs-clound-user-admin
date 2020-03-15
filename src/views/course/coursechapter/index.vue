@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:27:27
+ * @LastEditTime: 2020-03-14 14:58:01
  * @Description: 文件管理
  -->
 <template>
@@ -97,7 +97,6 @@
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/coursechapter'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {

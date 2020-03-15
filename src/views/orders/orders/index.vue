@@ -442,7 +442,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/orders'
+import { fetchList, addObj, putObj, delObj } from '@/api/orders/orders'
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 

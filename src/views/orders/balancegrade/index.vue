@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/balancegrade'
+import { fetchList, addObj, putObj, delObj } from '@/api/orders/balancegrade'
 import { mapGetters } from 'vuex'
 
 export default {
