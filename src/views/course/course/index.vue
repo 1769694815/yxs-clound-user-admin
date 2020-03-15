@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 20:10:22
+ * @LastEditTime: 2020-03-15 10:03:41
  * @Description: 课程管理
  -->
 <template>
@@ -673,8 +673,8 @@ export default {
         buyFlag: '1',
         price: 0,
         sort: 0,
-        drag: '0',
-        doubleSpeed: '0',
+        drag: '1',
+        doubleSpeed: '1',
         effectiveDays: 365,
         learnNum: 0,
         teacherId: defaultTeacherId
