@@ -271,7 +271,7 @@
         >修 改</el-button>
         <el-button
           size="small"
-          @click="dialogPvVisible = false"
+          @click="closeDialog"
         >取 消</el-button>
       </div>
     </el-dialog>
@@ -450,6 +450,7 @@ export default {
     this.sys_user_del = this.permissions['sys_user_del']
     this.init()
     this.getList()
+    this.getNodeData()
     this.handleDept()
   },
   methods: {
@@ -490,10 +491,8 @@ export default {
       })
     },
     getNodeData() {
-      console.log('form', this.form)
       deptRoleList().then(response => {
         this.rolesOptions = response.data.data
-        console.log(this.rolesOptions)
       })
     },
     handleFilter() {
@@ -554,49 +553,62 @@ export default {
       this.operationStatus = 0
       this.dialogPvVisible = true
       this.form = {}
-      this.rolesOptions = []
     },
     create() {
-      this.dialogPvVisible = false
-      this.tableLoading = true
-      if (this.form.phone.indexOf('*') > 0) {
-        this.form.phone = undefined
-      }
-      addObj(this.form)
-        .then(() => {
-          this.getList()
-          this.$notify({
-            title: '成功',
-            message: '创建成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.tableLoading = false
-        })
-        .catch(() => {
-          this.tableLoading = false
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.dialogPvVisible = false
+            this.tableLoading = true
+            if (this.form.phone.indexOf('*') > 0) {
+              this.form.phone = undefined
+            }
+            addObj(this.form)
+              .then(() => {
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.tableLoading = false
+              })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
         })
     },
     update() {
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.dialogPvVisible = false
+            this.tableLoading = true
+            if (this.form.phone && this.form.phone.indexOf('*') > 0) {
+              this.form.phone = undefined
+            }
+            putObj(this.form)
+              .then(() => {
+                this.getList()
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
+        })
+    },
+    closeDialog() {
+      this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
-      this.tableLoading = true
-      if (this.form.phone && this.form.phone.indexOf('*') > 0) {
-        this.form.phone = undefined
-      }
-      putObj(this.form)
-        .then(() => {
-          this.getList()
-          this.tableLoading = false
-          this.$notify({
-            title: '成功',
-            message: '修改成功',
-            type: 'success',
-            duration: 2000
-          })
-        })
-        .catch(() => {
-          this.tableLoading = false
-        })
     }
   }
 }
