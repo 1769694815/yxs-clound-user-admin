@@ -357,6 +357,7 @@
               :label-width="formLabelWidth"
             >
               <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
+              <!-- <ue ref="ueditor" v-model="form.body" /> -->
             </el-form-item>
           </el-col>
 
@@ -394,11 +395,13 @@
 import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
 import Tinymce from '@/components/Tinymce/index'
+// import Ue from '@/components/ue/ueditor'
 
 export default {
   name: 'Article',
   components: {
     Tinymce
+    // Ue
   },
   filters: {
     statusFilter(type, list) {
@@ -653,7 +656,7 @@ export default {
         inventedNum: 0
       }
       this.form.body = ''
-      this.init()
+      // this.init()
     },
     /**
      * 点击查看

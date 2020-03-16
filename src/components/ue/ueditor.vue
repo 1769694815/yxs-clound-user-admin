@@ -1,0 +1,98 @@
+<!--
+ * @Author: xwen
+ * @Date: 2020-03-14 15:03:45
+ * @LastEditTime: 2020-03-14 18:04:42
+ * @LastEditors: xwen
+ * @Description:
+ -->
+
+<template>
+  <div>
+    <script :id="id" type="text/plain" />
+  </div>
+</template>
+
+<script>
+import { mapGetters } from 'vuex'
+
+export default {
+  props: {
+    value: {
+      type: String,
+      default: function() {
+        return ''
+      }
+    },
+    config: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    }
+  },
+  data() {
+    return {
+      editor: null,
+      id: 'editor' + new Date().getTime()
+    }
+  },
+  computed: {
+    ...mapGetters(['access_token'])
+  },
+  watch: {
+    value(val) {
+      console.log(val)
+    }
+  },
+  mounted() {
+    const token = this.access_token
+    window.UE.ajax.setAuthorization(token)
+    this.$nextTick(() => {
+      this.editor = window.UE.getEditor(this.id, this.config) // 初始化UE
+      this.editor.addListener('ready', () => {
+        // 自定义请求参数
+        this.editor.execCommand('serverparam', function(editor) {
+          return {
+            'token': token
+          }
+        })
+        // 自定义请求地址
+        window.UE.Editor.prototype._bkGetActionUrl = window.UE.Editor.prototype.getActionUrl
+        window.UE.Editor.prototype.getActionUrl = (action) => {
+          if (action === 'uploadimage' || action === 'uploadscrawl' || action === 'uploadimage' || action === 'uploadfile') {
+            return '/admin/upload?type=5&appId=zyy'
+          } else if (action === 'uploadvideo') {
+            return '/admin/upload?type=5&appId=zyy'
+          } else {
+            return this.editor._bkGetActionUrl.call(this, action)
+          }
+        }
+        this.editor.setContent(this.value) // 确保UE加载完成后，放入内容
+        this.editor.addListener('contentChange', () => {
+          // const wordCount = this.editor.getContentLength(true)
+          const content = this.editor.getContent()
+          // const plainTxt = this.editor.getPlainTxt()
+          // const htmlCont = this.editor.getAllHtml()
+          // 编辑器内容有变动,通知父组件
+          // this.$emit('input', { wordCount: wordCount, content: content, plainTxt: plainTxt, htmlCont: htmlCont })
+          this.$emit('input', content)
+        })
+        // editor初始化后操作
+        this.$emit('ready', this.editor)
+      })
+    })
+  },
+  destroyed() {
+    this.editor.destroy()
+  },
+  methods: {
+    getUEContent() {
+      return this.editor.getContent()
+    },
+    getUEContentTxt() {
+      return this.editor.getContentTxt()
+    }
+  }
+}
+</script>
+
