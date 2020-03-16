@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-14 14:58:15
+ * @LastEditTime: 2020-03-15 10:03:41
  * @Description: 课程管理
  -->
 <template>
@@ -318,6 +318,7 @@
 
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
+import { getTeacherList } from '@/api/user'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
@@ -672,8 +673,8 @@ export default {
         buyFlag: '1',
         price: 0,
         sort: 0,
-        drag: '0',
-        doubleSpeed: '0',
+        drag: '1',
+        doubleSpeed: '1',
         effectiveDays: 365,
         learnNum: 0,
         teacherId: defaultTeacherId
