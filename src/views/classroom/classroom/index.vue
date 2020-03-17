@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-17 17:44:22
+ * @LastEditTime: 2020-03-17 17:57:45
  * @Description: 文件管理
  -->
 <template>
@@ -455,9 +455,6 @@ export default {
         price: [{ required: true, message: '请输入班级价格', trigger: 'blur' }],
         learnNum: [
           { required: true, message: '请输入填写人数', trigger: 'blur' }
-        ],
-        onlineLessonNum: [
-          { required: true, message: '请输入面授课时数', trigger: 'blur' }
         ],
         recommendedSeq: [
           { required: true, message: '请输入推荐序号', trigger: 'blur' }
