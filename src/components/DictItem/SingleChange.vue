@@ -19,7 +19,7 @@
       :size="size"
       :disabled="disabled"
       clearable
-      placeholder="请选择状态"
+      :placeholder="placeholder"
       style="width: 100%;"
       @change="singleChange"
     >
@@ -101,7 +101,8 @@ export default {
   data() {
     return {
       status: '',
-      statusList: []
+      statusList: [],
+      placeholder: '请选择状态'
     }
   },
   watch: {
