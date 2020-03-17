@@ -26,7 +26,7 @@ export default {
     config: {
       type: Object,
       default: function() {
-        return {}
+        return { autoFloatEnabled: false }
       }
     },
     readyOnly: {
