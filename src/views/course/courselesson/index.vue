@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:26:47
+ * @LastEditTime: 2020-03-17 16:53:47
  * @Description: 文件管理
  -->
 <template>
@@ -101,7 +101,7 @@
               <single-change
                 v-model="form.free"
                 :disabled="operationStatus === 1"
-                status-type="common_flag"
+                status-type="free_flag"
                 type="radio"
                 size="medium"
               />
@@ -202,6 +202,52 @@ export default {
     }
   },
   data() {
+    const DIC = {
+      freeList: [
+        {
+          value: 0,
+          label: '免费'
+        },
+        {
+          value: 1,
+          label: '付费'
+        }
+      ],
+      typeList: [
+        {
+          value: 0,
+          label: '否'
+        },
+        {
+          value: 1,
+          label: '是'
+        }
+      ],
+      lessonStatus: [
+        {
+          label: '未发布',
+          value: 0
+        },
+        {
+          label: '发布',
+          value: 1
+        }
+      ],
+      fileType: [
+        {
+          label: '视频',
+          value: 1
+        },
+        {
+          label: '音频',
+          value: 2
+        },
+        {
+          label: '文档',
+          value: 3
+        }
+      ]
+    }
     return {
       tableKey: 0,
       tableLoading: false,
@@ -227,7 +273,7 @@ export default {
         {
           label: '是否免费',
           prop: 'free',
-          dicUrl: 'common_flag',
+          dicUrl: 'free_flag',
           dicData: []
         },
         {
