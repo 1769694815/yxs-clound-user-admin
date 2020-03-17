@@ -34,7 +34,7 @@
         , serverUrl: "/admin/api/UEditor/getConfigInfo"
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的重新定义
-      // 'insertvideo','insertimage', 'scrawl', 'music', 'attachment', 'map', 'gmap','insertframe', 'webapp','template', 'background','snapscreen', 'wordimage','charts',  'print', 'help' 'drafts',
+      // 'insertvideo','insertimage', 'scrawl', 'music', 'attachment', 'map', 'gmap','insertframe', 'webapp','template', 'background','snapscreen', 'wordimage','charts',  'print', 'help' 'drafts',, 'searchreplace','anchor',
         , toolbars: [[
             'fullscreen', 'source', '|', 'undo', 'redo', '|',
             'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
@@ -42,11 +42,11 @@
             'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
             'directionalityltr', 'directionalityrtl', 'indent', '|',
             'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
-            'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+            'link', 'unlink',  '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
             'simpleupload', 'emotion',  'insertcode',  'pagebreak',  '|',
             'horizontal', 'date', 'time', 'spechars',  '|',
-            'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
-            'preview', 'searchreplace',
+            'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'preview',
+
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         //,labelMap:{
