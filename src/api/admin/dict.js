@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-14 13:33:11
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-05 11:09:23
+ * @LastEditTime: 2020-03-12 13:43:30
  * @Description: 字典api
  */
 import request from '@/utils/request'
@@ -100,5 +100,12 @@ export function http(url, query) {
     url,
     method: 'get',
     params: query
+  })
+}
+export function refresh() {
+  return request({
+    url: '/admin/dict/refresh',
+    method: 'put',
+    data: {}
   })
 }

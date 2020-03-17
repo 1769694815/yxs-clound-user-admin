@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-09 10:58:40
+ * @LastEditTime: 2020-03-14 14:57:28
  * @Description: 题目表管理
  -->
 <template>
@@ -222,7 +222,7 @@
             <el-form-item label="题目答案" prop="answer">
               <!-- 非选择题 -->
               <el-input
-                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 5"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
@@ -258,7 +258,7 @@
               </el-checkbox-group>
               <!-- 判断题 -->
               <el-radio-group
-                v-if="form.typeId === 4"
+                v-if="form.typeId === 5"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
               >
@@ -285,7 +285,7 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="img" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.imgUrl" :type="7" :disabled="operationStatus === 1" />
+              <single-image v-model="form.imgUrl" status="7" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -310,7 +310,6 @@ import {
   getAllQuestion
 } from '@/api/question/question'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -367,9 +366,6 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       treeData: [],

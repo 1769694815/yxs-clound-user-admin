@@ -152,10 +152,9 @@
             >
               <single-change
                 v-model="form.status"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="order_status"
                 type="select"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -185,10 +184,9 @@
             >
               <single-change
                 v-model="form.itemType"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="goods_type"
                 type="select"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -217,7 +215,6 @@
                 v-model="form.itemId"
                 autocomplete="off"
                 placeholder="请输入商品ID"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -263,10 +260,9 @@
             >
               <single-change
                 v-model="form.payWay"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="pay_way"
                 type="select"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -408,10 +404,9 @@
             >
               <single-change
                 v-model="form.source"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 status-type="order_source"
                 type="select"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
@@ -447,7 +442,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/orders'
+import { fetchList, addObj, putObj, delObj } from '@/api/orders/orders'
 import { mapGetters } from 'vuex'
 import { parseTime } from '@/utils'
 
@@ -474,7 +469,6 @@ export default {
   },
   data() {
     return {
-      headers: {},
       tableKey: 0,
       tableLoading: false,
       tableOption: [{
@@ -552,7 +546,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**

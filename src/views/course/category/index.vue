@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 10:16:05
+ * @LastEditTime: 2020-03-12 19:54:50
  * @Description: 文件管理
  -->
 <template>
@@ -16,36 +16,33 @@
       </el-form-item>
       <!--是否最热-->
       <el-form-item label="是否最热:" label-width="80px">
-        <el-select v-model="searchForm.hotFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.hotFlag"
+          :disabled="operationStatus === 1"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <!--是否置顶-->
       <el-form-item label="是否置顶:" label-width="130px">
-        <el-select v-model="searchForm.topFlag" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.topFlag"
+          :disabled="operationStatus === 1"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <!--分类类型-->
       <el-form-item label="分类类型:" label-width="80px">
-        <el-select v-model="searchForm.groupType" clearable>
-          <el-option
-            v-for="item in DIC.classificationTypeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.groupType"
+          :disabled="operationStatus === 1"
+          status-type="category_group_type"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -88,7 +85,7 @@
         <el-form ref="dataForm" :model="form" :rules="rules" label-width="90px">
           <!--分类编码-->
           <el-col :span="12">
-            <el-form-item label="分类编码" prop="name">
+            <el-form-item label="分类名称" prop="name">
               <el-input
                 v-model="form.name"
                 :disabled="operationStatus === 1"
@@ -112,22 +109,14 @@
           </el-col>
           <!--分类类型-->
           <el-col :span="12">
-            <el-form-item label="分类类型" :disabled="operationStatus === 1" prop="groupType">
-              <el-select
+            <el-form-item label="分类类型" prop="groupType">
+              <single-change
                 v-model="form.groupType"
                 :disabled="operationStatus === 1"
-                clearable
-                class="category-input"
-                placeholder="请选择分类类型"
-                @change="groupTypeChange"
-              >
-                <el-option
-                  v-for="item in DIC.classificationTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="category_group_type"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--父类类型-->
@@ -136,7 +125,7 @@
               <Input-tree
                 v-model="form.parentId"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 placeholder="请选择父类类型"
               />
             </el-form-item>
@@ -144,150 +133,144 @@
           <!--是否最热-->
           <el-col :span="12">
             <el-form-item label="是否最热" prop="hotFlag">
-              <el-radio-group v-model="form.hotFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.hotFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否置顶-->
           <el-col :span="12">
             <el-form-item label="是否置顶" prop="topFlag">
-              <el-radio-group v-model="form.topFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.topFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否网课-->
           <el-col :span="12">
             <el-form-item label="是否网课" prop="onlineCourseFlag">
-              <el-radio-group v-model="form.onlineCourseFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.onlineCourseFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
 
           </el-col>
           <!--是否面授-->
           <el-col :span="12">
             <el-form-item label="是否面授" prop="faceToFaceFlag">
-              <el-radio-group v-model="form.faceToFaceFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.faceToFaceFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
-              <el-radio-group v-model="form.showFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.showFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--字体颜色-->
           <el-col :span="12">
-            <el-form-item label="字体颜色" prop="recommendedFlag">
-              <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" />
+            <el-form-item label="字体颜色" prop="fontColor">
+              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
+              <!-- 颜色格式： hsl / hsv / hex / rgb -->
+              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
           <el-col :span="12">
             <el-form-item label="APP顶部导航" prop="columnFlag" label-width="120px">
-              <el-radio-group v-model="form.columnFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.columnFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--APP首页分栏-->
           <el-col :span="12">
             <el-form-item label="APP首页分栏" prop="recommendedFlag" label-width="140px">
-              <el-radio-group v-model="form.recommendedFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+              <single-change
+                v-model="form.recommendedFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item label="跳转类型" :disabled="operationStatus === 1" prop="jumpType">
-              <el-select
+            <el-form-item v-if="!form.parentId" label="跳转类型" prop="jumpType">
+              <single-change
                 v-model="form.jumpType"
                 :disabled="operationStatus === 1"
-                clearable
-                class="category-input"
-                placeholder="请选择跳转类型"
-              >
-                <el-option
-                  v-for="item in jumpTypeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="category_jump_type"
+                type="select"
+                size="medium"
+              />
+            </el-form-item>
+            <el-form-item v-else label="跳转类型">
+              <single-change
+                v-model="form.jumpType"
+                :disabled="operationStatus === 1"
+                status-type="category_jump_type"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--显示顺序-->
           <el-col :span="12">
             <el-form-item label="显示顺序" prop="sort">
               <el-input-number
-                v-model="form.sequence"
+                v-model="form.sort"
+                autocomplete="off"
                 :disabled="operationStatus === 1"
                 placeholder="请输入显示顺序"
-                clearable
-                class="category-input"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image v-model="form.icon" :type="8" :disabled="operationStatus === 1" />
+              <single-image
+                v-model="form.icon"
+                status="8"
+                :disabled="operationStatus === 1"
+              />
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -302,9 +285,7 @@ import {
   delObj,
   getCategoryTreeByNotType
 } from '@/api/course/category'
-import { remote } from '@/api/admin/dict'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 import InputTree from '@/components/InputTree/index'
 
 export default {
@@ -332,35 +313,8 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      typeList: [
-        {
-          value: 0,
-          label: '否'
-        },
-        {
-          value: 1,
-          label: '是'
-        }
-      ],
-      classificationTypeList: [
-        {
-          value: 1,
-          label: '课程'
-        },
-        {
-          value: 2,
-          label: '班级'
-        }
-      ]
-    }
     return {
-      DIC: DIC,
       tableKey: 0,
-      jumpTypeList: [],
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tableOption: [
         {
@@ -391,47 +345,54 @@ export default {
           prop: 'hotFlag',
           overHidden: true,
           width: '100',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '是否置顶',
           prop: 'topFlag',
           overHidden: true,
           width: '100',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: 'APP首页分栏',
           prop: 'recommendedFlag',
           overHidden: true,
           width: '120',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: 'APP顶部导航',
           prop: 'columnFlag',
           overHidden: true,
           width: '120',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '删除标记',
           prop: 'delFlag',
           overHidden: true,
           width: '100',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '是否展示',
           prop: 'showFlag',
           width: '100',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '分类类型',
           prop: 'groupType',
           width: '120',
-          dicData: DIC.classificationTypeList
+          dicUrl: 'category_group_type',
+          dicData: []
         },
         {
           label: '排序',
@@ -479,6 +440,9 @@ export default {
         ],
         showFlag: [
           { required: true, message: '请选择是否展示', trigger: 'change' }
+        ],
+        jumpType: [
+          { required: true, message: '请选择跳转类型', trigger: 'change' }
         ]
         // icon: [{ required: true, message: '请上传图标', trigger: 'change' }]
       },
@@ -506,15 +470,9 @@ export default {
   },
   created() {
     this.getList()
-    this.getJumpTypeList()
     this.dialogPvVisible = false
   },
   methods: {
-    getJumpTypeList() {
-      remote('jump_type').then(res => {
-        this.jumpTypeList = res.data.data
-      })
-    },
     groupTypeChange(type) {
       this.form.parentId = ''
       this.getCategoryTreeByNotType(type)
@@ -554,24 +512,32 @@ export default {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
           this.dialogPvVisible = false
-          this.getList()
+          this.tableLoading = true
           if (this.form.id != null) {
             putObj(this.form).then(() => {
+              this.tableLoading = false
               this.$notify({
                 title: '成功',
                 message: '修改成功',
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           } else {
             addObj(this.form).then(() => {
+              this.tableLoading = false
               this.$notify({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           }
         } else {
@@ -627,7 +593,16 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {}
+      this.form = {
+        hotFlag: '0',
+        topFlag: '0',
+        onlineCourseFlag: '1',
+        faceToFaceFlag: '0',
+        showFlag: '1',
+        columnFlag: '0',
+        recommendedFlag: '0',
+        jumpType: '1'
+      }
     }
   }
 }

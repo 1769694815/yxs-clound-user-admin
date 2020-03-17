@@ -1,7 +1,7 @@
 /*
  * @Author: Donkey
  * @Date: 2020-02-13 12:00:41
- * @LastEditTime: 2020-03-03 14:24:29
+ * @LastEditTime: 2020-03-14 16:25:36
  * @LastEditors: xwen
  * @Description:
  */
@@ -24,6 +24,13 @@ import * as urls from '@/config/env'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+
+// 百度富文本编辑器
+import '../public/UE/ueditor.config'
+// import '../public/UE/ueditor.parse'
+import '../public/UE/ueditor.all'
+import '../public/UE/lang/zh-cn/zh-cn'
+import '../public/UE/themes/default/css/ueditor.css'
 
 /**
  * If you don't want to use mock-server

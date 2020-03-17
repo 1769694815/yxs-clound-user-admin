@@ -1,8 +1,8 @@
 <!--
  * @Author: xwen
  * @Date: 2020-03-05 14:02:24
- * @LastEditTime: 2020-03-06 13:57:08
- * @LastEditors: xwen
+ * @LastEditTime: 2020-03-11 19:14:52
+ * @LastEditors: Donkey
  * @Description: 个人信息
  -->
 
@@ -52,6 +52,7 @@
             >
               <single-image
                 v-model="ruleForm.avatar"
+                status="1"
               />
             </el-form-item>
             <el-form-item>

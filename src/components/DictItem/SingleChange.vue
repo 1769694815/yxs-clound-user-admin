@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-22 11:19:48
- * @LastEditTime: 2020-03-04 15:04:10
+ * @LastEditTime: 2020-03-12 17:52:04
  * @LastEditors: xwen
  * @Description: 数据字典单选组件
  -->
@@ -19,21 +19,21 @@
       :size="size"
       :disabled="disabled"
       clearable
-      placeholder="请选择状态"
+      :placeholder="placeholder"
       style="width: 100%;"
       @change="singleChange"
     >
       <el-option
         v-for="item in statusList"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
+        :key="item[dicProp.value]"
+        :label="item[dicProp.label]"
+        :value="item[dicProp.value]"
       />
     </el-select>
     <el-radio-group
       v-if="type === 'radio'"
       v-model="status"
-      :disabled="operationStatus === 1"
+      :disabled="disabled"
       @change="singleChange"
     >
       <el-radio
@@ -48,12 +48,12 @@
 </template>
 
 <script>
-import { remote } from '@/api/admin/dict'
+import { remote, http } from '@/api/admin/dict'
 export default {
   name: 'SingleChange',
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       default: function() {
         return ''
       }
@@ -82,17 +82,27 @@ export default {
         return 'small'
       }
     },
-    operationStatus: {
-      type: [String, Number],
+    dicUrl: {
+      type: String,
       default: function() {
-        return 0
+        return ''
+      }
+    },
+    dicProp: {
+      type: Object,
+      default: function() {
+        return {
+          label: 'label',
+          value: 'value'
+        }
       }
     }
   },
   data() {
     return {
       status: '',
-      statusList: []
+      statusList: [],
+      placeholder: '请选择状态'
     }
   },
   watch: {
@@ -108,9 +118,19 @@ export default {
   },
   methods: {
     getStatusList() {
-      remote(this.statusType).then(res => {
-        this.statusList = res.data.data
-      })
+      if (this.statusType) {
+        remote(this.statusType).then(res => {
+          this.statusList = res.data.data
+          this.$emit('status-list', this.statusList)
+        })
+      } else if (this.dicUrl) {
+        http(this.dicUrl).then(res => {
+          this.statusList = res.data.data
+          this.$emit('status-list', this.statusList)
+        })
+      } else {
+        new Error('必传status-type或者dic-url')
+      }
     },
     singleChange(e) {
       this.$emit('input', e)

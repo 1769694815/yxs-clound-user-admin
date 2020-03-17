@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-10 10:17:04
+ * @LastEditTime: 2020-03-13 20:08:21
  * @Description: 文件管理
  -->
 <template>
@@ -52,6 +52,7 @@
       :visible.sync="dialogPvVisible"
       :close-on-click-modal="false"
       :title="operationStatus | dialogTitle"
+      :before-close="closeDialog"
     >
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="dataForm" :model="form" :rules="rules" label-width="120px">
@@ -69,54 +70,40 @@
           </el-col>
           <!--班级状态-->
           <el-col :span="12">
-            <el-form-item label="课程状态" prop="status">
-              <el-radio-group v-model="form.status" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.courseStatus"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="班级状态" prop="status">
+              <single-change
+                v-model="form.status"
+                :disabled="operationStatus === 1"
+                status-type="common_release_status"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--班主任-->
           <el-col :span="12">
             <el-form-item label="班主任" prop="headmasterId">
-              <el-select
+              <single-change
                 v-model="form.headmasterId"
                 :disabled="operationStatus === 1"
-                clearable
-                class="classroom-input"
-                placeholder="请选择班主任"
-              >
-                <el-option
-                  v-for="item in tearcherList"
-                  :key="item.username"
-                  :label="item.username"
-                  :value="item.userId"
-                />
-              </el-select>
+                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                dic-url="/admin/user/getTeacherList"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--班级助教-->
           <el-col :span="12">
             <el-form-item label="班级助教" prop="assistantId">
-              <el-select
+              <single-change
                 v-model="form.assistantId"
                 :disabled="operationStatus === 1"
-                clearable
-                class="classroom-input"
-                placeholder="请选择班级助教"
-              >
-                <el-option
-                  v-for="item in tearcherList"
-                  :key="item.username"
-                  :label="item.username"
-                  :value="item.userId"
-                />
-              </el-select>
+                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                dic-url="/admin/user/getTeacherList"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--班级分类-->
@@ -125,7 +112,7 @@
               <Input-tree
                 v-model="form.categoryIds"
                 :tree-data="treeData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 multiline
                 placeholder="请选择班级分类"
               />
@@ -134,164 +121,111 @@
           <!--授课方式-->
           <el-col :span="12">
             <el-form-item label="授课方式" prop="teachingMethod">
-              <el-select
+              <single-change
                 v-model="form.teachingMethod"
                 :disabled="operationStatus === 1"
-                clearable
-                class="classroom-input"
-                placeholder="请选择授课方式"
-              >
-                <el-option
-                  v-for="item in DIC.teachingMethodList"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="teaching_method"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--班级价格-->
           <el-col :span="12">
             <el-form-item label="班级价格" prop="price">
-              <el-input
+              <el-input-number
                 v-model="form.price"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入班级价格"
-                clearable
-                class="classroom-input"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
           <!--填写人数-->
           <el-col :span="12">
             <el-form-item label="填写人数" prop="learnNum">
-              <el-input
+              <el-input-number
                 v-model="form.learnNum"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入填写人数"
-                clearable
-                class="classroom-input"
-                type="number"
-                min="0"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
           <!--推荐序号-->
           <el-col :span="12">
             <el-form-item label="推荐序号" prop="recommendedSeq">
-              <el-input
+              <el-input-number
                 v-model="form.recommendedSeq"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入推荐序号"
-                clearable
-                class="classroom-input"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
-            </el-form-item>
-          </el-col>
-          <!--是否封闭班级-->
-          <el-col :span="12">
-            <el-form-item label="是否封闭班级" prop="privateFlag">
-              <el-radio-group v-model="form.privateFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
             </el-form-item>
           </el-col>
           <!--是否为推荐班级-->
           <el-col :span="12">
-            <el-form-item label="是否为推荐班级" prop="recommendedFlag">
-              <el-radio-group v-model="form.recommendedFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <!--是否开放购买-->
-          <el-col :span="12">
-            <el-form-item label="是否开放购买" prop="buyFlag">
-              <el-radio-group v-model="form.buyFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="推荐首页" prop="recommendedFlag">
+              <single-change
+                v-model="form.recommendedFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否开放展示-->
           <el-col :span="12">
-            <el-form-item label="是否开放展示" prop="showFlag">
-              <el-radio-group v-model="form.showFlag" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.typeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="开放展示" prop="showFlag">
+              <single-change
+                v-model="form.showFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--学习有效期模式-->
           <el-col :span="12">
-            <el-form-item label="学习有效期模式" prop="expiryMode">
-              <el-radio-group v-model="form.expiryMode" :disabled="operationStatus === 1">
-                <el-radio
-                  v-for="item in DIC.expiryModeList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
+            <el-form-item label="有效期" prop="expiryMode">
+              <single-change
+                v-model="form.expiryMode"
+                :disabled="operationStatus === 1"
+                status-type="classroom_expiry_mode"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--有效天数-->
           <el-col :span="12">
             <el-form-item label="有效天数" prop="expiryDays">
-              <el-input
+              <el-input-number
                 v-model="form.expiryDays"
-                :disabled="operationStatus === 1"
+                autocomplete="off"
                 placeholder="请输入有效天数"
-                clearable
-                class="classroom-input"
-                type="number"
-                min="0"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
               />
             </el-form-item>
           </el-col>
           <!--报名截止日期-->
           <el-col :span="12">
-            <el-form-item label="报名截止日期" prop="closeDate">
+            <el-form-item label="报名截止" prop="closeDate">
               <el-date-picker
                 v-model="form.closeDate"
                 :disabled="operationStatus === 1"
                 type="date"
                 placeholder="请输入报名截止日期"
-                clearable
-                class="classroom-input"
-              />
-            </el-form-item>
-          </el-col>
-          <!--班级简介-->
-          <el-col :span="12">
-            <el-form-item label="班级简介" prop="about">
-              <el-input
-                v-model="form.about"
-                :disabled="operationStatus === 1"
-                placeholder="请输入班级简介"
                 clearable
                 class="classroom-input"
               />
@@ -315,16 +249,22 @@
               <single-image
                 v-model="form.smallPicture"
                 :disabled="operationStatus === 1"
-                :type="6"
+                status="6"
               />
+            </el-form-item>
+          </el-col>
+          <!--班级简介-->
+          <el-col :span="24">
+            <el-form-item label="班级简介" prop="about">
+              <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
+              <ue ref="ueditor" v-model="form.body" />
             </el-form-item>
           </el-col>
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
-        <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
+        <el-button size="small" @click="closeDialog">取 消</el-button>
       </div>
     </el-dialog>
 
@@ -349,16 +289,18 @@ import {
 } from '@/api/classroom/classroom'
 import { getCourseSimpleList } from '@/api/course/course'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
-import { getTeacherList } from '@/api/user'
 import InputTree from '@/components/InputTree/index'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
+// import Tinymce from '@/components/Tinymce/index'
+import Ue from '@/components/ue/ueditor'
 
 export default {
   components: {
     InputTree,
-    CourseModal
+    CourseModal,
+    // Tinymce,
+    Ue
   },
   filters: {
     statusFilter(type, list) {
@@ -381,58 +323,15 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      expiryModeList: [
-        {
-          label: '永久有效',
-          value: 0
-        },
-        {
-          label: '有效天数',
-          value: 1
-        }
-      ],
-      typeList: [
-        {
-          value: 0,
-          label: '否'
-        },
-        {
-          value: 1,
-          label: '是'
-        }
-      ],
-      courseStatus: [
-        {
-          label: '未发布',
-          value: 0
-        },
-        {
-          label: '发布',
-          value: 1
-        }
-      ],
-      teachingMethodList: [
-        {
-          label: '网上',
-          value: 0
-        },
-        {
-          label: '线下',
-          value: 1
-        },
-        {
-          label: '网上+面授',
-          value: 2
-        }
-      ]
+    const tinymceValidate = (rule, value, callback) => {
+      if (this.form.about === '') {
+        callback(new Error(rule.message))
+      } else {
+        callback()
+      }
     }
     return {
-      DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       tearcherList: [],
       modalShow: false,
@@ -446,15 +345,18 @@ export default {
           prop: 'title'
         },
         {
-          width: 60,
+          width: 100,
           label: '状态',
-          prop: 'status'
+          prop: 'status',
+          dicUrl: 'common_release_status',
+          dicData: []
         },
         {
           width: 80,
           label: '授课方式',
           prop: 'teachingMethod',
-          dicData: DIC.teachingMethodList
+          dicUrl: 'teaching_method',
+          dicData: []
         },
         {
           width: 60,
@@ -478,27 +380,33 @@ export default {
         },
         {
           width: 110,
-          label: '是否封闭班级',
+          label: '封闭班级',
           prop: 'privateFlag',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: [],
+          hide: true
         },
         {
           width: 120,
-          label: '是否为推荐班级',
+          label: '推荐首页',
           prop: 'recommendedFlag',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
-          label: '是否开放展示',
+          label: '开放展示',
           width: 110,
           prop: 'showFlag',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
-          label: '是否开放购买',
+          label: '开放购买',
           width: 110,
-          prop: 'radio',
-          dicData: DIC.typeList
+          prop: 'buyFlag',
+          dicUrl: 'common_flag',
+          dicData: [],
+          hide: true
         },
         {
           width: 160,
@@ -522,23 +430,56 @@ export default {
       rules: {
         // 表单校验
         title: [
-          { required: true, message: '班级名称不能为空', trigger: 'blur' }
+          { required: true, message: '请输入班级标题', trigger: 'blur' }
         ],
-        buyFlag: [
-          { required: true, message: '请选择是否开放购买', trigger: 'change' }
+        status: [
+          { required: true, message: '请选择班级状态', trigger: 'change' }
         ],
-        expiryMode: [
-          { required: true, message: '请选择学习有效方式', trigger: 'change' }
+        categoryIds: [
+          { required: true, message: '请选择班级分类', trigger: 'change' }
+        ],
+        teachingMethod: [
+          { required: true, message: '请选择授课方式', trigger: 'change' }
+        ],
+        price: [
+          { required: true, message: '请输入班级价格', trigger: 'blur' }
+        ],
+        learnNum: [
+          { required: true, message: '请输入填写人数', trigger: 'blur' }
+        ],
+        recommendedSeq: [
+          { required: true, message: '请输入推荐序号', trigger: 'blur' }
+        ],
+        privateFlag: [
+          { required: false, message: '请选择是否封闭', trigger: 'change' }
         ],
         recommendedFlag: [
-          { required: true, message: '请选择是否推荐', trigger: 'change' }
+          { required: true, message: '请选择是否推荐到首页', trigger: 'change' }
         ],
         showFlag: [
-          { required: true, message: '请选择是否展示', trigger: 'change' }
+          { required: true, message: '请选择是否开放展示', trigger: 'change' }
+        ],
+        buyFlag: [
+          { required: false, message: '请选择是否开放购买', trigger: 'change' }
+        ],
+        expiryMode: [
+          { required: true, message: '请选择有效期', trigger: 'change' }
+        ],
+        expiryDays: [
+          { required: true, message: '请输入有效天数', trigger: 'blur' }
+        ],
+        closeDate: [
+          { required: true, message: '请输入报名截止时间', trigger: 'blur' }
+        ],
+        about: [
+          { required: true, validator: tinymceValidate, message: '请输入班级简介', trigger: 'blur' }
+        ],
+        description: [
+          { required: true, message: '请输入班级说明', trigger: 'blur' }
+        ],
+        smallPicture: [
+          { required: true, message: '请上传班级图片', trigger: 'change' }
         ]
-        // smallPicture: [
-        //   { required: true, message: '请上传图标', trigger: 'change' }
-        // ]
       },
       dataObj: { token: '', key: '' },
       imageUrl: '', // 图片地址
@@ -554,9 +495,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getTeacherList()
     this.getCategoryTree()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
@@ -565,14 +504,6 @@ export default {
     getCategoryTree() {
       getCategoryTreeByNotType(2).then(res => {
         this.treeData = res.data.data
-      })
-    },
-    /**
-     * 教师
-     */
-    getTeacherList() {
-      getTeacherList().then(res => {
-        this.tearcherList = res.data.data
       })
     },
     getList() {
@@ -604,7 +535,8 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          console.log(this.form)
+          this.dialogPvVisible = false
+          this.tableLoading = true
           if (this.form.id != null) {
             putObj(this.form).then(() => {
               this.$notify({
@@ -613,6 +545,9 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           } else {
             addObj(this.form).then(() => {
@@ -622,10 +557,11 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
+            }).catch(() => {
+              this.tableLoading = false
             })
           }
-          this.dialogPvVisible = false
-          this.getList()
         } else {
           return false
         }
@@ -650,12 +586,13 @@ export default {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 1
+      this.init()
     },
     handleUpdate(row) {
-      console.log('row', row)
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 2
+      this.init()
     },
     handleDelete(row, index) {
       var _this = this
@@ -680,38 +617,21 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {
-        privateFlag: 0,
-        expiryMode: 0,
-        buyFlag: 0,
-        recommendedFlag: 0,
-        showFlag: 0,
-        teachingMethod: 0
+        status: '0',
+        teachingMethod: '0',
+        price: 0,
+        learnNum: 0,
+        recommendedSeq: 0,
+        privateFlag: '0',
+        recommendedFlag: '0',
+        buyFlag: '1',
+        showFlag: '1',
+        expiryMode: '0',
+        expiryDays: 365
       }
+      this.form.about = ''
+      this.init()
     },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      this.form.smallPicture = res.fileKey
-      this.imageUrl = res.url
-    },
-    handleRemove() {},
     getNodeData() {},
     hideModal() {
       this.modalShow = false
@@ -732,6 +652,24 @@ export default {
     success() {
       this.modalShow = false
       this.getList()
+    },
+    /**
+     * 初始化富文本编辑器
+     */
+    init() {
+      this.$nextTick(() => {
+        this.$refs.tinymce.init()
+      })
+    },
+    closeDialog() {
+      this.$nextTick(() => {
+        if (this.$refs.tinymce.hasInit) {
+          // this.form.body = ''
+          this.$refs.tinymce.destroyTinymce()
+        }
+      })
+      this.$refs.dataForm.resetFields()
+      this.dialogPvVisible = false
     }
   }
 }

@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-07 17:57:10
+ * @LastEditTime: 2020-03-14 14:57:46
  * @Description: 文件管理
  -->
 <template>
@@ -150,7 +150,6 @@
 <script>
 import { fetchList, delObj } from '@/api/course/coursecomment'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
 
 export default {
   filters: {
@@ -203,9 +202,6 @@ export default {
     return {
       DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       commentTypeList: [],
 
@@ -265,7 +261,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {

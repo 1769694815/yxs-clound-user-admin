@@ -1,14 +1,14 @@
 <!--
  * @Date: 2020-02-11 19:09:58
- * @LastEditors: xw
+ * @LastEditors: Please set LastEditors
  * @Author: xw
- * @LastEditTime : 2020-02-15 16:40:35
+ * @LastEditTime: 2020-03-11 16:31:10
  * @Description: 用户管理
  -->
 <template>
   <div class="user app-container calendar-list-container">
     <el-row :span="24">
-      <el-col
+      <!-- <el-col
         :xs="24"
         :sm="24"
         :md="5"
@@ -21,11 +21,11 @@
             @node-click="nodeClick"
           />
         </div>
-      </el-col>
+      </el-col> -->
       <el-col
         :xs="24"
         :sm="24"
-        :md="19"
+        :md="24"
         class="user__main"
       >
         <!-- 头部菜单 -->
@@ -43,6 +43,15 @@
               type="text"
               size="small"
               placeholder="请输入用户名"
+            />
+          </el-form-item>
+          <el-form-item label="用户" prop="parentId">
+            <Input-tree
+              v-model="searchForm.deptId"
+              :tree-data="treeData"
+              :disabled="operationStatus === 1"
+              placeholder="请选择用户类型"
+              @input="getList"
             />
           </el-form-item>
           <el-form-item>
@@ -166,7 +175,7 @@
               <Input-tree
                 v-model="form.deptId"
                 :tree-data="treeDeptData"
-                :operation-status="operationStatus"
+                :disabled="operationStatus === 1"
                 placeholder="请选择所属部门"
                 @node-click="getNodeData"
               />
@@ -262,7 +271,7 @@
         >修 改</el-button>
         <el-button
           size="small"
-          @click="dialogPvVisible = false"
+          @click="closeDialog"
         >取 消</el-button>
       </div>
     </el-dialog>
@@ -441,6 +450,7 @@ export default {
     this.sys_user_del = this.permissions['sys_user_del']
     this.init()
     this.getList()
+    this.getNodeData()
     this.handleDept()
   },
   methods: {
@@ -462,6 +472,7 @@ export default {
       ).then(res => {
         this.list = res.data.data.records
         this.page.total = res.data.data.total
+        console.log(this.searchForm.deptId)
         this.tableLoading = false
       })
     },
@@ -480,10 +491,8 @@ export default {
       })
     },
     getNodeData() {
-      console.log('form', this.form)
       deptRoleList().then(response => {
         this.rolesOptions = response.data.data
-        console.log(this.rolesOptions)
       })
     },
     handleFilter() {
@@ -544,49 +553,62 @@ export default {
       this.operationStatus = 0
       this.dialogPvVisible = true
       this.form = {}
-      this.rolesOptions = []
     },
     create() {
-      this.dialogPvVisible = false
-      this.tableLoading = true
-      if (this.form.phone.indexOf('*') > 0) {
-        this.form.phone = undefined
-      }
-      addObj(this.form)
-        .then(() => {
-          this.getList()
-          this.$notify({
-            title: '成功',
-            message: '创建成功',
-            type: 'success',
-            duration: 2000
-          })
-          this.tableLoading = false
-        })
-        .catch(() => {
-          this.tableLoading = false
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.dialogPvVisible = false
+            this.tableLoading = true
+            if (this.form.phone.indexOf('*') > 0) {
+              this.form.phone = undefined
+            }
+            addObj(this.form)
+              .then(() => {
+                this.getList()
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.tableLoading = false
+              })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
         })
     },
     update() {
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.dialogPvVisible = false
+            this.tableLoading = true
+            if (this.form.phone && this.form.phone.indexOf('*') > 0) {
+              this.form.phone = undefined
+            }
+            putObj(this.form)
+              .then(() => {
+                this.getList()
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+              })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
+        })
+    },
+    closeDialog() {
+      this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
-      this.tableLoading = true
-      if (this.form.phone && this.form.phone.indexOf('*') > 0) {
-        this.form.phone = undefined
-      }
-      putObj(this.form)
-        .then(() => {
-          this.getList()
-          this.tableLoading = false
-          this.$notify({
-            title: '成功',
-            message: '修改成功',
-            type: 'success',
-            duration: 2000
-          })
-        })
-        .catch(() => {
-          this.tableLoading = false
-        })
     }
   }
 }

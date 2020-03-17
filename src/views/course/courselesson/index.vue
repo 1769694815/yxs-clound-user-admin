@@ -1,8 +1,12 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
+<<<<<<< HEAD
  * @LastEditTime: 2020-03-17 16:36:37
+=======
+ * @LastEditTime: 2020-03-12 17:26:47
+>>>>>>> 15165c9268d4c51da35a6f2cbcd1871de1b06acb
  * @Description: 文件管理
  -->
 <template>
@@ -16,36 +20,33 @@
       </el-form-item>
       <!--是否免费-->
       <el-form-item label="是否免费:" label-width="80px">
-        <el-select v-model="searchForm.free" clearable>
-          <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.free"
+          :disabled="operationStatus === 1"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <!--课时状态-->
       <el-form-item label="课时状态:" label-width="130px">
-        <el-select v-model="searchForm.status" clearable>
-          <el-option
-            v-for="item in DIC.lessonStatus"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.status"
+          :disabled="operationStatus === 1"
+          status-type="common_release_status"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <!--课时类型-->
       <el-form-item label="课时类型:" label-width="80px">
-        <el-select v-model="searchForm.type" clearable>
-          <el-option
-            v-for="item in DIC.fileType"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+        <single-change
+          v-model="searchForm.type"
+          :disabled="operationStatus === 1"
+          status-type="lesson_type"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -88,7 +89,7 @@
         <el-form ref="dataForm" :model="form" :rules="rules">
           <!--课时标题-->
           <el-col :span="12">
-            <el-form-item label="课时标题" prop="title">
+            <el-form-item label="课时标题" prop="title" :label-width="formLabelWidth">
               <el-input
                 v-model="form.title"
                 :disabled="operationStatus === 1"
@@ -100,64 +101,43 @@
           </el-col>
           <!--是否免费-->
           <el-col :span="12">
-            <el-form-item label="是否免费" prop="free">
-              <el-select
+            <el-form-item label="是否免费" prop="free" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.free"
                 :disabled="operationStatus === 1"
-                clearable
-                class="lesson-input"
-                placeholder="请选择是否免费"
-              >
-                <el-option
-                  v-for="item in DIC.freeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--课时状态-->
           <el-col :span="12">
-            <el-form-item label="课时状态" prop="status">
-              <el-select
+            <el-form-item label="课时状态" prop="status" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.status"
                 :disabled="operationStatus === 1"
-                clearable
-                class="lesson-input"
-                placeholder="请选择课时状态"
-              >
-                <el-option
-                  v-for="item in DIC.lessonStatus"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="common_release_status"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--课时类型-->
           <el-col :span="12">
-            <el-form-item label="课时类型" prop="type">
-              <el-select
+            <el-form-item label="课时类型" prop="type" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.type"
                 :disabled="operationStatus === 1"
-                clearable
-                class="lesson-input"
-                placeholder="请选择课时类型"
-              >
-                <el-option
-                  v-for="item in DIC.fileType"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="lesson_type"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--课时资源-->
           <el-col :span="12">
-            <el-form-item label="课时资源" prop="mediaUri">
+            <el-form-item label="课时资源" prop="mediaUri" :label-width="formLabelWidth">
               <el-input
                 v-model="form.mediaUri"
                 :disabled="operationStatus === 1"
@@ -169,7 +149,7 @@
           </el-col>
           <!--课时简介-->
           <el-col :span="12">
-            <el-form-item label="课时简介" prop="content">
+            <el-form-item label="课时简介" prop="content" :label-width="formLabelWidth">
               <el-input
                 v-model="form.content"
                 :disabled="operationStatus === 1"
@@ -179,11 +159,22 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="排序" prop="sort" :label-width="formLabelWidth">
+              <el-input-number
+                v-model="form.sort"
+                autocomplete="off"
+                placeholder="请输入排序"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
+              />
+            </el-form-item>
+          </el-col>
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -193,8 +184,6 @@
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/courselesson'
 import { mapGetters } from 'vuex'
-import { getToken } from '@/api/qiniu'
-
 export default {
   filters: {
     statusFilter(type, list) {
@@ -217,6 +206,7 @@ export default {
     }
   },
   data() {
+<<<<<<< HEAD
     const DIC = {
       freeList: [
         {
@@ -263,12 +253,10 @@ export default {
         }
       ]
     }
+=======
+>>>>>>> 15165c9268d4c51da35a6f2cbcd1871de1b06acb
     return {
-      DIC: DIC,
       tableKey: 0,
-      headers: {
-        Authorization: 'Bearer ' + getToken
-      },
       tableLoading: false,
       lessonTypeList: [],
       tableOption: [
@@ -279,11 +267,11 @@ export default {
         },
         {
           label: '课程',
-          prop: 'courseId'
+          prop: 'courseTitle'
         },
         {
           label: '章节',
-          prop: 'chapterId'
+          prop: 'courseChapterTitle'
         },
         {
           label: '排序',
@@ -292,26 +280,24 @@ export default {
         {
           label: '是否免费',
           prop: 'free',
-          dicData: DIC.typeList
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '状态',
           prop: 'status',
-          dicData: DIC.lessonStatus
+          dicUrl: 'common_release_status',
+          dicData: []
         },
         {
           label: '类型',
           prop: 'type',
-          dicData: DIC.fileType
+          dicUrl: 'lesson_type',
+          dicData: []
         },
         {
           label: '时长(秒)',
           prop: 'length'
-        },
-        {
-          label: '删除标记',
-          prop: 'delFlag',
-          dicData: DIC.typeList
         },
         {
           label: '创建时间',
@@ -347,6 +333,7 @@ export default {
           { required: true, message: '请选择课时发布', trigger: 'change' }
         ]
       },
+      formLabelWidth: '90px',
       dataObj: { token: '', key: '' },
       imageUrl: '' // 图片地址
     }
@@ -356,7 +343,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     getList() {
@@ -393,27 +379,37 @@ export default {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
           this.dialogPvVisible = false
-          this.getList()
+          this.tableLoading = true
           if (this.form.id != null) {
             putObj(this.form).then(() => {
+              this.tableLoading = false
               this.$notify({
                 title: '成功',
                 message: '修改成功',
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
             })
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
             this.form.chapterId = this.$route.query.chapterId
             this.form.courseId = this.$route.query.courseId
             addObj(this.form).then(() => {
+              this.tableLoading = false
               this.$notify({
                 title: '成功',
                 message: '创建成功',
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
             })
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
         } else {
           return false
@@ -468,17 +464,13 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {
-        free: 0,
-        status: 0,
-        type: 1
+        free: '0',
+        status: '1',
+        type: '1',
+        sort: 0
       }
     },
     handleRemove() {}
   }
 }
 </script>
-<style lang="scss" scoped>
-.lesson-input {
-  width: 100%;
-}
-</style>

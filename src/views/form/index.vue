@@ -47,7 +47,8 @@
         <el-input v-model="form.desc" type="textarea" />
       </el-form-item>
       <el-form-item label="富文本编辑器">
-        <tinymce v-model="form.content" :height="300" />
+        <!--<tinymce v-model="form.content" :height="300" />-->
+        <ue ref="ueditor" v-model="form.content" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">Create</el-button>
@@ -58,10 +59,12 @@
 </template>
 
 <script>
-import Tinymce from '@/components/Tinymce'
+// import Tinymce from '@/components/Tinymce'
+import Ue from '@/components/ue/ueditor'
 export default {
   components: {
-    Tinymce
+    // Tinymce,
+    Ue
   },
   data() {
     return {

@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 17:54:11
  * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-09 14:52:20
+ * @LastEditTime: 2020-03-12 17:56:03
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -17,7 +17,7 @@
       v-model="text"
       clearable
       autocomplete="off"
-      :disabled="operationStatus === 1"
+      :disabled="disabled"
       readonly
       :placeholder="placeholder"
       @focus="onFocus"
@@ -76,10 +76,10 @@ export default {
         return []
       }
     },
-    operationStatus: {
-      type: Number,
+    disabled: {
+      type: Boolean,
       default: function() {
-        return 0
+        return false
       }
     },
     placeholder: {
@@ -115,40 +115,50 @@ export default {
         console.log(val)
         if (!val) {
           this.text = ''
-        }
-      },
-      immediate: true
-    },
-    treeData: {
-      handler: function(val) {
-        if (this.value === '' || this.value === null) {
           return
         }
-        console.log(!isNaN(this.value))
-        if (!isNaN(this.value)) {
-          this.text = this.showName(this.value, val)
-        } else {
-          const arr = this.value.split(',')
-          console.log(arr)
-          arr.forEach(ele => {
-            this.text += this.showName(ele, val)
-          })
-        }
+        this.getText()
       },
       immediate: true
     }
+    // treeData: {
+    //   handler: function(val) {
+    //     if (this.value === '' || this.value === null) {
+    //       return
+    //     }
+    //     this.getText()
+    //   },
+    //   immediate: true
+    // }
   },
   methods: {
+    getText() {
+      if (!isNaN(this.value)) {
+        this.text = this.showName(this.value, this.treeData)
+      } else {
+        this.text = ''
+        const arr = this.value.split(',')
+        arr.forEach((ele, i) => {
+          this.text += i > 0 ? ',' + this.showName(ele, this.treeData) : this.showName(ele, this.treeData)
+        })
+      }
+    },
     showName(val, list) {
+      let result = null
       for (let i = 0; i < list.length; i++) {
+        if (result !== null) break
         const item = list[i]
         if (Number(val) === item.id) {
-          return item.name
-        }
-        if (item.children.length > 0) {
-          return this.showName(val, item.children)
+          result = item.name
+          console.log('item', item.name)
+          break
+        } else {
+          if (item.children.length > 0) {
+            result = this.showName(val, item.children)
+          }
         }
       }
+      return result
     },
     onFocus() {
       this.showTree = true

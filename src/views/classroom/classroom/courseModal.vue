@@ -26,10 +26,30 @@
 import { saveClassCourse } from '@/api/classroom/classroom'
 export default {
   props: {
-    modalShow: Boolean,
-    leftData: Array,
-    rightData: Array,
-    classroomId: Number
+    modalShow: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
+    },
+    leftData: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    rightData: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    },
+    classroomId: {
+      type: [Number, String],
+      default: function() {
+        return null
+      }
+    }
   },
   data() {
     return {

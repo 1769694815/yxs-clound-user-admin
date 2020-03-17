@@ -193,7 +193,7 @@
 </template>
 
 <script>
-import { fetchList, getObj, addObj, putObj, delObj } from '@/api/orders/balancegrade'
+import { fetchList, addObj, putObj, delObj } from '@/api/orders/balancegrade'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -219,7 +219,6 @@ export default {
   },
   data() {
     return {
-      headers: {},
       tableKey: 0,
       tableLoading: false,
       tableOption: [
@@ -279,7 +278,6 @@ export default {
   },
   created() {
     this.getList()
-    this.headers.Authorization = 'Bearer ' + this.access_token
   },
   methods: {
     /**
