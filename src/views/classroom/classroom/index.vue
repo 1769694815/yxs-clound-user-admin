@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-17 17:57:45
+ * @LastEditTime: 2020-03-17 17:59:57
  * @Description: 文件管理
  -->
 <template>
@@ -86,7 +86,7 @@
               <single-change
                 v-model="form.headmasterId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                :dic-prop="{ label: 'realName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
@@ -99,7 +99,7 @@
               <single-change
                 v-model="form.assistantId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                :dic-prop="{ label: 'realName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
