@@ -356,8 +356,9 @@
               prop="body"
               :label-width="formLabelWidth"
             >
-              <tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />
-              <!-- <ue ref="ueditor" v-model="form.body" /> -->
+              <!--<tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />-->
+              <!--:config="{readonly: operationStatus === 1}"-->
+              <ue ref="ueditor" v-model="form.body" />
             </el-form-item>
           </el-col>
 
@@ -394,14 +395,14 @@
 <script>
 import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
-import Tinymce from '@/components/Tinymce/index'
-// import Ue from '@/components/ue/ueditor'
+// import Tinymce from '@/components/Tinymce/index'
+import Ue from '@/components/ue/ueditor'
 
 export default {
   name: 'Article',
   components: {
-    Tinymce
-    // Ue
+    // Tinymce,
+    Ue
   },
   filters: {
     statusFilter(type, list) {
@@ -432,6 +433,8 @@ export default {
       }
     }
     return {
+      UECongig: { readonly: true },
+      xh: true,
       headers: {},
       tableKey: 0,
       tableLoading: false,
@@ -666,7 +669,11 @@ export default {
       this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
-        this.init()
+        // this.init()
+        this.$nextTick(() => {
+          this.$refs.ueditor.setDisabled()
+          this.$refs.ueditor.setContent(this.form.body)
+        })
       })
     },
     /**
@@ -678,7 +685,12 @@ export default {
       this.form = row
       getObj(row.id).then(data => {
         this.form = data.data.data
-        this.init()
+        console.log('data.data.data', data)
+        // this.init()
+        this.$nextTick(() => {
+          this.$refs.ueditor.setEnabled()
+          this.$refs.ueditor.setContent(this.form.body)
+        })
       })
     },
     /**
@@ -752,18 +764,21 @@ export default {
     /**
      * 初始化富文本编辑器
      */
-    init() {
-      this.$nextTick(() => {
-        this.$refs.tinymce.init()
-      })
-    },
+    // init() {
+    //   this.$nextTick(() => {
+    //     this.$refs.ueditor.reCreateUEComponent()
+    //   })
+    // },
     closeDialog() {
-      this.$nextTick(() => {
-        if (this.$refs.tinymce.hasInit) {
-          // this.form.body = ''
-          this.$refs.tinymce.destroyTinymce()
-        }
-      })
+      // this.$nextTick(() => {
+      //   if (this.$refs.tinymce.hasInit) {
+      //     // this.form.body = ''
+      //     this.$refs.tinymce.destroyTinymce()
+      //   }
+      // })
+      // this.$nextTick(() => {
+      //   this.$refs.ueditor.destroyedUEComponent()
+      // })
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
     }

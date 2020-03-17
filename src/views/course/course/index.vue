@@ -287,12 +287,13 @@
           <!--课程简介-->
           <el-col :span="24">
             <el-form-item label="课程简介" prop="about" :label-width="formLabelWidth">
-              <tinymce
-                ref="tinymce"
-                v-model="form.about"
-                :readonly="operationStatus === 1"
-                :height="300"
-              />
+              <!--<tinymce-->
+              <!--ref="tinymce"-->
+              <!--v-model="form.about"-->
+              <!--:readonly="operationStatus === 1"-->
+              <!--:height="300"-->
+              <!--/>-->
+              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" />
             </el-form-item>
           </el-col>
 
@@ -322,12 +323,15 @@ import { getTeacherList } from '@/api/user'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
-import Tinymce from '@/components/Tinymce/index'
+import _ from 'lodash'
+// import Tinymce from '@/components/Tinymce/index'
+import Ue from '@/components/ue/ueditor'
 
 export default {
   components: {
     InputTree,
-    Tinymce
+    // Tinymce,
+    Ue
   },
   filters: {
     statusFilter(type, list) {
@@ -358,6 +362,7 @@ export default {
       }
     }
     return {
+      readyOnly: true,
       tableKey: 0,
       tableLoading: false,
       treeData: [],
@@ -622,16 +627,30 @@ export default {
       this.getList()
     },
     handleView(row) {
-      this.form = row
+      console.log('row is', row)
+      this.readyOnly = true
+      this.form = _.cloneDeep(row)
       this.dialogPvVisible = true
       this.operationStatus = 1
-      this.init()
+      // console.log('this.form', this.form.about, row)
+      // this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setDisabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleUpdate(row) {
-      this.form = row
+      console.log('row2 is', row)
+      this.readyOnly = false
+      this.form = _.cloneDeep(row)
       this.dialogPvVisible = true
       this.operationStatus = 2
-      this.init()
+      // console.log('this.form', this.form.about, row)
+      // this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleChapterList(row, index) {
       this.$router.push({
@@ -680,23 +699,23 @@ export default {
         teacherId: defaultTeacherId
       }
       this.form.about = ''
-      this.init()
+      // this.init()
     },
     /**
      * 初始化富文本编辑器
      */
-    init() {
-      this.$nextTick(() => {
-        this.$refs.tinymce.init()
-      })
-    },
+    // init() {
+    //   this.$nextTick(() => {
+    //     this.$refs.tinymce.init()
+    //   })
+    // },
     closeDialog() {
-      this.$nextTick(() => {
-        if (this.$refs.tinymce.hasInit) {
-          // this.form.body = ''
-          this.$refs.tinymce.destroyTinymce()
-        }
-      })
+      // this.$nextTick(() => {
+      //   if (this.$refs.tinymce.hasInit) {
+      //     // this.form.body = ''
+      //     this.$refs.tinymce.destroyTinymce()
+      //   }
+      // })
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
     }

@@ -256,7 +256,8 @@
           <!--班级简介-->
           <el-col :span="24">
             <el-form-item label="班级简介" prop="about">
-              <tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />
+              <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
+              <ue ref="ueditor" v-model="form.body" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -291,13 +292,15 @@ import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
 import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
-import Tinymce from '@/components/Tinymce/index'
+// import Tinymce from '@/components/Tinymce/index'
+import Ue from '@/components/ue/ueditor'
 
 export default {
   components: {
     InputTree,
     CourseModal,
-    Tinymce
+    // Tinymce,
+    Ue
   },
   filters: {
     statusFilter(type, list) {

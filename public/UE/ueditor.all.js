@@ -23773,6 +23773,7 @@ UE.plugin.register('autoupload', function (){
             successHandler = function(data) {
                 var link = urlPrefix + data.url,
                     loader = me.document.getElementById(loadingId);
+              console.log('link',link);
                 if (loader) {
                     loader.setAttribute('src', link);
                     loader.setAttribute('_src', link);
@@ -24528,8 +24529,9 @@ UE.plugin.register('simpleupload', function (){
                             body = (iframe.contentDocument || iframe.contentWindow.document).body,
                             result = body.innerText || body.textContent || '';
                         json = (new Function("return " + result))();
-                        link = me.options.imageUrlPrefix + json.url;
-                        if(json.state == 'SUCCESS' && json.url) {
+                        link = me.options.imageUrlPrefix + json.data.url;
+                        console.log('link2',link,json,me.options);
+                        if(json.data.state == 'SUCCESS' && json.data.url) {
                             loader = me.document.getElementById(loadingId);
                             loader.setAttribute('src', link);
                             loader.setAttribute('_src', link);

@@ -208,7 +208,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <tinymce ref="tinymce" v-model="form.content" :height="300" />
+            <!--<tinymce ref="tinymce" v-model="form.content" :height="300" />-->
+            <ue ref="ueditor" v-model="form.content" />
           </el-col>
         </el-form>
       </el-row>
@@ -241,12 +242,14 @@
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
-import Tinymce from '@/components/Tinymce/index'
+// import Tinymce from '@/components/Tinymce/index'
+import Ue from '@/components/ue/ueditor'
 export default {
   name: 'Tenant',
   components: {
     SingleChange,
-    Tinymce
+    // Tinymce,
+    Ue
   },
   filters: {
     dialogTitle(type) {
