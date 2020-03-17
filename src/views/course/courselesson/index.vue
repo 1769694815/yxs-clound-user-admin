@@ -1,12 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
-<<<<<<< HEAD
- * @LastEditTime: 2020-03-17 16:36:37
-=======
- * @LastEditTime: 2020-03-12 17:26:47
->>>>>>> 15165c9268d4c51da35a6f2cbcd1871de1b06acb
+ * @LastEditTime: 2020-03-17 16:53:47
  * @Description: 文件管理
  -->
 <template>
@@ -105,7 +101,7 @@
               <single-change
                 v-model="form.free"
                 :disabled="operationStatus === 1"
-                status-type="common_flag"
+                status-type="free_flag"
                 type="radio"
                 size="medium"
               />
@@ -206,7 +202,6 @@ export default {
     }
   },
   data() {
-<<<<<<< HEAD
     const DIC = {
       freeList: [
         {
@@ -253,8 +248,6 @@ export default {
         }
       ]
     }
-=======
->>>>>>> 15165c9268d4c51da35a6f2cbcd1871de1b06acb
     return {
       tableKey: 0,
       tableLoading: false,
@@ -280,7 +273,7 @@ export default {
         {
           label: '是否免费',
           prop: 'free',
-          dicUrl: 'common_flag',
+          dicUrl: 'free_flag',
           dicData: []
         },
         {
