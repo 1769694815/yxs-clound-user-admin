@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-09 10:57:49
+ * @LastEditTime: 2020-03-17 16:26:02
  * @Description: 文件管理
  -->
 <template>
@@ -221,11 +221,11 @@ export default {
       freeList: [
         {
           value: 0,
-          label: '是'
+          label: '否'
         },
         {
           value: 1,
-          label: '否'
+          label: '是'
         }
       ],
       typeList: [
