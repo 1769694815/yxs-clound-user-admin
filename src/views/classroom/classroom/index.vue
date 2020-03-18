@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-13 20:08:21
+ * @LastEditTime: 2020-03-18 09:06:49
  * @Description: 文件管理
  -->
 <template>
@@ -86,7 +86,7 @@
               <single-change
                 v-model="form.headmasterId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                :dic-prop="{ label: 'realName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
@@ -99,7 +99,7 @@
               <single-change
                 v-model="form.assistantId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                :dic-prop="{ label: 'realName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"
@@ -150,6 +150,19 @@
                 v-model="form.learnNum"
                 autocomplete="off"
                 placeholder="请输入填写人数"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
+              />
+            </el-form-item>
+          </el-col>
+          <!--面授课时数-->
+          <el-col :span="12">
+            <el-form-item label="面授课时数" prop="onlineLessonNum">
+              <el-input-number
+                v-model="form.onlineLessonNum"
+                autocomplete="off"
+                placeholder="请输入面授课时数"
                 :disabled="operationStatus === 1"
                 :min="0"
                 style="width: 100%;"
@@ -431,9 +444,7 @@ export default {
       }, // 新增 编辑 数据源
       rules: {
         // 表单校验
-        title: [
-          { required: true, message: '请输入班级标题', trigger: 'blur' }
-        ],
+        title: [{ required: true, message: '请输入班级标题', trigger: 'blur' }],
         status: [
           { required: true, message: '请选择班级状态', trigger: 'change' }
         ],
@@ -443,9 +454,7 @@ export default {
         teachingMethod: [
           { required: true, message: '请选择授课方式', trigger: 'change' }
         ],
-        price: [
-          { required: true, message: '请输入班级价格', trigger: 'blur' }
-        ],
+        price: [{ required: true, message: '请输入班级价格', trigger: 'blur' }],
         learnNum: [
           { required: true, message: '请输入填写人数', trigger: 'blur' }
         ],
@@ -474,7 +483,12 @@ export default {
           { required: true, message: '请输入报名截止时间', trigger: 'blur' }
         ],
         about: [
-          { required: true, validator: tinymceValidate, message: '请输入班级简介', trigger: 'blur' }
+          {
+            required: true,
+            validator: tinymceValidate,
+            message: '请输入班级简介',
+            trigger: 'blur'
+          }
         ],
         description: [
           { required: true, message: '请输入班级说明', trigger: 'blur' }
@@ -544,29 +558,33 @@ export default {
           this.dialogPvVisible = false
           this.tableLoading = true
           if (this.form.id != null) {
-            putObj(this.form).then(() => {
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+            putObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
-            addObj(this.form).then(() => {
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
+            addObj(this.form)
+              .then(() => {
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
         } else {
           return false

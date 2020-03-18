@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-15 10:03:41
+ * @LastEditTime: 2020-03-18 09:06:56
  * @Description: 课程管理
  -->
 <template>
@@ -138,7 +138,7 @@
               <single-change
                 v-model="form.teacherId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'nickName', value: 'userId' }"
+                :dic-prop="{ label: 'realName', value: 'userId' }"
                 dic-url="/admin/user/getTeacherList"
                 type="select"
                 size="medium"

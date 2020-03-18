@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-14 14:58:01
+ * @LastEditTime: 2020-03-17 17:45:25
  * @Description: 文件管理
  -->
 <template>
@@ -87,7 +87,7 @@
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -144,7 +144,7 @@ export default {
         },
         {
           label: '所属课程',
-          prop: 'courseId'
+          prop: 'courseTitle'
         },
         {
           label: '排序',
