@@ -74,7 +74,7 @@ export default {
           } else if (action === 'uploadvideo') {
             return '/admin/upload?type=5&appId=zyy'
           } else {
-            return this.editor._bkGetActionUrl.call(this, action)
+            // return this.editor._bkGetActionUrl.call(this, action)
           }
         }
         this.editor.setContent(this.value) // 确保UE加载完成后，放入内容

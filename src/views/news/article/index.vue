@@ -659,6 +659,10 @@ export default {
         inventedNum: 0
       }
       this.form.body = ''
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.body)
+      })
       // this.init()
     },
     /**

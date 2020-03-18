@@ -293,7 +293,7 @@
               <!--:readonly="operationStatus === 1"-->
               <!--:height="300"-->
               <!--/>-->
-              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" />
+              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE"/>
             </el-form-item>
           </el-col>
 
@@ -536,6 +536,10 @@ export default {
     this.getCategoryTree(1)
   },
   methods: {
+    reserveHtmlFormUE(html) {
+      console.log('html', html)
+      this.form.about = html
+    },
     groupTypeChange(type) {
       this.form.categoryIds = ''
       this.getCategoryTree(type)
@@ -681,6 +685,7 @@ export default {
       this.$refs[form].resetFields()
     },
     handleCreate() {
+      this.readyOnly = false
       this.dialogPvVisible = true
       this.operationStatus = 0
       const defaultTeacherId = null
@@ -699,6 +704,10 @@ export default {
         teacherId: defaultTeacherId
       }
       this.form.about = ''
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
       // this.init()
     },
     /**

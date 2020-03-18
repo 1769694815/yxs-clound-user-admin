@@ -257,7 +257,7 @@
           <el-col :span="24">
             <el-form-item label="班级简介" prop="about">
               <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
-              <ue ref="ueditor" v-model="form.body" />
+              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" @input="reserveHtmlFormUE" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -294,6 +294,7 @@ import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
 // import Tinymce from '@/components/Tinymce/index'
 import Ue from '@/components/ue/ueditor'
+import _ from 'lodash'
 
 export default {
   components: {
@@ -331,6 +332,7 @@ export default {
       }
     }
     return {
+      readyOnly: true,
       tableKey: 0,
       tableLoading: false,
       tearcherList: [],
@@ -498,6 +500,10 @@ export default {
     this.getCategoryTree()
   },
   methods: {
+    reserveHtmlFormUE(html) {
+      console.log('html', html)
+      this.form.about = html
+    },
     /**
      * 班级分类
      */
@@ -583,18 +589,27 @@ export default {
       this.getList()
     },
     handleView(row) {
-      this.form = row
+      this.readyOnly = true
+      this.form = _.cloneDeep(row)
       this.dialogPvVisible = true
       this.operationStatus = 1
-      this.init()
+      // this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setDisabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleUpdate(row) {
-      this.form = row
+      this.form = _.cloneDeep(row)
       this.dialogPvVisible = true
       this.operationStatus = 2
-      this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleDelete(row, index) {
+      this.readyOnly = false
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {
         confirmButtonText: '确定',
@@ -615,6 +630,7 @@ export default {
       this.$refs[form].resetFields()
     },
     handleCreate() {
+      this.readyOnly = false
       this.dialogPvVisible = true
       this.form = {
         status: '0',
@@ -630,7 +646,11 @@ export default {
         expiryDays: 365
       }
       this.form.about = ''
-      this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
+      // this.init()
     },
     getNodeData() {},
     hideModal() {
@@ -656,18 +676,18 @@ export default {
     /**
      * 初始化富文本编辑器
      */
-    init() {
-      this.$nextTick(() => {
-        this.$refs.tinymce.init()
-      })
-    },
+    // init() {
+    //   this.$nextTick(() => {
+    //     this.$refs.tinymce.init()
+    //   })
+    // },
     closeDialog() {
-      this.$nextTick(() => {
-        if (this.$refs.tinymce.hasInit) {
-          // this.form.body = ''
-          this.$refs.tinymce.destroyTinymce()
-        }
-      })
+      // this.$nextTick(() => {
+      //   if (this.$refs.tinymce.hasInit) {
+      //     // this.form.body = ''
+      //     this.$refs.tinymce.destroyTinymce()
+      //   }
+      // })
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
     }
