@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-18 09:06:49
+ * @LastEditTime: 2020-03-19 17:49:20
  * @Description: 文件管理
  -->
 <template>
@@ -237,6 +237,7 @@
               <el-date-picker
                 v-model="form.closeDate"
                 :disabled="operationStatus === 1"
+                value-format="yyyy-MM-dd"
                 type="date"
                 placeholder="请输入报名截止日期"
                 clearable
