@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-19 16:05:56
+ * @LastEditTime: 2020-03-19 17:49:20
  * @Description: 文件管理
  -->
 <template>
@@ -13,13 +13,6 @@
       <!--班级名称-->
       <el-form-item label="班级名称:" label-width="80px">
         <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入班级名称" />
-      </el-form-item>
-      <el-form-item label="班级分类" label-width="80px">
-        <Input-tree
-          v-model="searchForm.categoryId"
-          :tree-data="treeData"
-          placeholder="请选择班级分类"
-        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -244,6 +237,7 @@
               <el-date-picker
                 v-model="form.closeDate"
                 :disabled="operationStatus === 1"
+                value-format="yyyy-MM-dd"
                 type="date"
                 placeholder="请输入报名截止日期"
                 clearable

@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-02-20 09:20:59
- * @LastEditTime: 2020-03-09 16:28:50
+ * @LastEditTime: 2020-03-19 17:51:07
  * @LastEditors: xwen
  * @Description: 主页
  -->
@@ -15,6 +15,7 @@
       <div class="chart-title">{{ chartTitleList[chartIndex] }}</div>
       <el-date-picker
         v-model="date"
+        value-format="yyyy-MM-dd"
         type="daterange"
         align="right"
         unlink-panels
