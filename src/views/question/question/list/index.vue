@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-14 14:56:11
+ * @LastEditTime: 2020-03-19 18:06:39
  * @Description: 文件管理
  -->
 <template>
@@ -10,42 +10,72 @@
     <!-- 头部菜单 -->
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
-      <!--课程标题-->
-      <el-form-item label="课程标题:" label-width="80px">
-        <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入课程标题" />
+      <!--题目类容-->
+      <el-form-item label="题目类容:" label-width="80px">
+        <el-input v-model="searchForm.stem" type="text" size="small" placeholder="请输入题目类容" />
       </el-form-item>
-      <!--是否推荐-->
-      <el-form-item label="是否推荐:" label-width="80px">
-        <el-select v-model="searchForm.recommend" clearable>
+      <el-form-item label="所属课程" label-width="80px">
+        <el-select
+          v-model="searchForm.courseId"
+          :disabled="operationStatus === 1"
+          clearable
+          class="question-input"
+          placeholder="请选择所属课程"
+          size="small"
+          @change="getLessonList('searchForm')"
+        >
           <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in courseList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
-      <!--开售标志-->
-      <el-form-item label="开售标志:" label-width="130px">
-        <el-select v-model="searchForm.buyFlag" clearable>
+      <el-form-item v-if="lessonList.length>0" label="所属课时" label-width="80px">
+        <el-select
+          v-model="searchForm.lessonId"
+          :disabled="operationStatus === 1"
+          clearable
+          class="question-input"
+          placeholder="请选择所属课时"
+          size="small"
+        >
           <el-option
-            v-for="item in DIC.typeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
+            v-for="item in lessonList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
           />
         </el-select>
       </el-form-item>
-      <!--课程类型-->
-      <el-form-item label="课程类型:" label-width="80px">
-        <el-select v-model="searchForm.type" clearable>
-          <el-option
-            v-for="item in DIC.courseTypeList"
-            :key="item.label"
-            :label="item.label"
-            :value="item.value"
-          />
-        </el-select>
+      <el-form-item label="题目题型:" label-width="80px">
+        <single-change
+          v-model="searchForm.typeId"
+          :disabled="operationStatus === 1"
+          :dic-prop="{ label: 'name', value: 'id' }"
+          dic-url="/question/questiontype/getAllQuestionType"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="题目类型:" label-width="80px">
+        <single-change
+          v-model="searchForm.questionType"
+          :disabled="operationStatus === 1"
+          status-type="question_type"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="题目难度" label-width="80px">
+        <single-change
+          v-model="searchForm.difficulty"
+          :disabled="operationStatus === 1"
+          status-type="question_difficulty"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -88,7 +118,7 @@
         <el-form ref="dataForm" :model="form" :rules="rules">
           <el-row>
             <el-col v-if="form.typeId != 7" :span="24">
-              <el-form-item label="题目内容" prop="stem">
+              <el-form-item label="题目内容" prop="stem" :label-width="formLabelWidth">
                 <el-input
                   v-model="form.stem"
                   :disabled="operationStatus === 1"
@@ -98,62 +128,63 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="所属年份" prop="year">
+              <el-form-item label="所属年份" prop="year" :label-width="formLabelWidth">
                 <el-input v-model="form.year" :disabled="operationStatus === 1" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="题目类型" prop="questionType">
-                <el-radio-group v-model="form.questionType" :disabled="operationStatus === 1">
-                  <el-radio :label="1">练习题</el-radio>
-                  <el-radio :label="2">历年真题</el-radio>
-                </el-radio-group>
+              <el-form-item label="题目题型" prop="typeId" :label-width="formLabelWidth">
+                <single-change
+                  v-model="form.typeId"
+                  :disabled="operationStatus === 1"
+                  :dic-prop="{ label: 'name', value: 'id' }"
+                  dic-url="/question/questiontype/getAllQuestionType"
+                  type="select"
+                  size="medium"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="题目题型" prop="typeId">
-                <el-select
-                  v-model="form.typeId"
-                  placeholder="请选择题目题型"
+              <el-form-item label="题目类型" prop="questionType" :label-width="formLabelWidth">
+                <single-change
+                  v-model="form.questionType"
                   :disabled="operationStatus === 1"
-                  @change="getQuestionType"
-                >
-                  <el-option
-                    v-for="item in questionTypeList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  />
-                </el-select>
+                  status-type="question_type"
+                  type="select"
+                  size="medium"
+                />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="12">
-              <el-form-item label="题目难度" prop="difficulty">
-                <el-rate
-                  v-model="form.difficulty"
+              <el-form-item label="题目难度" prop="difficulty" :label-width="formLabelWidth">
+                <single-change
+                  v-model="form.questionType"
                   :disabled="operationStatus === 1"
-                  :max="4"
-                  :texts="['简单', '中等', '复杂', '极难']"
-                  show-text
+                  status-type="question_difficulty"
+                  type="select"
+                  size="medium"
                 />
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="题目分值" prop="score">
+              <el-form-item label="题目分值" prop="score" :label-width="formLabelWidth">
                 <el-input v-model="form.score" :disabled="operationStatus === 1" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
+            <!--所属课程-->
             <el-col :span="12">
-              <el-form-item label="所属课程" prop="courseId">
+              <el-form-item label="所属课程" prop="courseId" :label-width="formLabelWidth">
                 <el-select
                   v-model="form.courseId"
                   :disabled="operationStatus === 1"
+                  clearable
+                  class="question-input"
                   placeholder="请选择所属课程"
-                  @change="getLessonList"
+                  @change="getLessonList('form')"
                 >
                   <el-option
                     v-for="item in courseList"
@@ -164,12 +195,14 @@
                 </el-select>
               </el-form-item>
             </el-col>
-
-            <el-col :span="12">
-              <el-form-item label="所属课时" prop="lessonId">
+            <!--所属课时-->
+            <el-col :span="24">
+              <el-form-item label="所属课时" prop="lessonId" :label-width="formLabelWidth">
                 <el-select
                   v-model="form.lessonId"
                   :disabled="operationStatus === 1"
+                  clearable
+                  class="question-input"
                   placeholder="请选择所属课时"
                 >
                   <el-option
@@ -290,8 +323,8 @@ import {
   addObj,
   putObj,
   delObj,
-  getAllQuestion
-} from '@/api/question/question'
+  getCourseList,
+  getLessonList } from '@/api/question/question'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -316,52 +349,19 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      questionTypeList: [
-        {
-          label: '练习题',
-          value: 1
-        },
-        {
-          label: '历年真题',
-          value: 2
-        }
-      ],
-      difficultyList: [
-        {
-          label: '简单',
-          value: 1
-        },
-        {
-          label: '中等',
-          value: 2
-        },
-        {
-          label: '复杂',
-          value: 3
-        },
-        {
-          label: '极难',
-          value: 4
-        }
-      ]
-    }
     return {
-      DIC: DIC,
       tableKey: 0,
       tableLoading: false,
       tearcherList: [],
+      courseList: [],
+      lessonList: [],
+      singleArray: [],
+      checkArray: [],
       treeData: [],
       tableOption: [
         {
           label: '题型',
-          prop: 'typeId',
-          // dicUrl: `/question/questiontype/getAllQuestion`,
-          // dicData: "typeId",
-          // props: {
-          //   label: "name",
-          //   value: "id"
-          // }
+          prop: 'questionTypeName',
           width: 100
         },
         {
@@ -371,7 +371,8 @@ export default {
         {
           label: '题目类型',
           prop: 'questionType',
-          dicData: DIC.questionTypeList,
+          dicUrl: 'question_type',
+          dicData: [],
           width: 100
         },
         {
@@ -387,8 +388,9 @@ export default {
         {
           label: '难度',
           prop: 'difficulty',
-          dicData: DIC.difficultyList,
-          width: 60
+          dicUrl: 'question_difficulty',
+          dicData: [],
+          width: 80
         },
         {
           label: '课程',
@@ -420,6 +422,7 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
+      formLabelWidth: '90px',
       form: {}, // 新增 编辑 数据源
       rules: {
         // 表单校验
@@ -444,7 +447,7 @@ export default {
   },
   created() {
     this.getList()
-    this.getQuestionType()
+    this.getCourseList()
   },
   methods: {
     getList() {
@@ -506,11 +509,19 @@ export default {
     },
 
     /**
-     * 题目题型
+     * 课程列表
      */
-    getQuestionType() {
-      getAllQuestion().then(res => {
-        this.questionTypeList = res.data
+    getCourseList() {
+      getCourseList().then(res => {
+        this.courseList = res.data
+      })
+    },
+    /**
+     * 课时列表
+     */
+    getLessonList(type) {
+      getLessonList(this[type].courseId).then(res => {
+        this.lessonList = res.data
       })
     },
     /**
@@ -577,32 +588,7 @@ export default {
         doubleSpeed: 0,
         drag: 0
       }
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
-      }
-      return isJPG && isLt2M
-    },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
-    },
-    handleRemove() {},
-    getNodeData() {}
+    }
   }
 }
 </script>

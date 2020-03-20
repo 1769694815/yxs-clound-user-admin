@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-18 09:06:56
+ * @LastEditTime: 2020-03-19 17:26:34
  * @Description: 课程管理
  -->
 <template>
@@ -13,6 +13,17 @@
       <el-form-item label="课程标题:" label-width="80px">
         <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入课程标题" />
       </el-form-item>
+      <!--课程分类-->
+      <el-form-item label="课程分类:" label-width="80px">
+        <Input-tree
+          v-model="searchForm.categoryId"
+          :tree-data="treeData"
+          :disabled="operationStatus === 1"
+          title="课程分类"
+          placeholder="请选择课程分类"
+          size="small"
+        />
+      </el-form-item>
       <!--是否推荐-->
       <el-form-item label="是否推荐:" label-width="80px">
         <single-change
@@ -20,6 +31,7 @@
           :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
+          size="small"
         />
       </el-form-item>
       <!--开售标志-->
@@ -29,6 +41,7 @@
           :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
+          size="small"
         />
       </el-form-item>
       <!--课程类型-->
@@ -38,6 +51,7 @@
           :disabled="operationStatus === 1"
           status-type="course_type"
           type="select"
+          size="small"
         />
       </el-form-item>
       <el-form-item>
@@ -293,7 +307,7 @@
               <!--:readonly="operationStatus === 1"-->
               <!--:height="300"-->
               <!--/>-->
-              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE"/>
+              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE" />
             </el-form-item>
           </el-col>
 

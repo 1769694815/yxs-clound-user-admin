@@ -20,6 +20,18 @@
         />
       </el-form-item>
       <el-form-item
+        label="栏目:"
+        label-width="60px"
+      >
+        <single-change
+          v-model="searchForm.categoryId"
+          :dic-prop="{ label: 'name', value: 'id' }"
+          dic-url="/news/articlecategory/getCategoryType"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item
         label="状态:"
         label-width="60px"
       >
@@ -447,8 +459,9 @@ export default {
           prop: 'brIfe',
           hide: true
         }, {
-          label: '栏目ID',
+          label: '栏目',
           prop: 'categoryId',
+          width: '120',
           dicUrl: '/news/articlecategory/getCategoryType',
           dicData: [],
           dicProp: { label: 'name', value: 'id' }
@@ -463,6 +476,7 @@ export default {
           hide: true
         }, {
           label: '生成URL',
+          width: '240',
           prop: 'url'
         }, {
           label: '缩略图',
@@ -521,7 +535,7 @@ export default {
         }, {
           label: '创建时间',
           prop: 'createTime',
-          width: '200px'
+          width: '100px'
         }],
       tableData: [],
       page: {

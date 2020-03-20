@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-11 19:09:58
- * @LastEditors: Please set LastEditors
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-11 16:31:10
+ * @LastEditTime: 2020-03-19 14:33:06
  * @Description: 用户管理
  -->
 <template>
@@ -45,12 +45,12 @@
               placeholder="请输入用户名"
             />
           </el-form-item>
-          <el-form-item label="用户" prop="parentId">
+          <el-form-item label="角色" prop="parentId">
             <Input-tree
               v-model="searchForm.deptId"
               :tree-data="treeData"
               :disabled="operationStatus === 1"
-              placeholder="请选择用户类型"
+              placeholder="请选择用户角色"
               @input="getList"
             />
           </el-form-item>
