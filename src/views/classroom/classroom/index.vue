@@ -271,7 +271,7 @@
           <el-col :span="24">
             <el-form-item label="班级简介" prop="about">
               <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
-              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" @input="reserveHtmlFormUE" />
+              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" @input="reserveHtmlFormUE" :valuex="ueValue"/>
             </el-form-item>
           </el-col>
         </el-form>
@@ -346,6 +346,7 @@ export default {
       }
     }
     return {
+      ueValue: '',
       readyOnly: true,
       tableKey: 0,
       tableLoading: false,
@@ -610,6 +611,7 @@ export default {
     handleView(row) {
       this.readyOnly = true
       this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
       this.dialogPvVisible = true
       this.operationStatus = 1
       // this.init()
@@ -619,10 +621,14 @@ export default {
       })
     },
     handleUpdate(row) {
+      this.readyOnly = false
       this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
+      console.log('abc666', this.form.about)
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.$nextTick(() => {
+        console.log('abc', this.form.about)
         this.$refs.ueditor.setEnabled()
         this.$refs.ueditor.setContent(this.form.about)
       })
