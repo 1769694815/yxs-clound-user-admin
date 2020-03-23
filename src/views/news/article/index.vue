@@ -370,7 +370,7 @@
             >
               <!--<tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />-->
               <!--:config="{readonly: operationStatus === 1}"-->
-              <ue ref="ueditor" v-model="form.body" />
+              <ue ref="ueditor" v-model="form.body" :valuex="ueValue"/>
             </el-form-item>
           </el-col>
 
@@ -445,8 +445,7 @@ export default {
       }
     }
     return {
-      UECongig: { readonly: true },
-      xh: true,
+      ueValue: '',
       headers: {},
       tableKey: 0,
       tableLoading: false,
@@ -687,6 +686,8 @@ export default {
       this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
+        console.log('data.data.data', data)
+        this.ueValue = data.data.data.body
         // this.init()
         this.$nextTick(() => {
           this.$refs.ueditor.setDisabled()
@@ -704,6 +705,7 @@ export default {
       getObj(row.id).then(data => {
         this.form = data.data.data
         console.log('data.data.data', data)
+        this.ueValue = data.data.data.body
         // this.init()
         this.$nextTick(() => {
           this.$refs.ueditor.setEnabled()

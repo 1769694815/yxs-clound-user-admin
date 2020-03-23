@@ -23,6 +23,12 @@ export default {
         return ''
       }
     },
+    valuex: {
+      type: String,
+      default: function() {
+        return ''
+      }
+    },
     config: {
       type: Object,
       default: function() {
@@ -60,7 +66,9 @@ export default {
       this.editor.addListener('ready', () => {
         this.UEInited = true
         // 自定义请求参数
+        console.log('token666')
         this.editor.execCommand('serverparam', function(editor) {
+          console.log('token', token)
           return {
             'token': token,
             'type': 3
@@ -77,7 +85,8 @@ export default {
             // return this.editor._bkGetActionUrl.call(this, action)
           }
         }
-        this.editor.setContent(this.value) // 确保UE加载完成后，放入内容
+        console.log('this.value', this.valuex, this.readyOnly)
+        this.editor.setContent(this.valuex) // 确保UE加载完成后，放入内容
         this.editor.addListener('contentChange', () => {
           // const wordCount = this.editor.getContentLength(true)
           const content = this.editor.getContent()
@@ -105,6 +114,7 @@ export default {
     },
     setContent(html) {
       try {
+        console.log('setContent here', html)
         return this.editor.setContent(html)
       } catch (e) {
         console.log('')

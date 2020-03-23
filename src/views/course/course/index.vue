@@ -307,7 +307,7 @@
               <!--:readonly="operationStatus === 1"-->
               <!--:height="300"-->
               <!--/>-->
-              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE" />
+              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE" :valuex="ueValue"/>
             </el-form-item>
           </el-col>
 
@@ -376,6 +376,7 @@ export default {
       }
     }
     return {
+      ueValue: '',
       readyOnly: true,
       tableKey: 0,
       tableLoading: false,
@@ -648,6 +649,7 @@ export default {
       console.log('row is', row)
       this.readyOnly = true
       this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
       this.dialogPvVisible = true
       this.operationStatus = 1
       // console.log('this.form', this.form.about, row)
@@ -661,11 +663,13 @@ export default {
       console.log('row2 is', row)
       this.readyOnly = false
       this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
       this.dialogPvVisible = true
       this.operationStatus = 2
       // console.log('this.form', this.form.about, row)
       // this.init()
       this.$nextTick(() => {
+        console.log('setContent', this.form.about)
         this.$refs.ueditor.setEnabled()
         this.$refs.ueditor.setContent(this.form.about)
       })
