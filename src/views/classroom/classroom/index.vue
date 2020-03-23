@@ -271,7 +271,7 @@
           <el-col :span="24">
             <el-form-item label="班级简介" prop="about">
               <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
-              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" @input="reserveHtmlFormUE" :valuex="ueValue"/>
+              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" :valuex="ueValue" @input="reserveHtmlFormUE" />
             </el-form-item>
           </el-col>
         </el-form>

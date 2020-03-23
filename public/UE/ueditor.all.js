@@ -6831,6 +6831,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             utils.extend(this.options, obj, true);
         },
         getOpt:function(key){
+          console.log('this.options',this.options)
             return this.options[key]
         },
         /**
@@ -8020,12 +8021,13 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
             var actionName = this.getOpt(action) || action,
                 imageUrl = this.getOpt('imageUrl'),
                 serverUrl = this.getOpt('serverUrl');
-
+          console.log('getActionUrl serverUrl11',serverUrl);
             if(!serverUrl && imageUrl) {
                 serverUrl = imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2');
             }
-
+          console.log('getActionUrl serverUrl22',serverUrl);
             if(serverUrl) {
+
                 serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?':'&') + 'action=' + (actionName || '');
                 return utils.formatUrl(serverUrl);
             } else {
@@ -8079,12 +8081,14 @@ UE.Editor.defaultOptions = function(editor){
             try{
                 me.options.imageUrl && me.setOpt('serverUrl', me.options.imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2'));
 
-                var configUrl = me.getActionUrl('config'),
-                    isJsonp = utils.isCrossDomainUrl(configUrl);
+                var configUrl = me.getActionUrl('config');
+              console.log('configUrl111',configUrl)
+                 var   isJsonp = utils.isCrossDomainUrl(configUrl);
 
                 /* 发出ajax请求 */
                 me._serverConfigLoaded = false;
 
+                console.log('configUrl222',configUrl)
                 configUrl && UE.ajax.request(configUrl,{
                     'method': 'GET',
                     'dataType': isJsonp ? 'jsonp':'',
@@ -8193,6 +8197,7 @@ UE.ajax = function() {
     }
 
     function doAjax(url, ajaxOptions) {
+      console.log('doAjax')
         var xhr = creatAjaxRequest(),
         //是否超时
             timeIsOut = false,
@@ -8387,6 +8392,7 @@ UE.ajax = function() {
          * ```
          */
 		request:function(url, opts) {
+		  console.log('request doAjax',opts)
             if (opts && opts.dataType == 'jsonp') {
                 doJsonp(url, opts);
             } else {
@@ -23283,6 +23289,7 @@ UE.plugins['catchremoteimage'] = function () {
                     'onerror': callbacks["error"]
                 };
             opt[catcherFieldName] = imgs;
+            console.log('my here')
             ajax.request(url, opt);
         }
 
