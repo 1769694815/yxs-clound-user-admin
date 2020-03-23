@@ -2,26 +2,12 @@
  * @Date: 2020-02-11 19:09:58
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-19 14:33:06
+ * @LastEditTime: 2020-03-23 16:32:15
  * @Description: 用户管理
  -->
 <template>
   <div class="user app-container calendar-list-container">
     <el-row :span="24">
-      <!-- <el-col
-        :xs="24"
-        :sm="24"
-        :md="5"
-        class="user__tree"
-      >
-        <div class="x__filter">
-          <Tree
-            :option="treeOption"
-            :data="treeData"
-            @node-click="nodeClick"
-          />
-        </div>
-      </el-col> -->
       <el-col
         :xs="24"
         :sm="24"
@@ -39,19 +25,42 @@
             label-width="80px"
           >
             <el-input
-              v-model="searchForm.username"
+              v-model="searchForm.userName"
               type="text"
               size="small"
               placeholder="请输入用户名"
             />
           </el-form-item>
-          <el-form-item label="角色" prop="parentId">
-            <Input-tree
-              v-model="searchForm.deptId"
-              :tree-data="treeData"
+          <el-form-item
+            label="真实姓名:"
+            label-width="80px"
+          >
+            <el-input
+              v-model="searchForm.realName"
+              type="text"
+              size="small"
+              placeholder="请输入真实姓名"
+            />
+          </el-form-item>
+          <el-form-item
+            label="手机号:"
+            label-width="80px"
+          >
+            <el-input
+              v-model="searchForm.phone"
+              type="text"
+              size="small"
+              placeholder="请输入手机号"
+            />
+          </el-form-item>
+          <el-form-item label="角色" prop="roleId">
+            <single-change
+              v-model="searchForm.roleId"
               :disabled="operationStatus === 1"
-              placeholder="请选择用户角色"
-              @input="getList"
+              :dic-prop="{ label: 'roleName', value: 'roleId' }"
+              dic-url="/admin/role/list"
+              type="select"
+              size="small"
             />
           </el-form-item>
           <el-form-item>
@@ -147,8 +156,36 @@
               <el-input
                 v-model="form.username"
                 autocomplete="off"
-                :disabled="operationStatus === 1"
+                :disabled="operationStatus === 1||operationStatus === 2"
                 placeholder="请输入用户名"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col>
+            <el-form-item
+              prop="realName"
+              label="真实姓名:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.realName"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入真实姓名"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col>
+            <el-form-item
+              prop="nickName"
+              label="昵称:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.nickName"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入昵称"
               />
             </el-form-item>
           </el-col>
@@ -197,25 +234,19 @@
           </el-col>
           <el-col>
             <el-form-item
-              prop="role"
+              prop="roles"
               label="角色:"
               :label-width="formLabelWidth"
             >
-              <el-select
-                v-model="form.role"
-                multiple
-                autocomplete="off"
+              <mutil-change
+                v-model="form.roles"
                 :disabled="operationStatus === 1"
-                placeholder="请选择角色"
-                style="width: 100%!important;"
-              >
-                <el-option
-                  v-for="item in rolesOptions"
-                  :key="item.roleId"
-                  :label="item.roleName"
-                  :value="item.roleId"
-                />
-              </el-select>
+                :dic-prop="{ label: 'roleName', value: 'roleId' }"
+                dic-url="/admin/role/list"
+                type="select"
+                multiple
+                size="small"
+              />
             </el-form-item>
           </el-col>
           <el-col>
@@ -224,30 +255,12 @@
               label="状态:"
               :label-width="formLabelWidth"
             >
-              <el-radio-group v-model="form.lockFlag">
-                <el-radio
-                  v-for="item in lockFlagList"
-                  :key="item.value"
-                  :label="item.value"
-                  border
-                  size="medium"
-                >{{ item.label }}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col v-if="operationStatus !== 0">
-            <el-form-item
-              label="创建时间:"
-              :label-width="formLabelWidth"
-            >
-              <el-date-picker
-                v-model="form.createTime"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                type="datetime"
-                placeholder="请选择日期时间"
-                :disabled="operationStatus !== 0"
-                style="width: 100%!important;"
+              <single-change
+                v-model="form.lockFlag"
+                :disabled="operationStatus === 1"
+                status-type="user_lock_flag"
+                type="radio"
+                size="medium"
               />
             </el-form-item>
           </el-col>
@@ -279,16 +292,14 @@
 </template>
 
 <script>
-import { addObj, delObj, fetchList, putObj, getDetails } from '@/api/admin/user'
+import { addObj, delObj, fetchList, putObj } from '@/api/admin/user'
 import { deptRoleList } from '@/api/admin/role'
 import { fetchTree } from '@/api/admin/dept'
 import { mapGetters } from 'vuex'
-import Tree from '@/components/Tree/index'
 import InputTree from '@/components/InputTree/index'
 export default {
   name: 'SysUser',
   components: {
-    Tree,
     InputTree
   },
   filters: {
@@ -303,17 +314,6 @@ export default {
     }
   },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      getDetails(value).then(response => {
-        if (window.boxType === 'edit') callback()
-        const result = response.data.data
-        if (result !== null) {
-          callback(new Error('用户名已经存在'))
-        } else {
-          callback()
-        }
-      })
-    }
     return {
       tableKey: 0,
       tableLoading: false,
@@ -322,6 +322,10 @@ export default {
         {
           label: '用户名',
           prop: 'username'
+        },
+        {
+          label: '真实姓名',
+          prop: 'realName'
         },
         {
           label: '手机号',
@@ -335,7 +339,8 @@ export default {
         {
           label: '状态',
           prop: 'lockFlag',
-          slot: true
+          dicUrl: 'user_lock_flag',
+          dicData: []
         },
         {
           label: '创建时间',
@@ -348,10 +353,7 @@ export default {
         current: 1,
         size: 10
       },
-      searchForm: {
-        username: undefined,
-        deptId: undefined
-      },
+      searchForm: {},
       total: 0,
       treeOption: {
         nodeKey: 'id',
@@ -360,7 +362,6 @@ export default {
           value: 'id'
         }
       },
-      treeData: [],
       treeDeptData: [],
       form: {},
       dialogPvVisible: false,
@@ -376,10 +377,38 @@ export default {
             max: 20,
             message: '长度在 3 到 20 个字符',
             trigger: 'blur'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '请输入手机号',
+            trigger: 'blur'
           },
-          { validator: validateUsername, trigger: 'blur' }
+          {
+            min: 11,
+            max: 11,
+            message: '请输入正确的手机号',
+            trigger: 'blur'
+          }
+        ],
+        realName: [
+          {
+            required: true,
+            message: '请输入真实姓名'
+          },
+          {
+            min: 3,
+            max: 20,
+            message: '长度在 3 到 20 个字符',
+            trigger: 'blur'
+          }
         ],
         password: [
+          {
+            required: true,
+            message: '请输入密码'
+          },
           {
             min: 6,
             max: 20,
@@ -394,19 +423,11 @@ export default {
             trigger: 'change'
           }
         ],
-        phone: [
-          {
-            min: 11,
-            max: 11,
-            message: '长度在 11 个字符',
-            trigger: 'blur'
-          }
-        ],
-        role: [
+        roles: [
           {
             required: true,
             message: '请选择角色',
-            trigger: 'blur'
+            trigger: 'change'
           }
         ],
         lockFlag: [
@@ -433,32 +454,17 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions']),
-    lockFlag() {
-      return function(flag) {
-        if (flag === '0') {
-          return '有效'
-        } else if (flag === '9') {
-          return '锁定'
-        }
-      }
-    }
+    ...mapGetters(['permissions'])
   },
   created() {
     this.sys_user_add = this.permissions['sys_user_add']
     this.sys_user_edit = this.permissions['sys_user_edit']
     this.sys_user_del = this.permissions['sys_user_del']
-    this.init()
     this.getList()
     this.getNodeData()
     this.handleDept()
   },
   methods: {
-    init() {
-      fetchTree().then(res => {
-        this.treeData = res.data.data
-      })
-    },
     getList() {
       this.tableLoading = true
       fetchList(
@@ -503,19 +509,20 @@ export default {
       this.searchForm.deptId = undefined
       this.getList()
     },
+    handleCreate() {
+      this.operationStatus = 0
+      this.dialogPvVisible = true
+      this.form = {
+        lockFlag: '0'
+      }
+      this.formRules.password[0].required = true
+    },
     handleUpdate(row) {
-      console.log(row)
+      this.formRules.password[0].required = false
       this.operationStatus = 2
       this.dialogPvVisible = true
       this.form = row
       this.form.password = undefined
-      this.form.role = []
-      for (let i = 0; i < this.form.roleList.length; i++) {
-        this.form.role[i] = this.form.roleList[i].roleId
-      }
-      deptRoleList().then(res => {
-        this.rolesOptions = res.data.data
-      })
     },
     handleDelete(row, index) {
       this.$confirm(
@@ -549,34 +556,28 @@ export default {
         })
         .catch(() => {})
     },
-    handleCreate() {
-      this.operationStatus = 0
-      this.dialogPvVisible = true
-      this.form = {}
-    },
     create() {
       this.$refs
         .dataForm.validate(valid => {
           if (valid) {
-            this.dialogPvVisible = false
             this.tableLoading = true
-            if (this.form.phone.indexOf('*') > 0) {
-              this.form.phone = undefined
-            }
+            this.form.userName = this.form.username
             addObj(this.form)
               .then(() => {
-                this.getList()
                 this.$notify({
                   title: '成功',
                   message: '创建成功',
                   type: 'success',
                   duration: 2000
                 })
-                this.tableLoading = false
+                this.dialogPvVisible = false
+                this.getList()
               })
               .catch(() => {
                 this.tableLoading = false
               })
+          } else {
+            return false
           }
         })
     },
@@ -584,25 +585,24 @@ export default {
       this.$refs
         .dataForm.validate(valid => {
           if (valid) {
-            this.dialogPvVisible = false
             this.tableLoading = true
-            if (this.form.phone && this.form.phone.indexOf('*') > 0) {
-              this.form.phone = undefined
-            }
+            this.form.userName = this.form.username
             putObj(this.form)
               .then(() => {
-                this.getList()
-                this.tableLoading = false
                 this.$notify({
                   title: '成功',
                   message: '修改成功',
                   type: 'success',
                   duration: 2000
                 })
+                this.dialogPvVisible = false
+                this.getList()
               })
               .catch(() => {
                 this.tableLoading = false
               })
+          } else {
+            return false
           }
         })
     },
