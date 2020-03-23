@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-13 15:15:03
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-05 15:19:27
+ * @LastEditTime: 2020-03-23 09:05:06
  * @Description: 用户管理api
  */
 import request from '@/utils/request'
@@ -42,13 +42,6 @@ export function putObj(obj) {
     url: '/admin/user',
     method: 'put',
     data: obj
-  })
-}
-
-export function getDetails(obj) {
-  return request({
-    url: '/admin/user/details/' + obj,
-    method: 'get'
   })
 }
 

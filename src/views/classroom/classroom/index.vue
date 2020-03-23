@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-19 17:49:20
+ * @LastEditTime: 2020-03-23 12:30:19
  * @Description: 文件管理
  -->
 <template>
@@ -158,9 +158,9 @@
           </el-col>
           <!--面授课时数-->
           <el-col :span="12">
-            <el-form-item label="面授课时数" prop="onlineLessonNum">
+            <el-form-item label="面授课时数" prop="underLineLessonNum">
               <el-input-number
-                v-model="form.onlineLessonNum"
+                v-model="form.underLineLessonNum"
                 autocomplete="off"
                 placeholder="请输入面授课时数"
                 :disabled="operationStatus === 1"

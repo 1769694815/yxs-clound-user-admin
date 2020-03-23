@@ -1,3 +1,10 @@
+/*
+ * @Author: Donkey
+ * @Date: 2020-03-12 10:59:47
+ * @LastEditTime: 2020-03-23 16:28:03
+ * @LastEditors: Donkey
+ * @Description:
+ */
 import request from '@/utils/request'
 
 export function fetchList(query) {
@@ -16,7 +23,7 @@ export function getRoleAdmin() {
 }
 export function addObj(obj) {
   return request({
-    url: '/admin/user/adminUserSave',
+    url: '/admin/user',
     method: 'post',
     data: obj
   })
@@ -29,18 +36,17 @@ export function getObj(id) {
   })
 }
 
-export function delObj(obj) {
+export function delObj(id) {
   return request({
-    url: '/admin/user/adminUserDelete',
-    method: 'post',
-    data: obj
+    url: '/admin/user/' + id,
+    method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/user/adminUserUpdate',
-    method: 'post',
+    url: '/admin/user',
+    method: 'put',
     data: obj
   })
 }

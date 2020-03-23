@@ -2,15 +2,13 @@
   <div class="app-container calendar-list-container">
     <!-- 搜索栏 -->
     <el-form
-      ref="search"
       :inline="true"
       class="search"
       size="medium"
     >
-
       <el-form-item
         label="用户名:"
-        :label-width="formLabelWidth"
+        label-width="80px"
       >
         <el-input
           v-model="searchForm.username"
@@ -19,25 +17,15 @@
           placeholder="请输入用户名"
         />
       </el-form-item>
-      <el-form-item
-        label="真实姓名:"
-        :label-width="formLabelWidth"
-      >
-        <el-input
-          v-model="searchForm.realName"
-          type="text"
+      <el-form-item label="角色" prop="roleId">
+        <single-change
+          v-model="searchForm.roleId"
+          :disabled="operationStatus === 1"
+          :dic-prop="{ label: 'roleName', value: 'roleId' }"
+          dic-url="/admin/role/getRoleAdminList"
+          type="select"
           size="small"
-          placeholder="请输入真实姓名"
         />
-      </el-form-item>
-      <el-form-item
-        prop="roleId"
-        label="角色:"
-        :label-width="formLabelWidth"
-      >
-        <el-select v-model="searchForm.roleId" placeholder="请选择角色">
-          <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
-        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -45,8 +33,7 @@
           icon="el-icon-search"
           size="small"
           @click="handleFilter"
-        >搜 索
-        </el-button>
+        >搜 索</el-button>
       </el-form-item>
       <el-form-item>
         <el-button
@@ -54,8 +41,7 @@
           icon="el-icon-delete"
           size="small"
           @click="handleEmpty"
-        >清 空
-        </el-button>
+        >清 空</el-button>
       </el-form-item>
     </el-form>
     <Xtable
@@ -106,23 +92,18 @@
     <el-dialog
       :visible.sync="dialogPvVisible"
       :title="operationStatus | dialogTitle"
-      :close-on-click-modal="false"
-      :before-close="closeDialog"
+      :destroy-on-close="true"
     >
       <el-row
         style="padding: 0 20px;"
         :span="24"
-        :gutter="20"
       >
         <el-form
           ref="dataForm"
           :rules="formRules"
           :model="form"
         >
-
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
               prop="username"
               label="用户名:"
@@ -131,14 +112,12 @@
               <el-input
                 v-model="form.username"
                 autocomplete="off"
+                :disabled="operationStatus === 1||operationStatus === 2"
                 placeholder="请输入用户名"
-                :disabled="operationStatus === 1"
               />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
               prop="realName"
               label="真实姓名:"
@@ -147,14 +126,26 @@
               <el-input
                 v-model="form.realName"
                 autocomplete="off"
-                placeholder="请输入真实姓名"
                 :disabled="operationStatus === 1"
+                placeholder="请输入真实姓名"
               />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
+            <el-form-item
+              prop="nickName"
+              label="昵称:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.nickName"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入昵称"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col>
             <el-form-item
               prop="password"
               label="密码:"
@@ -163,27 +154,27 @@
               <el-input
                 v-model="form.password"
                 autocomplete="off"
-                placeholder="如果不填写密码，默认为123456"
                 :disabled="operationStatus === 1"
+                placeholder="请输入密码"
               />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
-              prop="roleId"
-              label="角色:"
+              prop="deptId"
+              label="所属部门:"
               :label-width="formLabelWidth"
             >
-              <el-select v-model="form.roleId" placeholder="请选择角色" :disabled="operationStatus === 1" autocomplete="off" style="width: 100%;">
-                <el-option v-for="item in roleList" :key="item.roleId" :label="item.roleName" :value="item.roleId" />
-              </el-select>
+              <Input-tree
+                v-model="form.deptId"
+                :tree-data="treeDeptData"
+                :disabled="operationStatus === 1"
+                placeholder="请选择所属部门"
+                @node-click="getNodeData"
+              />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
               prop="phone"
               label="手机号:"
@@ -192,35 +183,40 @@
               <el-input
                 v-model="form.phone"
                 autocomplete="off"
-                placeholder="请输入手机号码"
                 :disabled="operationStatus === 1"
+                placeholder="请输入手机号"
               />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
-              prop="sex"
-              label="性别:"
+              prop="roles"
+              label="角色:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.sex" label="0" :disabled="operationStatus === 1">男</el-radio>
-              <el-radio v-model="form.sex" label="1" :disabled="operationStatus === 1">女</el-radio>
+              <mutil-change
+                v-model="form.roles"
+                :disabled="operationStatus === 1"
+                :dic-prop="{ label: 'roleName', value: 'roleId' }"
+                dic-url="/admin/role/getRoleAdminList"
+                type="select"
+                multiple
+                size="small"
+              />
             </el-form-item>
           </el-col>
-          <el-col
-            :span="12"
-          >
+          <el-col>
             <el-form-item
-              prop="avatar"
-              label="头像:"
+              prop="lockFlag"
+              label="状态:"
               :label-width="formLabelWidth"
             >
-              <single-image
-                v-model="form.avatar"
-                :type="3"
+              <single-change
+                v-model="form.lockFlag"
                 :disabled="operationStatus === 1"
+                status-type="user_lock_flag"
+                type="radio"
+                size="medium"
               />
             </el-form-item>
           </el-col>
@@ -235,20 +231,17 @@
           type="primary"
           size="small"
           @click="create"
-        >保 存
-        </el-button>
+        >保 存</el-button>
         <el-button
           v-if="operationStatus === 2"
           type="primary"
           size="small"
           @click="update"
-        >修 改
-        </el-button>
+        >修 改</el-button>
         <el-button
           size="small"
           @click="closeDialog"
-        >取 消
-        </el-button>
+        >取 消</el-button>
       </div>
     </el-dialog>
   </div>
@@ -256,20 +249,16 @@
 
 <script>
 import { fetchList, getRoleAdmin, getObj, addObj, delObj, putObj } from '@/api/admin/adminUser'
+import { deptRoleList } from '@/api/admin/role'
+import { fetchTree } from '@/api/admin/dept'
 import { mapGetters } from 'vuex'
-
+import InputTree from '@/components/InputTree/index'
 export default {
   name: 'Index',
+  components: {
+    InputTree
+  },
   filters: {
-    statusFilter(type, list) {
-      let result
-      list.map(ele => {
-        if (type === ele.value) {
-          result = ele.label
-        }
-      })
-      return result
-    },
     dialogTitle(type) {
       const titleMap = {
         0: '新 增',
@@ -281,111 +270,117 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      source: [
-        {
-          label: '手机',
-          value: '0'
-        }, {
-          label: '微信',
-          value: '1'
-        }, {
-          label: 'QQ',
-          value: '2'
-        },
-        {
-          label: 'PC',
-          value: '3'
-        },
-        {
-          label: '移动端',
-          value: '4'
-        },
-        {
-          label: '管理员',
-          value: '5'
-        },
-        {
-          label: '游客',
-          value: '6'
-        }
-      ],
-      flag: [
-        {
-          label: '是',
-          value: '1'
-        }, {
-          label: '否',
-          value: '0'
-        }
-      ]
-    }
     return {
       tableKey: 0,
       roleList: [],
       tableLoading: false,
-      DIC: DIC,
       tableOption: [
         {
           label: '用户名',
           prop: 'username'
-        }, {
+        },
+        {
           label: '真实姓名',
           prop: 'realName'
-        }, {
+        },
+        {
           label: '手机号',
           prop: 'phone'
-        }, {
+        },
+        {
           label: '角色',
           prop: 'roleList',
           slot: true
         },
         {
-          label: '注册来源',
-          prop: 'source',
-          dicData: DIC.source
-        }, {
+          label: '状态',
+          prop: 'lockFlag',
+          dicUrl: 'user_lock_flag',
+          dicData: []
+        },
+        {
           label: '创建时间',
-          prop: 'createTime',
-          width: '200px'
-        }],
+          prop: 'createTime'
+        }
+      ],
       tableData: [],
       page: {
         total: 0,
         current: 1,
         size: 10
       },
+      treeDeptData: [],
       formRules: {
-        username: [{
-          required: true,
-          message: '请输入用户名',
-          trigger: 'blur'
-        }],
-        phone: [{
-          required: true,
-          message: '请输入手机号',
-          trigger: 'blur'
-        }],
-        realName: [{
-          required: true,
-          message: '请输入真实姓名',
-          trigger: 'blur'
-        }],
-        avatar: [{
-          required: true,
-          message: '请上传头像',
-          trigger: 'change'
-        }],
-        sex: [{
-          required: true,
-          message: '请选择性别',
-          trigger: 'change'
-        }],
-        roleId: [{
-          required: true,
-          message: '请选择角色',
-          trigger: 'change'
-        }]
+        username: [
+          {
+            required: true,
+            message: '请输入用户名'
+          },
+          {
+            min: 3,
+            max: 20,
+            message: '长度在 3 到 20 个字符',
+            trigger: 'blur'
+          }
+        ],
+        phone: [
+          {
+            required: true,
+            message: '请输入手机号',
+            trigger: 'blur'
+          },
+          {
+            min: 11,
+            max: 11,
+            message: '请输入正确的手机号',
+            trigger: 'blur'
+          }
+        ],
+        realName: [
+          {
+            required: true,
+            message: '请输入真实姓名'
+          },
+          {
+            min: 3,
+            max: 20,
+            message: '长度在 3 到 20 个字符',
+            trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            required: true,
+            message: '请输入密码'
+          },
+          {
+            min: 6,
+            max: 20,
+            message: '长度在 6 到 20 个字符',
+            trigger: 'blur'
+          }
+        ],
+        deptId: [
+          {
+            required: true,
+            message: '请选择部门',
+            trigger: 'change'
+          }
+        ],
+        roles: [
+          {
+            required: true,
+            message: '请选择角色',
+            trigger: 'change'
+          }
+        ],
+        lockFlag: [
+          {
+            required: true,
+            message: '请选择状态',
+            trigger: 'blur'
+          }
+        ]
       },
       searchForm: {},
       dialogPvVisible: false,
@@ -401,6 +396,8 @@ export default {
   created() {
     this.getList()
     this.getRoleAdmin()
+    this.getNodeData()
+    this.handleDept()
   },
   methods: {
     /**
@@ -434,6 +431,25 @@ export default {
         this.roleList = data.data.data
       })
     },
+    checkChange(list) {
+      this.tableOption = list
+    },
+    nodeClick(data) {
+      console.log(data)
+      this.searchForm.page = 1
+      this.searchForm.deptId = data.id
+      this.getList()
+    },
+    handleDept() {
+      fetchTree().then(res => {
+        this.treeDeptData = res.data.data
+      })
+    },
+    getNodeData() {
+      deptRoleList().then(response => {
+        this.rolesOptions = response.data.data
+      })
+    },
     /**
      * 搜索
      */
@@ -453,7 +469,10 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
+      this.form = {
+        lockFlag: '0'
+      }
+      this.formRules.password[0].required = true
     },
     /**
      * 点击查看
@@ -470,34 +489,25 @@ export default {
      * 点击编辑
      */
     handleUpdate(row, index) {
+      this.formRules.password[0].required = false
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
-      getObj(row.userId).then(data => {
-        this.form = data.data.data
-        this.form.roleId = data.data.data.roleList[0].roleId
-      })
+      this.form.password = undefined
     },
     /**
      * 新增保存
      */
     create() {
-      // 默认密码
-      if (this.form.password === null && this.form.password === '') {
-        this.form.password = '123456'
-      }
-      if (typeof (this.form.password) === 'undefined') {
-        this.form.password = '123456'
-      }
       this.$refs
         .dataForm.validate(valid => {
-          console.log(this.form)
           if (valid) {
-            this.dialogPvVisible = false
             this.tableLoading = true
+            this.form.userName = this.form.username
             addObj(this.form)
               .then(res => {
                 this.tableLoading = false
+                this.dialogPvVisible = false
                 this.$message({
                   showClose: true,
                   message: '添加成功',
@@ -518,10 +528,11 @@ export default {
       this.$refs
         .dataForm.validate(valid => {
           if (valid) {
-            this.dialogPvVisible = false
             this.tableLoading = true
+            this.form.userName = this.form.username
             putObj(this.form)
               .then(res => {
+                this.dialogPvVisible = false
                 this.tableLoading = false
                 this.$message({
                   showClose: true,
@@ -541,13 +552,14 @@ export default {
      */
     handleDelete(row, index) {
       var _this = this
-      this.$confirm('是否确认删除ID为' + row.userId, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
+      this.$confirm('此操作将永久删除该用户(用户名:' + row.username + '), 是否继续?',
+        '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
         .then(function() {
-          return delObj(row)
+          return delObj(row.userId)
         })
         .then(data => {
           _this.$message.success('删除成功')
