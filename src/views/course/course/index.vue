@@ -307,7 +307,7 @@
               <!--:readonly="operationStatus === 1"-->
               <!--:height="300"-->
               <!--/>-->
-              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" @input="reserveHtmlFormUE" :valuex="ueValue"/>
+              <ue ref="ueditor" v-model="form.about" :ready-only="readyOnly" :valuex="ueValue" @input="reserveHtmlFormUE" />
             </el-form-item>
           </el-col>
 

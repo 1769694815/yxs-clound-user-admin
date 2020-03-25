@@ -79,10 +79,11 @@ export default {
         window.UE.Editor.prototype.getActionUrl = (action) => {
           if (action === 'uploadimage' || action === 'uploadscrawl' || action === 'uploadimage' || action === 'uploadfile') {
             return '/admin/api/UEditor/editUpload'
-          } else if (action === 'uploadvideo') {
-            return '/admin/upload?type=5&appId=zyy'
+          } else if (action === 'config') {
+            return '/admin/api/UEditor/getConfigInfo'
           } else {
             // return this.editor._bkGetActionUrl.call(this, action)
+            // return '/admin/api/UEditor/getConfigInfo'
           }
         }
         console.log('this.value', this.valuex, this.readyOnly)
