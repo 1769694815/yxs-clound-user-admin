@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-17 16:53:47
+ * @LastEditTime: 2020-03-23 17:24:56
  * @Description: 文件管理
  -->
 <template>
@@ -101,7 +101,7 @@
               <single-change
                 v-model="form.free"
                 :disabled="operationStatus === 1"
-                status-type="free_flag"
+                status-type="common_flag"
                 type="radio"
                 size="medium"
               />
@@ -273,7 +273,7 @@ export default {
         {
           label: '是否免费',
           prop: 'free',
-          dicUrl: 'free_flag',
+          dicUrl: 'common_flag',
           dicData: []
         },
         {
