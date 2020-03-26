@@ -36,6 +36,39 @@
           type="select"
         />
       </el-form-item>
+      <el-form-item
+        label="类型:"
+        label-width="80px"
+      >
+        <single-change
+          v-model="form.status"
+          :disabled="operationStatus === 1"
+          status-type="status_type"
+          type="select"
+        />
+      </el-form-item>
+      <el-form-item
+        label="总后台:"
+        label-width="80px"
+      >
+        <single-change
+          v-model="form.status"
+          :disabled="operationStatus === 1"
+          status-type="status_type"
+          type="select"
+        />
+      </el-form-item>
+      <el-form-item
+        label="租户模板:"
+        label-width="80px"
+      >
+        <single-change
+          v-model="form.status"
+          :disabled="operationStatus === 1"
+          status-type="status_type"
+          type="select"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button
           type="primary"
@@ -75,13 +108,6 @@
         slot-scope="scope"
       >
         <el-button
-          type="text"
-          icon="el-icon-view"
-          size="mini"
-          @click="handleView(scope.row)"
-        >查看
-        </el-button>
-        <el-button
           v-if="admin_systenant_edit"
           type="text"
           icon="el-icon-edit"
@@ -96,6 +122,13 @@
           size="mini"
           @click="handleDelete(scope.row, scope.$index)"
         >删除
+        </el-button>
+        <el-button
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >充值
         </el-button>
       </template>
     </Xtable>
@@ -159,57 +192,62 @@
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col>
             <el-form-item
-              prop="startTime"
-              label="开始时间:"
-              :label-width="formLabelWidth"
-            >
-              <el-date-picker
-                v-model="form.startTime"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                type="datetime"
-                placeholder="请选择开始时间"
-                :disabled="operationStatus === 1"
-                style="width: 100%!important;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item
-              prop="endTime"
-              label="结束时间:"
-              :label-width="formLabelWidth"
-            >
-              <el-date-picker
-                v-model="form.endTime"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                type="datetime"
-                placeholder="请选择结束时间"
-                :disabled="operationStatus === 1"
-                style="width: 100%!important;"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item
-              prop="status"
-              label="状态:"
+              prop="lockFlag"
+              label="总后台:"
               :label-width="formLabelWidth"
             >
               <single-change
-                v-model="form.status"
+                v-model="form.lockFlag"
                 :disabled="operationStatus === 1"
-                status-type="status_type"
+                status-type="user_lock_flag"
                 type="radio"
+                size="medium"
               />
             </el-form-item>
           </el-col>
+          <el-col>
+            <el-form-item
+              prop="lockFlag"
+              label="租户模板:"
+              :label-width="formLabelWidth"
+            >
+              <single-change
+                v-model="form.lockFlag"
+                :disabled="operationStatus === 1"
+                status-type="user_lock_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col>
+            <el-form-item
+              prop="roles"
+              label="初始化:"
+              :label-width="formLabelWidth"
+            >
+              <mutil-change
+                v-model="form.roles"
+                :disabled="operationStatus === 1"
+                :dic-prop="{ label: 'roleName', value: 'roleId' }"
+                dic-url="/admin/role/list"
+                type="select"
+                multiple
+                size="small"
+              />
+            </el-form-item>
+          </el-col>
+          <!--图片上传-->
           <el-col :span="24">
-            <!--<tinymce ref="tinymce" v-model="form.content" :height="300" />-->
-            <ue ref="ueditor" v-model="form.content" />
+            <el-form-item prop="smallPicture" label="图片上传:" :label-width="formLabelWidth">
+              <single-image
+                v-model="form.smallPicture"
+                :disabled="operationStatus === 1"
+                status="5"
+              />
+            </el-form-item>
           </el-col>
         </el-form>
       </el-row>
@@ -277,14 +315,17 @@ export default {
         },
         {
           label: '租户编号',
+          hide: true,
           prop: 'code'
         },
         {
           label: '开始时间',
+          hide: true,
           prop: 'startTime'
         },
         {
           label: '结束时间',
+          hide: true,
           prop: 'endTime'
         },
         {
@@ -292,7 +333,30 @@ export default {
           prop: 'status',
           dicUrl: 'status_type',
           dicData: []
+        },
+        {
+          label: '类型',
+          prop: 'type'
+        },
+        {
+          label: '总后台',
+          prop: 'backTai'
+        },
+        {
+          label: '租户模板',
+          prop: 'tenantTemplate'
+        },
+        {
+          label: '初始化',
+          hide: true,
+          prop: 'init'
+        },
+        {
+          label: 'LOGO',
+          hide: true,
+          prop: 'logo'
         }
+
       ],
       tableData: [],
       page: {
@@ -356,7 +420,7 @@ export default {
       this.tableLoading = true
       fetchList(
         Object.assign(
-          { current: this.page.current, size: this.page.size },
+          { current: this.page.current, size: this.page.size, descs: 'create_time'},
           this.searchForm
         )
       )
