@@ -30,9 +30,9 @@
         label-width="80px"
       >
         <single-change
-          v-model="form.status"
+          v-model="searchForm.status"
           :disabled="operationStatus === 1"
-          status-type="status_type"
+          status-type="tenant_status_type"
           type="select"
         />
       </el-form-item>
@@ -41,9 +41,9 @@
         label-width="80px"
       >
         <single-change
-          v-model="form.status"
+          v-model="searchForm.type"
           :disabled="operationStatus === 1"
-          status-type="status_type"
+          status-type="tenant_type"
           type="select"
         />
       </el-form-item>
@@ -52,9 +52,9 @@
         label-width="80px"
       >
         <single-change
-          v-model="form.status"
+          v-model="searchForm.adminFlag"
           :disabled="operationStatus === 1"
-          status-type="status_type"
+          status-type="common_flag"
           type="select"
         />
       </el-form-item>
@@ -63,9 +63,9 @@
         label-width="80px"
       >
         <single-change
-          v-model="form.status"
+          v-model="searchForm.templateFlag"
           :disabled="operationStatus === 1"
-          status-type="status_type"
+          status-type="common_flag"
           type="select"
         />
       </el-form-item>
@@ -127,7 +127,7 @@
           type="text"
           icon="el-icon-view"
           size="mini"
-          @click="handleView(scope.row)"
+          @click="chongZhi(scope.row)"
         >充值
         </el-button>
       </template>
@@ -194,14 +194,14 @@
           </el-col>
           <el-col>
             <el-form-item
-              prop="lockFlag"
+              prop="adminFlag"
               label="总后台:"
               :label-width="formLabelWidth"
             >
               <single-change
-                v-model="form.lockFlag"
+                v-model="form.adminFlag"
                 :disabled="operationStatus === 1"
-                status-type="user_lock_flag"
+                status-type="common_flag"
                 type="radio"
                 size="medium"
               />
@@ -209,14 +209,14 @@
           </el-col>
           <el-col>
             <el-form-item
-              prop="lockFlag"
+              prop="templateFlag"
               label="租户模板:"
               :label-width="formLabelWidth"
             >
               <single-change
-                v-model="form.lockFlag"
+                v-model="form.templateFlag"
                 :disabled="operationStatus === 1"
-                status-type="user_lock_flag"
+                status-type="common_flag"
                 type="radio"
                 size="medium"
               />
@@ -224,26 +224,26 @@
           </el-col>
           <el-col>
             <el-form-item
-              prop="roles"
+              prop="templateId"
               label="初始化:"
+              v-if="whichHandleWindow === 'new'"
               :label-width="formLabelWidth"
             >
-              <mutil-change
-                v-model="form.roles"
+              <single-change
+                v-model="form.templateId"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'roleName', value: 'roleId' }"
-                dic-url="/admin/role/list"
+                :dic-prop="{ label: 'name', value: 'id' }"
+                dic-url="/admin/tenant/templateList"
                 type="select"
-                multiple
                 size="small"
               />
             </el-form-item>
           </el-col>
           <!--图片上传-->
           <el-col :span="24">
-            <el-form-item prop="smallPicture" label="图片上传:" :label-width="formLabelWidth">
+            <el-form-item prop="logo" label="LOGO:" :label-width="formLabelWidth">
               <single-image
-                v-model="form.smallPicture"
+                v-model="form.logo"
                 :disabled="operationStatus === 1"
                 status="5"
               />
@@ -280,14 +280,10 @@
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
-// import Tinymce from '@/components/Tinymce/index'
-import Ue from '@/components/ue/ueditor'
 export default {
   name: 'Tenant',
   components: {
-    SingleChange,
-    // Tinymce,
-    Ue
+    SingleChange
   },
   filters: {
     dialogTitle(type) {
@@ -302,6 +298,7 @@ export default {
   },
   data() {
     return {
+      whichHandleWindow: 'new',
       hideVisible: false,
       tableOption: [
         {
@@ -331,30 +328,39 @@ export default {
         {
           label: '状态',
           prop: 'status',
-          dicUrl: 'status_type',
+          dicUrl: 'tenant_status_type',
           dicData: []
         },
         {
           label: '类型',
-          prop: 'type'
+          prop: 'type',
+          dicUrl: 'tenant_type',
+          dicData: []
         },
         {
           label: '总后台',
-          prop: 'backTai'
+          prop: 'adminFlag',
+          dicUrl: 'common_flag',
+          dicData: []
+
         },
         {
           label: '租户模板',
-          prop: 'tenantTemplate'
+          prop: 'templateFlag',
+          dicUrl: 'common_flag',
+          dicData: []
         },
         {
           label: '初始化',
           hide: true,
-          prop: 'init'
+          prop: 'templateId'
         },
         {
           label: 'LOGO',
           hide: true,
-          prop: 'logo'
+          prop: 'logo',
+          width: '140',
+          img: true
         }
 
       ],
@@ -397,6 +403,36 @@ export default {
             message: '请输入结束时间',
             trigger: 'blur'
           }
+        ],
+        adminFlag: [
+          {
+            required: true,
+            trigger: 'change',
+            message: '请选择是否是总后台'
+          }
+        ],
+        status: [
+          {
+            required: true,
+            trigger: 'change'
+          }
+        ],
+        templateFlag: [
+          {
+            required: true,
+            trigger: 'change',
+            message: '请选择是否是租户模板'
+          }
+        ],
+        templateId: [
+          {
+            required: true,
+            trigger: 'change',
+            message: '请选择初始化模板'
+          }
+        ],
+        logo: [
+          { required: true, message: '请上传租户LOGO', trigger: 'change' }
         ]
       },
       form: {},
@@ -416,11 +452,14 @@ export default {
     this.getList()
   },
   methods: {
+    chongZhi() {
+      console.log('')
+    },
     getList() {
       this.tableLoading = true
       fetchList(
         Object.assign(
-          { current: this.page.current, size: this.page.size, descs: 'create_time'},
+          { current: this.page.current, size: this.page.size },
           this.searchForm
         )
       )
@@ -438,7 +477,10 @@ export default {
     },
     handleEmpty() {
       this.searchForm.type = undefined
-      this.searchForm.system = undefined
+      this.searchForm.name = undefined
+      this.searchForm.status = undefined
+      this.searchForm.adminFlag = undefined
+      this.searchForm.templateFlag = undefined
       this.getList()
     },
     handleView(row) {
@@ -450,29 +492,31 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
-      // 初始化富文本编辑器
-      this.$nextTick(() => {
-        console.log(this.$refs.tinymce)
-        this.$refs.tinymce.init()
-      })
     },
     create() {
-      this.dialogPvVisible = false
-      this.tableLoading = true
-      addObj(this.form)
-        .then(res => {
-          this.tableLoading = false
-          this.$message({
-            showClose: true,
-            message: '添加成功',
-            type: 'success'
-          })
-        })
-        .catch(() => {
-          this.tableLoading = false
-        })
+      this.$refs.dataForm.validate(valid => {
+        if (valid) {
+          this.whichHandleWindow = 'new'
+          this.dialogPvVisible = false
+          this.tableLoading = true
+          addObj(this.form)
+            .then(res => {
+              this.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '添加成功',
+                type: 'success'
+              })
+              this.getList()
+            })
+            .catch(() => {
+              this.tableLoading = false
+            })
+        }
+      })
     },
     handleUpdate(row) {
+      this.whichHandleWindow = 'edit'
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
