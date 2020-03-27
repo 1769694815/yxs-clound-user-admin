@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: zhoum
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-18 09:06:49
+ * @LastEditTime: 2020-03-23 12:30:19
  * @Description: 文件管理
  -->
 <template>
@@ -158,9 +158,9 @@
           </el-col>
           <!--面授课时数-->
           <el-col :span="12">
-            <el-form-item label="面授课时数" prop="onlineLessonNum">
+            <el-form-item label="面授课时数" prop="underLineLessonNum">
               <el-input-number
-                v-model="form.onlineLessonNum"
+                v-model="form.underLineLessonNum"
                 autocomplete="off"
                 placeholder="请输入面授课时数"
                 :disabled="operationStatus === 1"
@@ -237,6 +237,7 @@
               <el-date-picker
                 v-model="form.closeDate"
                 :disabled="operationStatus === 1"
+                value-format="yyyy-MM-dd"
                 type="date"
                 placeholder="请输入报名截止日期"
                 clearable
@@ -270,7 +271,7 @@
           <el-col :span="24">
             <el-form-item label="班级简介" prop="about">
               <!--<tinymce ref="tinymce" v-model="form.about" :readonly="operationStatus === 1" :height="300" />-->
-              <ue ref="ueditor" v-model="form.body" />
+              <ue ref="ueditor" v-model="form.body" :ready-only="readyOnly" :valuex="ueValue" @input="reserveHtmlFormUE" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -307,6 +308,7 @@ import { getCategoryTreeByNotType } from '@/api/course/category'
 import CourseModal from './courseModal.vue'
 // import Tinymce from '@/components/Tinymce/index'
 import Ue from '@/components/ue/ueditor'
+import _ from 'lodash'
 
 export default {
   components: {
@@ -344,6 +346,8 @@ export default {
       }
     }
     return {
+      ueValue: '',
+      readyOnly: true,
       tableKey: 0,
       tableLoading: false,
       tearcherList: [],
@@ -512,6 +516,10 @@ export default {
     this.getCategoryTree()
   },
   methods: {
+    reserveHtmlFormUE(html) {
+      console.log('html', html)
+      this.form.about = html
+    },
     /**
      * 班级分类
      */
@@ -601,18 +609,32 @@ export default {
       this.getList()
     },
     handleView(row) {
-      this.form = row
+      this.readyOnly = true
+      this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
       this.dialogPvVisible = true
       this.operationStatus = 1
-      this.init()
+      // this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setDisabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleUpdate(row) {
-      this.form = row
+      this.readyOnly = false
+      this.form = _.cloneDeep(row)
+      this.ueValue = this.form.about
+      console.log('abc666', this.form.about)
       this.dialogPvVisible = true
       this.operationStatus = 2
-      this.init()
+      this.$nextTick(() => {
+        console.log('abc', this.form.about)
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
     },
     handleDelete(row, index) {
+      this.readyOnly = false
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {
         confirmButtonText: '确定',
@@ -633,6 +655,7 @@ export default {
       this.$refs[form].resetFields()
     },
     handleCreate() {
+      this.readyOnly = false
       this.dialogPvVisible = true
       this.form = {
         status: '0',
@@ -648,7 +671,11 @@ export default {
         expiryDays: 365
       }
       this.form.about = ''
-      this.init()
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.about)
+      })
+      // this.init()
     },
     getNodeData() {},
     hideModal() {
@@ -674,18 +701,18 @@ export default {
     /**
      * 初始化富文本编辑器
      */
-    init() {
-      this.$nextTick(() => {
-        this.$refs.tinymce.init()
-      })
-    },
+    // init() {
+    //   this.$nextTick(() => {
+    //     this.$refs.tinymce.init()
+    //   })
+    // },
     closeDialog() {
-      this.$nextTick(() => {
-        if (this.$refs.tinymce.hasInit) {
-          // this.form.body = ''
-          this.$refs.tinymce.destroyTinymce()
-        }
-      })
+      // this.$nextTick(() => {
+      //   if (this.$refs.tinymce.hasInit) {
+      //     // this.form.body = ''
+      //     this.$refs.tinymce.destroyTinymce()
+      //   }
+      // })
       this.$refs.dataForm.resetFields()
       this.dialogPvVisible = false
     }

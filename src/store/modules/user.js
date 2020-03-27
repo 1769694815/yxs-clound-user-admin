@@ -132,6 +132,7 @@ const state = {
   userInfo: {},
   permissions: {},
   roles: [],
+  tenantId: '',
   expires_in: getStore({
     name: 'expires_in'
   }) || '',
@@ -156,6 +157,14 @@ const mutations = {
     setStore({
       name: 'access_token',
       content: state.access_token,
+      type: 'session'
+    })
+  },
+  SET_TENANTID: (state, tenantId) => {
+    state.tenantId = tenantId
+    setStore({
+      name: 'tenantId',
+      content: state.tenantId,
       type: 'session'
     })
   },
@@ -230,6 +239,8 @@ const actions = {
         const data = response.data.data || {}
         commit('SET_USER_INFO', data.sysUser)
         commit('SET_ROLES', data.roles || [])
+        console.log('新插入的租户id', data.sysUser.tenantId)
+        commit('SET_TENANTID', data.sysUser.tenantId)
         commit('SET_PERMISSIONS', data.permissions || [])
         resolve(data)
       }).catch(error => {
@@ -264,6 +275,7 @@ const actions = {
         commit('SET_USER_INFO', {})
         commit('SET_ACCESS_TOKEN', '')
         commit('SET_REFRESH_TOKEN', '')
+        commit('SET_TENANTID', '')
         commit('SET_EXPIRES_IN', '')
         commit('SET_ROLES', [])
         commit('SET_ROUTES', [])
@@ -283,6 +295,8 @@ const actions = {
       commit('SET_USER_INFO', {})
       commit('SET_ACCESS_TOKEN', '')
       commit('SET_REFRESH_TOKEN', '')
+      commit('SET_TENANTID', '')
+      commit('SET_EXPIRES_IN', '')
       commit('SET_ROLES', [])
       commit('SET_ROUTES', [])
       commit('SET_PERMISSIONS', [])

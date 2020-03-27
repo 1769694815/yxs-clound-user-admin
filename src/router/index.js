@@ -91,6 +91,18 @@ export const constantRoutes = [
       component: () => import('@/views/course/courselesson'),
       meta: { title: '课时管理' }
     }]
+  },
+  {
+    path: '/question/batchImport',
+    component: Layout,
+    redirect: '/question/batchImport/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'batchImport',
+      component: () => import('@/views/question/batchImport'),
+      meta: { title: '批量录入' }
+    }]
   }
 
 ]

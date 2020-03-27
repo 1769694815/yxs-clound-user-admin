@@ -348,10 +348,10 @@ export default {
       this.$refs
         .dataForm.validate(valid => {
           if (valid) {
-            this.dialogPvVisible = false
             this.tableLoading = true
             addObj(this.form)
               .then(res => {
+                this.dialogPvVisible = false
                 this.tableLoading = false
                 this.$message({
                   showClose: true,

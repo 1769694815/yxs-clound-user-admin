@@ -1,92 +1,5 @@
-<!--
- * @Date: 2020-02-14 13:00:50
- * @LastEditors: Donkey
- * @Author: xw
- * @LastEditTime: 2020-03-27 09:47:50
- * @Description: 租户管理
- -->
 <template>
   <div class="execution app-container calendar-list-container">
-    <!-- 头部菜单 -->
-    <el-form
-      ref="search"
-      :inline="true"
-      class="search"
-      size="medium"
-    >
-      <el-form-item
-        label="租户名称:"
-        label-width="80px"
-      >
-        <el-input
-          v-model="searchForm.name"
-          type="text"
-          size="small"
-          placeholder="请输入租户名称"
-        />
-      </el-form-item>
-      <el-form-item
-        label="状态:"
-        label-width="80px"
-      >
-        <single-change
-          v-model="searchForm.status"
-          :disabled="operationStatus === 1"
-          status-type="tenant_status_type"
-          type="select"
-        />
-      </el-form-item>
-      <el-form-item
-        label="类型:"
-        label-width="80px"
-      >
-        <single-change
-          v-model="searchForm.type"
-          :disabled="operationStatus === 1"
-          status-type="tenant_type"
-          type="select"
-        />
-      </el-form-item>
-      <el-form-item
-        label="总后台:"
-        label-width="80px"
-      >
-        <single-change
-          v-model="searchForm.adminFlag"
-          :disabled="operationStatus === 1"
-          status-type="common_flag"
-          type="select"
-        />
-      </el-form-item>
-      <el-form-item
-        label="租户模板:"
-        label-width="80px"
-      >
-        <single-change
-          v-model="searchForm.templateFlag"
-          :disabled="operationStatus === 1"
-          status-type="common_flag"
-          type="select"
-        />
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          icon="el-icon-search"
-          size="small"
-          @click="handleFilter"
-        >搜 索</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button
-          type="default"
-          icon="el-icon-delete"
-          size="small"
-          @click="handleEmpty"
-        >清 空</el-button>
-      </el-form-item>
-    </el-form>
-    <!-- 表格 -->
     <Xtable
       :table-key="tableKey"
       :table-loading="tableLoading"
@@ -108,6 +21,13 @@
         slot-scope="scope"
       >
         <el-button
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleView(scope.row)"
+        >查看
+        </el-button>
+        <el-button
           v-if="admin_systenant_edit"
           type="text"
           icon="el-icon-edit"
@@ -122,13 +42,6 @@
           size="mini"
           @click="handleDelete(scope.row, scope.$index)"
         >删除
-        </el-button>
-        <el-button
-          type="text"
-          icon="el-icon-view"
-          size="mini"
-          @click="chongZhi(scope.row)"
-        >充值
         </el-button>
       </template>
     </Xtable>
@@ -149,85 +62,57 @@
           :model="form"
         >
           <el-col
-            v-if="operationStatus === 1"
             :span="12"
           >
             <el-form-item
-              prop="id"
-              label="租户id:"
+              prop="clientId"
+              label="编号:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.id"
+                v-model="form.clientId"
                 autocomplete="off"
                 :disabled="operationStatus === 1"
+                placeholder="请输入编号"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
-              prop="name"
-              label="租户名称:"
+              prop="clientSecret"
+              label="密钥:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.name"
+                v-model="form.clientSecret"
                 autocomplete="off"
                 :disabled="operationStatus === 1"
-                placeholder="请输入租户名称"
+                placeholder="请输入密钥"
               />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
-              prop="code"
-              label="租户编号:"
+              prop="scope"
+              label="域:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.code"
+                v-model="form.scope"
                 autocomplete="off"
                 :disabled="operationStatus === 1"
-                placeholder="请输入租户编号"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item
-              prop="telephone"
-              label="联系电话:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.telephone"
-                autocomplete="off"
-                :disabled="operationStatus === 1"
-                placeholder="请输入联系电话"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item
-              prop="address"
-              label="联系地址:"
-              :label-width="formLabelWidth"
-            >
-              <el-input
-                v-model="form.address"
-                autocomplete="off"
-                :disabled="operationStatus === 1"
-                placeholder="请输入联系地址"
+                placeholder="请输入域"
               />
             </el-form-item>
           </el-col>
           <el-col>
             <el-form-item
-              prop="adminFlag"
-              label="总后台:"
+              prop="autoapprove"
+              label="自动放行:"
               :label-width="formLabelWidth"
             >
               <single-change
-                v-model="form.adminFlag"
+                v-model="form.autoapprove"
                 :disabled="operationStatus === 1"
                 status-type="common_flag"
                 type="radio"
@@ -237,42 +122,85 @@
           </el-col>
           <el-col>
             <el-form-item
-              prop="templateFlag"
-              label="租户模板:"
+              prop="checkList"
+              label="授权模式:"
               :label-width="formLabelWidth"
             >
-              <single-change
-                v-model="form.templateFlag"
-                :disabled="operationStatus === 1"
-                status-type="common_flag"
-                type="radio"
-                size="medium"
-              />
+              <el-checkbox-group v-model="form.checkList" @change="handleCheckedCitiesChange">
+                <el-checkbox v-for="item in checkListOptions" :key="item.id" :disabled="checkboxVisible" :label="item.label">{{ item.label }}</el-checkbox>
+              </el-checkbox-group>
             </el-form-item>
           </el-col>
-          <el-col v-if="operationStatus === 0">
+          <el-col :span="12">
             <el-form-item
-              prop="templateId"
-              label="初始化:"
+              label="令牌时效:"
+              prop="accessTokenValidity"
               :label-width="formLabelWidth"
             >
-              <single-change
-                v-model="form.templateId"
+              <el-input
+                v-model="form.accessTokenValidity"
+                auto-complete="off"
+                type="number"
+                placeholder="请输入令牌时效"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'name', value: 'id' }"
-                dic-url="/admin/tenant/templateList"
-                type="select"
-                size="small"
               />
             </el-form-item>
           </el-col>
-          <!--图片上传-->
-          <el-col :span="24">
-            <el-form-item prop="logo" label="LOGO:" :label-width="formLabelWidth">
-              <single-image
-                v-model="form.logo"
+          <el-col :span="12">
+            <el-form-item
+              label="刷新时效:"
+              prop="refreshTokenValidity"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.refreshTokenValidity"
+                auto-complete="off"
+                type="number"
+                placeholder="请输入刷新时效"
                 :disabled="operationStatus === 1"
-                status="5"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="webServerRedirectUri"
+              label="回调地址:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.webServerRedirectUri"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入回调地址"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="authorities"
+              label="权限:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.authorities"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入权限"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col>
+            <el-form-item
+              prop="additionalInformation"
+              label="扩展信息:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.additionalInformation"
+                type="textarea"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="JSON格式数据"
               />
             </el-form-item>
           </el-col>
@@ -304,11 +232,12 @@
 </template>
 
 <script>
-import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
+import { addObj, delObj, fetchList, putObj } from '@/api/admin/client'
+import { remote } from '@/api/admin/dict'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'Tenant',
+  name: 'Client',
   components: {
     SingleChange
   },
@@ -325,79 +254,69 @@ export default {
   },
   data() {
     return {
+      checkboxVisible: false,
+      form: {
+        checkList: []
+      },
+      authorizedGrantTypes: '',
+      checkListOptions: [],
+      checkListOptionsObj: null,
+      checkListOptionsObjReverse: null,
+      whichHandleWindow: 'new',
       hideVisible: false,
       tableOption: [
         {
-          label: '租户id',
-          hide: true,
-          prop: 'id'
+          label: '编号',
+          prop: 'clientId'
         },
         {
-          label: '租户名称',
-          prop: 'name'
+          label: '密钥',
+          prop: 'clientSecret'
         },
         {
-          label: '租户编号',
-          hide: true,
-          prop: 'code'
+          label: '域',
+          prop: 'scope'
         },
         {
-          label: '联系电话',
-          prop: 'telephone'
-        },
-        {
-          label: '联系地址',
-          hide: false,
-          prop: 'address'
-        },
-        {
-          label: '开始时间',
-          hide: true,
-          prop: 'startTime'
-        },
-        {
-          label: '结束时间',
-          hide: true,
-          prop: 'endTime'
-        },
-        {
-          label: '状态',
-          prop: 'status',
-          dicUrl: 'tenant_status_type',
-          dicData: []
-        },
-        {
-          label: '类型',
-          prop: 'type',
-          dicUrl: 'tenant_type',
-          dicData: []
-        },
-        {
-          label: '总后台',
-          prop: 'adminFlag',
-          dicUrl: 'common_flag',
-          dicData: []
+          label: '自动放行',
+          prop: 'autoapprove',
+          dicData: [
+            {
+              label: '否',
+              value: 'false'
+            }, {
+              label: '是',
+              value: 'true'
+            }]
 
         },
         {
-          label: '租户模板',
-          prop: 'templateFlag',
-          dicUrl: 'common_flag',
-          dicData: []
+          label: '授权模式',
+          prop: 'authorizedGrantTypes'
         },
         {
-          label: '初始化',
-          hide: true,
-          prop: 'templateId'
+          label: '令牌时效',
+          prop: 'accessTokenValidity'
         },
         {
-          label: 'LOGO',
+          label: '刷新时效',
+          prop: 'refreshTokenValidity'
+        },
+        {
+          label: '回调地址',
+          prop: 'webServerRedirectUri',
+          hide: true
+        },
+        {
+          label: '权限',
+          prop: 'authorities',
+          hide: true
+        },
+        {
+          label: '扩展信息',
           hide: true,
-          prop: 'logo',
-          width: '140',
-          img: true
+          prop: 'additionalInformation'
         }
-
       ],
       tableData: [],
       page: {
@@ -405,72 +324,44 @@ export default {
         current: 1,
         size: 10
       },
-      searchForm: {
-        name: undefined,
-        status: undefined
-      },
       tableKey: 0,
       tableLoading: false,
       dialogPvVisible: false,
       operationStatus: 0,
       formRules: {
-        name: [
-          { required: true, message: '请输入租户名称', trigger: 'blur' },
-          { min: 3, max: 32, message: '长度在 3 到 32 个字符', trigger: 'blur' }
+        clientId: [
+          { required: true, message: '请输入clientId', trigger: 'blur' }
         ],
-        code: [
+        clientSecret: [
           {
             required: true,
-            message: '请输入租户编号',
+            message: '请输入clientSecret',
             trigger: 'blur'
           }
         ],
-        startTime: [
+        scope: [
           {
             required: true,
-            message: '请输入结束时间',
+            message: '请输入scope',
             trigger: 'blur'
           }
         ],
-        endTime: [
+        autoapprove: [
           {
             required: true,
-            message: '请输入结束时间',
+            message: '请选择是否放行',
             trigger: 'blur'
           }
         ],
-        adminFlag: [
+        checkList: [
           {
+            type: 'array',
             required: true,
             trigger: 'change',
-            message: '请选择是否是总后台'
+            message: '请输入授权模式'
           }
-        ],
-        status: [
-          {
-            required: true,
-            trigger: 'change'
-          }
-        ],
-        templateFlag: [
-          {
-            required: true,
-            trigger: 'change',
-            message: '请选择是否是租户模板'
-          }
-        ],
-        templateId: [
-          {
-            required: true,
-            trigger: 'change',
-            message: '请选择初始化模板'
-          }
-        ],
-        logo: [
-          { required: true, message: '请上传租户LOGO', trigger: 'change' }
         ]
       },
-      form: {},
       formLabelWidth: '90px',
       admin_systenant_add: false,
       admin_systenant_del: false,
@@ -487,6 +378,15 @@ export default {
     this.getList()
   },
   methods: {
+    handleCheckedCitiesChange(value) {
+      console.log('this.checkList', this.form.checkList)
+      console.log('checkListOptionsObj', this.checkListOptionsObj)
+      const arr = []
+      for (let i = 0; i < this.form.checkList.length; i++) {
+        arr.push(this.checkListOptionsObj[this.form.checkList[i]])
+      }
+      this.authorizedGrantTypes = arr.join(',')
+    },
     chongZhi() {
       console.log('')
     },
@@ -497,15 +397,29 @@ export default {
           { current: this.page.current, size: this.page.size },
           this.searchForm
         )
-      )
-        .then(res => {
-          this.tableData = res.data.data.records
-          this.page.total = res.data.data.total
-          this.tableLoading = false
-        })
+      ).then(res => {
+        this.tableData = res.data.data.records
+        this.page.total = res.data.data.total
+        this.tableLoading = false
+      })
         .catch(() => {
           this.tableLoading = false
         })
+
+      remote('grant_types').then(res => {
+        this.checkListOptions = res.data.data
+        console.log('checkListOptions', this.checkListOptions)
+        this.checkListOptionsObj = res.data.data.reduce(function(dictionary, next) {
+          dictionary[next['label']] = next['value']
+          return dictionary
+        }, {})
+        this.checkListOptionsObjReverse = res.data.data.reduce(function(dictionary, next) {
+          dictionary[next['value']] = next['label']
+          return dictionary
+        }, {})
+      }).catch(() => {
+        this.tableLoading = false
+      })
     },
     handleFilter() {
       this.getList()
@@ -519,7 +433,20 @@ export default {
       this.getList()
     },
     handleView(row) {
-      this.form = row
+      this.checkboxVisible = true
+      let autoapprove = ''
+      if (row.autoapprove === 'true') {
+        autoapprove = '0'
+      } else if (row.autoapprove === 'false') {
+        autoapprove = '1'
+      }
+      const checkList = []
+      const arr = row.authorizedGrantTypes.split(',')
+      for (let i = 0; i < arr.length; i++) {
+        checkList.push(this.checkListOptionsObjReverse[arr[i]])
+      }
+      console.log('checkList', checkList)
+      this.form = Object.assign({}, row, { autoapprove, checkList })
       this.dialogPvVisible = true
       this.operationStatus = 1
     },
@@ -527,16 +454,34 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {
-        adminFlag: '0',
-        templateFlag: '0'
+        checkList: []
       }
     },
     create() {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
+          this.whichHandleWindow = 'new'
           this.dialogPvVisible = false
           this.tableLoading = true
-          addObj(this.form)
+          let autoapprove = ''
+          console.log('this.form.autoapprove', this.form.autoapprove, typeof (this.form.autoapprove))
+          if (this.form.autoapprove === '0') {
+            autoapprove = 'true'
+          } else {
+            autoapprove = 'false'
+          }
+          addObj({
+            authorizedGrantTypes: this.authorizedGrantTypes,
+            clientId: this.form.clientId,
+            clientSecret: this.form.clientSecret,
+            scope: this.form.scope,
+            autoapprove: autoapprove,
+            accessTokenValidity: this.form.accessTokenValidity,
+            refreshTokenValidity: this.form.refreshTokenValidity,
+            webServerRedirectUri: this.form.webServerRedirectUri,
+            authorities: this.form.authorities,
+            additionalInformation: this.form.additionalInformation
+          })
             .then(res => {
               this.tableLoading = false
               this.$message({
@@ -553,9 +498,24 @@ export default {
       })
     },
     handleUpdate(row) {
+      this.checkboxVisible = false
+      console.log('row', row)
+      this.whichHandleWindow = 'edit'
       this.dialogPvVisible = true
       this.operationStatus = 2
-      this.form = row
+      let autoapprove = ''
+      if (row.autoapprove === 'true') {
+        autoapprove = '0'
+      } else if (row.autoapprove === 'false') {
+        autoapprove = '1'
+      }
+      const checkList = []
+      const arr = row.authorizedGrantTypes.split(',')
+      for (let i = 0; i < arr.length; i++) {
+        checkList.push(this.checkListOptionsObjReverse[arr[i]])
+      }
+      console.log('checkList', checkList)
+      this.form = Object.assign({}, row, { autoapprove, checkList })
     },
     update() {
       this.dialogPvVisible = false

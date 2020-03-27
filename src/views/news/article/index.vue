@@ -20,6 +20,18 @@
         />
       </el-form-item>
       <el-form-item
+        label="栏目:"
+        label-width="60px"
+      >
+        <single-change
+          v-model="searchForm.categoryId"
+          :dic-prop="{ label: 'name', value: 'id' }"
+          dic-url="/news/articlecategory/getCategoryType"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item
         label="状态:"
         label-width="60px"
       >
@@ -358,7 +370,7 @@
             >
               <!--<tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />-->
               <!--:config="{readonly: operationStatus === 1}"-->
-              <ue ref="ueditor" v-model="form.body" />
+              <ue ref="ueditor" v-model="form.body" :valuex="ueValue"/>
             </el-form-item>
           </el-col>
 
@@ -433,8 +445,7 @@ export default {
       }
     }
     return {
-      UECongig: { readonly: true },
-      xh: true,
+      ueValue: '',
       headers: {},
       tableKey: 0,
       tableLoading: false,
@@ -447,8 +458,9 @@ export default {
           prop: 'brIfe',
           hide: true
         }, {
-          label: '栏目ID',
+          label: '栏目',
           prop: 'categoryId',
+          width: '120',
           dicUrl: '/news/articlecategory/getCategoryType',
           dicData: [],
           dicProp: { label: 'name', value: 'id' }
@@ -463,6 +475,7 @@ export default {
           hide: true
         }, {
           label: '生成URL',
+          width: '240',
           prop: 'url'
         }, {
           label: '缩略图',
@@ -521,7 +534,7 @@ export default {
         }, {
           label: '创建时间',
           prop: 'createTime',
-          width: '200px'
+          width: '100px'
         }],
       tableData: [],
       page: {
@@ -659,6 +672,10 @@ export default {
         inventedNum: 0
       }
       this.form.body = ''
+      this.$nextTick(() => {
+        this.$refs.ueditor.setEnabled()
+        this.$refs.ueditor.setContent(this.form.body)
+      })
       // this.init()
     },
     /**
@@ -669,6 +686,8 @@ export default {
       this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
+        console.log('data.data.data', data)
+        this.ueValue = data.data.data.body
         // this.init()
         this.$nextTick(() => {
           this.$refs.ueditor.setDisabled()
@@ -686,6 +705,7 @@ export default {
       getObj(row.id).then(data => {
         this.form = data.data.data
         console.log('data.data.data', data)
+        this.ueValue = data.data.data.body
         // this.init()
         this.$nextTick(() => {
           this.$refs.ueditor.setEnabled()

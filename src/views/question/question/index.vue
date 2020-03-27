@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-14 14:57:28
+ * @LastEditTime: 2020-03-20 10:09:53
  * @Description: 题目表管理
  -->
 <template>
@@ -13,6 +13,69 @@
       <!--题目类容-->
       <el-form-item label="题目类容:" label-width="80px">
         <el-input v-model="searchForm.stem" type="text" size="small" placeholder="请输入题目类容" />
+      </el-form-item>
+      <el-form-item label="所属课程" label-width="80px">
+        <el-select
+          v-model="searchForm.courseId"
+          :disabled="operationStatus === 1"
+          clearable
+          class="question-input"
+          placeholder="请选择所属课程"
+          size="small"
+          @change="getLessonList('searchForm')"
+        >
+          <el-option
+            v-for="item in courseList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item v-if="lessonList.length>0" label="所属课时" label-width="80px">
+        <el-select
+          v-model="searchForm.lessonId"
+          :disabled="operationStatus === 1"
+          clearable
+          class="question-input"
+          placeholder="请选择所属课时"
+          size="small"
+        >
+          <el-option
+            v-for="item in lessonList"
+            :key="item.id"
+            :label="item.title"
+            :value="item.id"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="题目题型:" label-width="80px">
+        <single-change
+          v-model="searchForm.typeId"
+          :disabled="operationStatus === 1"
+          :dic-prop="{ label: 'name', value: 'id' }"
+          dic-url="/question/questiontype/getAllQuestionType"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="题目类型:" label-width="80px">
+        <single-change
+          v-model="searchForm.questionType"
+          :disabled="operationStatus === 1"
+          status-type="question_type"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="题目难度" label-width="80px">
+        <single-change
+          v-model="searchForm.difficulty"
+          :disabled="operationStatus === 1"
+          status-type="question_difficulty"
+          type="select"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -26,15 +89,39 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      :add-btn="false"
       :table-option.sync="tableOption"
-      @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+
+        <el-button
+          v-if="hasParentId"
+          type="warning"
+          icon="el-icon-back"
+          size="mini"
+          @click="handleBack"
+        >
+          返回
+        </el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="goto"
+        >批量录入</el-button>
+      </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
+          v-if="!hasParentId"
           type="text"
           icon="el-icon-edit"
           size="mini"
@@ -58,7 +145,7 @@
         <el-form ref="dataForm" :model="form" :rules="rules">
           <!--题目内容-->
           <el-col :span="24">
-            <el-form-item label="题目内容" prop="stem">
+            <el-form-item label="题目内容" prop="stem" :label-width="formLabelWidth">
               <el-input
                 v-model="form.stem"
                 :disabled="operationStatus === 1"
@@ -72,95 +159,79 @@
           </el-col>
           <!--所属年份-->
           <el-col :span="12">
-            <el-form-item label="所属年份" prop="year">
-              <el-input
+            <el-form-item label="所属年份" prop="year" :label-width="formLabelWidth">
+              <el-date-picker
                 v-model="form.year"
                 :disabled="operationStatus === 1"
+                type="year"
                 placeholder="请输入所属年份"
                 clearable
+                size="medium"
                 class="question-input"
               />
             </el-form-item>
           </el-col>
           <!--题目题型-->
           <el-col :span="12">
-            <el-form-item label="题目题型" prop="typeId">
-              <el-select
+            <el-form-item label="题目题型" prop="typeId" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.typeId"
                 :disabled="operationStatus === 1"
-                clearable
-                class="question-input"
-                placeholder="请选择题目题型"
-              >
-                <el-option
-                  v-for="item in questionListType"
-                  :key="item.name"
-                  :label="item.name"
-                  :value="item.id"
-                />
-              </el-select>
+                :dic-prop="{ label: 'name', value: 'id' }"
+                dic-url="/question/questiontype/getAllQuestionType"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--题目类型-->
           <el-col :span="12">
-            <el-form-item label="题目类型" prop="questionType">
-              <el-select
+            <el-form-item label="题目类型" prop="questionType" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.questionType"
                 :disabled="operationStatus === 1"
-                clearable
-                class="question-input"
-                placeholder="请选择题目类型"
-              >
-                <el-option
-                  v-for="item in DIC.typeList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="question_type"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--题目难度-->
           <el-col :span="12">
-            <el-form-item label="题目难度" prop="difficulty">
-              <el-select
+            <el-form-item label="题目难度" prop="difficulty" :label-width="formLabelWidth">
+              <single-change
                 v-model="form.difficulty"
                 :disabled="operationStatus === 1"
-                clearable
-                class="question-input"
-                placeholder="请选择题目难度"
-              >
-                <el-option
-                  v-for="item in DIC.difficultyList"
-                  :key="item.label"
-                  :label="item.label"
-                  :value="item.value"
-                />
-              </el-select>
+                status-type="question_difficulty"
+                type="select"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--题目分值-->
           <el-col :span="12">
-            <el-form-item label="题目分值" prop="score">
+            <el-form-item label="题目分值" prop="score" :label-width="formLabelWidth">
               <el-input
                 v-model="form.score"
                 :disabled="operationStatus === 1"
                 placeholder="请输入题目分值"
                 clearable
+                size="medium"
                 class="question-input"
               />
             </el-form-item>
           </el-col>
           <!--所属课程-->
           <el-col :span="12">
-            <el-form-item label="所属课程" prop="courseId">
+            <el-form-item label="所属课程" prop="courseId" :label-width="formLabelWidth">
               <el-select
                 v-model="form.courseId"
                 :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
                 placeholder="请选择所属课程"
-                @change="getLessonList"
+                size="medium"
+                @change="getLessonList('form')"
               >
                 <el-option
                   v-for="item in courseList"
@@ -172,13 +243,14 @@
             </el-form-item>
           </el-col>
           <!--所属课时-->
-          <el-col :span="24">
-            <el-form-item label="所属课时" prop="lessonId">
+          <el-col v-if="form.courseId!=null" :span="24">
+            <el-form-item label="所属课时" prop="lessonId" :label-width="formLabelWidth">
               <el-select
                 v-model="form.lessonId"
                 :disabled="operationStatus === 1"
                 clearable
                 class="question-input"
+                size="medium"
                 placeholder="请选择所属课时"
               >
                 <el-option
@@ -197,12 +269,13 @@
             :key="index"
           >
             <el-col :span="20">
-              <el-form-item :label="'选项'+ letterArray[index]">
+              <el-form-item :label="'选项'+ letterArray[index]" :label-width="formLabelWidth">
                 <el-input
                   v-model="singleArray[index]"
                   :disabled="operationStatus === 1"
                   :autosize="{ minRows: 2, maxRows: 6}"
                   type="textarea"
+                  size="medium"
                   class="question-textarea"
                 />
               </el-form-item>
@@ -219,7 +292,7 @@
           </el-col>
           <!-- 题目答案 -->
           <el-col v-if="form.typeId != 7" :span="24">
-            <el-form-item label="题目答案" prop="answer">
+            <el-form-item label="题目答案" prop="answer" :label-width="formLabelWidth">
               <!-- 非选择题 -->
               <el-input
                 v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 5"
@@ -229,17 +302,20 @@
                 type="textarea"
                 placeholder="请输入题目答案"
                 clearable
+                size="medium"
                 class="question-textarea"
               />
               <!-- 选择题 -->
               <el-radio-group
                 v-if="form.typeId === 1"
                 v-model="form.answer"
+                size="medium"
                 :disabled="operationStatus === 1"
               >
                 <el-radio
                   v-for="(item, index) in singleArray"
                   :key="index"
+                  size="medium"
                   :label="letterArray[index]"
                 >{{ letterArray[index] }}</el-radio>
               </el-radio-group>
@@ -247,12 +323,14 @@
               <el-checkbox-group
                 v-if="form.typeId === 2 || form.typeId === 3"
                 v-model="checkArray"
+                size="medium"
                 :disabled="operationStatus === 1"
               >
                 <el-checkbox
                   v-for="(item, index) in singleArray"
                   :key="index"
                   :value="index"
+                  size="medium"
                   :label="letterArray[index]"
                 >{{ letterArray[index] }}</el-checkbox>
               </el-checkbox-group>
@@ -260,22 +338,24 @@
               <el-radio-group
                 v-if="form.typeId === 5"
                 v-model="form.answer"
+                size="medium"
                 :disabled="operationStatus === 1"
               >
-                <el-radio :label="'true'">正确</el-radio>
-                <el-radio :label="'false'">错误</el-radio>
+                <el-radio :label="'true'" size="medium">正确</el-radio>
+                <el-radio :label="'false'" size="medium">错误</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <!--题目解析-->
           <el-col :span="24">
-            <el-form-item label="题目解析" prop="analysis">
+            <el-form-item label="题目解析" prop="analysis" :label-width="formLabelWidth">
               <el-input
                 v-model="form.analysis"
                 :autosize="{ minRows: 2, maxRows: 6}"
                 type="textarea"
                 placeholder="请输入题目解析"
                 clearable
+                size="medium"
                 class="question-textarea"
                 :disabled="operationStatus === 1"
               />
@@ -291,8 +371,7 @@
         </el-form>
       </el-row>
       <div slot="footer" class="doalog-footer">
-        <el-button type="success" size="small" @click="create('dataForm')">保 存</el-button>
-        <el-button type="warning" size="small" @click="resetForm('dataForm')">重 置</el-button>
+        <el-button type="primary" size="small" @click="create('dataForm')">保 存</el-button>
         <el-button size="small" @click="handleClose('dataForm')">取 消</el-button>
       </div>
     </el-dialog>
@@ -306,9 +385,7 @@ import {
   putObj,
   delObj,
   getCourseList,
-  getLessonList,
-  getAllQuestion
-} from '@/api/question/question'
+  getLessonList } from '@/api/question/question'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -333,38 +410,7 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      typeList: [
-        {
-          label: '练习题',
-          value: 1
-        },
-        {
-          label: '历年真题',
-          value: 2
-        }
-      ],
-      difficultyList: [
-        {
-          label: '简单',
-          value: 1
-        },
-        {
-          label: '中等',
-          value: 2
-        },
-        {
-          label: '复杂',
-          value: 3
-        },
-        {
-          label: '极难',
-          value: 4
-        }
-      ]
-    }
     return {
-      DIC: DIC,
       tableKey: 0,
       tableLoading: false,
       tearcherList: [],
@@ -378,13 +424,7 @@ export default {
       tableOption: [
         {
           label: '题型',
-          prop: 'typeId',
-          // dicUrl: `/question/questiontype/getAllQuestion`,
-          // dicData: "typeId",
-          // props: {
-          //   label: "name",
-          //   value: "id"
-          // }
+          prop: 'questionTypeName',
           width: 100
         },
         {
@@ -394,7 +434,8 @@ export default {
         {
           label: '题目类型',
           prop: 'questionType',
-          dicData: DIC.typeList,
+          dicUrl: 'question_type',
+          dicData: [],
           width: 100
         },
         {
@@ -410,7 +451,8 @@ export default {
         {
           label: '难度',
           prop: 'difficulty',
-          dicData: DIC.difficultyList,
+          dicUrl: 'question_difficulty',
+          dicData: [],
           width: 80
         },
         {
@@ -448,7 +490,17 @@ export default {
       formLabelWidth: '90px',
       rules: {
         // 表单校验
-      }
+        typeId: [{ required: true, message: '请选择题目题型', trigger: 'blur' }],
+        stem: [{ required: true, message: '请输入题目内容', trigger: 'blur' }],
+        questionType: [{ required: true, message: '请选择题目题型', trigger: 'blur' }],
+        year: [{ required: true, message: '请输入年份', trigger: 'blur' }],
+        answer: [{ required: true, message: '请输入参考答案', trigger: 'blur' }],
+        difficulty: [{ required: true, message: '请输入难度', trigger: 'blur' }],
+        courseId: [{ required: true, message: '请选择所属课程', trigger: 'blur' }],
+        score: [{ required: true, message: '请输入题目分值', trigger: 'blur' }]
+      },
+      parentId: 0,
+      hasParentId: false
     }
   },
   computed: {
@@ -457,12 +509,19 @@ export default {
   created() {
     this.getList()
     this.getCourseList()
-    this.getQuestionType()
   },
   methods: {
+    goto() {
+      this.$router.push({
+        path: '/question/batchImport',
+        query: {
+          // courseId: row.id
+        }
+      })
+    },
     getList() {
       this.tableLoading = true
-      const param = { parentId: 0 }
+      const param = { parentId: this.parentId }
       fetchList(
         Object.assign(
           {
@@ -492,6 +551,7 @@ export default {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
           this.dialogPvVisible = false
+          this.tableLoading = true
           if (
             this.form.typeId === 1 ||
             this.form.typeId === 2 ||
@@ -517,7 +577,6 @@ export default {
             }
           }
           if (this.form.id != null) {
-            console.log(this.form)
             putObj(this.form).then(() => {
               this.$notify({
                 title: '成功',
@@ -525,7 +584,11 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
             })
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
             addObj(this.form).then(() => {
               this.$notify({
@@ -534,10 +597,12 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.getList()
             })
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
-          this.getList()
-          this.dialogPvVisible = false
         } else {
           return false
         }
@@ -554,17 +619,9 @@ export default {
     /**
      * 课时列表
      */
-    getLessonList() {
-      getLessonList(this.form.courseId).then(res => {
+    getLessonList(type) {
+      getLessonList(this[type].courseId).then(res => {
         this.lessonList = res.data
-      })
-    },
-    /**
-     * 题目题型
-     */
-    getQuestionType() {
-      getAllQuestion().then(res => {
-        this.questionListType = res.data
       })
     },
     /**
@@ -616,12 +673,14 @@ export default {
       this.operationStatus = 2
     },
     handleAnalysisList(row, index) {
-      this.$router.push({
-        path: '/question/question/list/index',
-        query: {
-          parentId: row.id
-        }
-      })
+      this.parentId = row.id
+      this.hasParentId = true
+      this.getList()
+    },
+    handleBack(row, index) {
+      this.parentId = 0
+      this.hasParentId = false
+      this.getList()
     },
     handleDelete(row, index) {
       var _this = this
@@ -645,33 +704,15 @@ export default {
     },
     handleCreate() {
       this.dialogPvVisible = true
-      this.form = {}
-    },
-    /**
-     * 文件上传方法
-     * @param file
-     * @returns {boolean|boolean}
-     */
-    beforeUpload(file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
-
-      if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+      this.form = {
+        parentId: this.parentId,
+        typeId: 1,
+        questionType: '1',
+        difficulty: '1',
+        score: 0,
+        year: new Date().getFullYear() + ''
       }
-      return isJPG && isLt2M
     },
-    /**
-     * 文件上传成功后方法
-     * @param res
-     * @param file
-     */
-    handleSuccess(res, file) {
-      console.log('res', res)
-      // this.$qiniuAddr + res.key
-    },
-    handleRemove() {},
-    getNodeData() {},
     optionAdd() {
       if (this.singleArray.length < this.letterArray.length) {
         this.singleArray.push('')

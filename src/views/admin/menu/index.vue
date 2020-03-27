@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 12:01:46
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-15 13:44:46
+ * @LastEditTime: 2020-03-20 09:40:45
  * @Description: 菜单管理
  -->
 <template>
@@ -15,6 +15,8 @@
       :table-option.sync="tableOption"
       :add-btn="false"
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+      @refresh-change="handleFilter"
+      @page-change="getList"
     >
       <template slot="menuLeft">
         <el-button
@@ -177,7 +179,6 @@
               <el-input
                 v-model="form.permission"
                 auto-complete="off"
-                type="number"
                 placeholder="请输入权限标识"
                 :disabled="operationStatus === 1"
               />
@@ -400,7 +401,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.parentId).then(() => {
+        delObj(row.id).then(() => {
           this.getList()
           this.resetForm()
           this.$notify({
@@ -461,6 +462,9 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {}
+    },
+    handleFilter() {
+      this.getList()
     },
     handleView(row) {
       this.dialogPvVisible = true

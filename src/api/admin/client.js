@@ -1,15 +1,8 @@
-/*
- * @Date: 2020-02-13 15:15:03
- * @LastEditors: Donkey
- * @Author: xw
- * @LastEditTime: 2020-03-23 09:05:06
- * @Description: 用户管理api
- */
 import request from '@/utils/request'
 
 export function fetchList(query) {
   return request({
-    url: '/admin/user/page',
+    url: '/admin/client/page',
     method: 'get',
     params: query
   })
@@ -17,7 +10,7 @@ export function fetchList(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/user',
+    url: '/admin/client/',
     method: 'post',
     data: obj
   })
@@ -25,29 +18,21 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/user/' + id,
+    url: '/admin/client/' + id,
     method: 'get'
   })
 }
 
 export function delObj(id) {
   return request({
-    url: '/admin/user/' + id,
+    url: '/admin/client/' + id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/user',
-    method: 'put',
-    data: obj
-  })
-}
-
-export function updateInfo(obj) {
-  return request({
-    url: '/admin/user/edit',
+    url: '/admin/client',
     method: 'put',
     data: obj
   })

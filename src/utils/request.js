@@ -31,7 +31,7 @@ service.interceptors.request.use(
     if (token && !isToken) {
       config.headers['Authorization'] = 'Bearer ' + token// token
     }
-    if (TENANT_ID) {
+    if (TENANT_ID != null) {
       config.headers['TENANT-ID'] = TENANT_ID // 租户ID
     }
 

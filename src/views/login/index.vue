@@ -139,6 +139,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch('user/fedLogOut')
     this.refreshCode()
   },
   methods: {
