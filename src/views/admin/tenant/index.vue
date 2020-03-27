@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-04 15:29:44
+ * @LastEditTime: 2020-03-27 09:47:50
  * @Description: 租户管理
  -->
 <template>
@@ -192,6 +192,34 @@
               />
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="telephone"
+              label="联系电话:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.telephone"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入联系电话"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="address"
+              label="联系地址:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.address"
+                autocomplete="off"
+                :disabled="operationStatus === 1"
+                placeholder="请输入联系地址"
+              />
+            </el-form-item>
+          </el-col>
           <el-col>
             <el-form-item
               prop="adminFlag"
@@ -222,11 +250,10 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col v-if="operationStatus === 0">
             <el-form-item
               prop="templateId"
               label="初始化:"
-              v-if="whichHandleWindow === 'new'"
               :label-width="formLabelWidth"
             >
               <single-change
@@ -298,7 +325,6 @@ export default {
   },
   data() {
     return {
-      whichHandleWindow: 'new',
       hideVisible: false,
       tableOption: [
         {
@@ -314,6 +340,15 @@ export default {
           label: '租户编号',
           hide: true,
           prop: 'code'
+        },
+        {
+          label: '联系电话',
+          prop: 'telephone'
+        },
+        {
+          label: '联系地址',
+          hide: false,
+          prop: 'address'
         },
         {
           label: '开始时间',
@@ -491,12 +526,14 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
+      this.form = {
+        adminFlag: '0',
+        templateFlag: '0'
+      }
     },
     create() {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.whichHandleWindow = 'new'
           this.dialogPvVisible = false
           this.tableLoading = true
           addObj(this.form)
@@ -516,7 +553,6 @@ export default {
       })
     },
     handleUpdate(row) {
-      this.whichHandleWindow = 'edit'
       this.dialogPvVisible = true
       this.operationStatus = 2
       this.form = row
