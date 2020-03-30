@@ -179,7 +179,6 @@
               <el-input
                 v-model="form.permission"
                 auto-complete="off"
-                type="number"
                 placeholder="请输入权限标识"
                 :disabled="operationStatus === 1"
               />

@@ -111,6 +111,11 @@
           size="mini"
           @click="handleCreate"
         >新 增</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="goto"
+        >批量录入</el-button>
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
@@ -506,6 +511,14 @@ export default {
     this.getCourseList()
   },
   methods: {
+    goto() {
+      this.$router.push({
+        path: '/question/batchImport',
+        query: {
+          // courseId: row.id
+        }
+      })
+    },
     getList() {
       this.tableLoading = true
       const param = { parentId: this.parentId }

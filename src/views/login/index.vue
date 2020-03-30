@@ -95,7 +95,6 @@
 <script>
 // import { validUsername } from '@/utils/validate'
 import { randomLenNum } from '@/utils/index'
-import { clearStore } from '@/utils/store'
 export default {
   name: 'Login',
   data() {
@@ -140,7 +139,7 @@ export default {
     }
   },
   created() {
-    clearStore()
+    this.$store.dispatch('user/fedLogOut')
     this.refreshCode()
   },
   methods: {

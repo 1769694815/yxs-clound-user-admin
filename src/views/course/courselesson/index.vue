@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: zhoum
  * @Author: xw
- * @LastEditTime: 2020-03-23 17:24:56
+ * @LastEditTime: 2020-03-27 16:25:57
  * @Description: 文件管理
  -->
 <template>
@@ -457,7 +457,7 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.form = {
-        free: '0',
+        free: '1',
         status: '1',
         type: '1',
         sort: 0
