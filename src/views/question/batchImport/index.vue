@@ -23,7 +23,7 @@
           <el-dropdown split-button type="primary" size="mini" style="margin-right: 20px" @command="handleQuestionType">
             {{ questionTypeName }}
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item v-for="(item, index) in questionType" :key="index" :command="{id:item.id,label:item.label}">{{ item.label }}</el-dropdown-item>
+              <el-dropdown-item v-for="(item, index) in questionType" :key="index" :command="{id:item.value,label:item.label}">{{ item.label }}</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <div style="margin-right: 1px">题目分值：</div>
@@ -732,12 +732,12 @@ export default {
 
               console.log('optionsContent',optionsContent)
               dataFormat.push({
-                questionType:data[i].type,
+                 typeId:data[i].type,
                 stem:data[i].question,
                 answer:data[i].key,
                 difficulty:difficulty,
                 optionsContent:optionsContent,
-                typeId:that.questionTypeId,
+                questionType :that.questionTypeId,
                 parentId:0,
                 score:that.score,
                 courseId:that.courseId
