@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-27 09:47:50
+ * @LastEditTime: 2020-03-30 17:26:02
  * @Description: 租户管理
  -->
 <template>
@@ -124,11 +124,20 @@
         >删除
         </el-button>
         <el-button
+          v-if="permissions['orders_tenantorder_add']"
           type="text"
           icon="el-icon-view"
           size="mini"
-          @click="chongZhi(scope.row)"
+          @click="handleRecharge(scope.row)"
         >充值
+        </el-button>
+        <el-button
+          v-if="permissions['orders_tenantorder_add']"
+          type="text"
+          icon="el-icon-view"
+          size="mini"
+          @click="handleRechargeList(scope.row)"
+        >充值记录
         </el-button>
       </template>
     </Xtable>
@@ -187,7 +196,7 @@
               <el-input
                 v-model="form.code"
                 autocomplete="off"
-                :disabled="operationStatus === 1"
+                :disabled="operationStatus === 1||operationStatus === 2"
                 placeholder="请输入租户编号"
               />
             </el-form-item>
@@ -220,7 +229,24 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="discount"
+              label="租户折扣:"
+              :label-width="formLabelWidth"
+            >
+              <el-input-number
+                v-model="form.discount"
+                autocomplete="off"
+                placeholder="请输入折扣"
+                :disabled="operationStatus === 1"
+                :min="0"
+                :max="10"
+                style="width: 100%;"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item
               prop="adminFlag"
               label="总后台:"
@@ -235,7 +261,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col>
+          <el-col :span="12">
             <el-form-item
               prop="templateFlag"
               label="租户模板:"
@@ -250,7 +276,7 @@
               />
             </el-form-item>
           </el-col>
-          <el-col v-if="operationStatus === 0">
+          <el-col v-if="operationStatus === 0" :span="12">
             <el-form-item
               prop="templateId"
               label="初始化:"
@@ -300,11 +326,130 @@
         >取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 弹窗 -->
+    <el-dialog
+      :visible.sync="rechargeDialogPvVisible"
+      :title="充值"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
+      >
+        <el-form
+          ref="dataForm"
+          :rules="rechargeFormRules"
+          :model="form"
+        >
+          <el-col :span="24">
+            <el-form-item
+              prop="name"
+              label="租户名称:"
+              :label-width="formLabelWidth"
+            >
+              <el-input
+                v-model="form.name"
+                autocomplete="off"
+                :disabled="true"
+                placeholder="请输入租户名称"
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item
+              prop="discount"
+              label="租户折扣:"
+              :label-width="formLabelWidth"
+            >
+              <el-input-number
+                v-model="form.discount"
+                autocomplete="off"
+                placeholder="请输入折扣"
+                :disabled="true"
+                :min="0"
+                :max="10"
+                style="width: 100%;"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="itemType"
+              label="充值类型:"
+              :label-width="formLabelWidth"
+            >
+              <single-change
+                v-model="form.itemType"
+                :disabled="operationStatus === 1"
+                status-type="tenant_item_type"
+                type="select"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="payWay"
+              label="支付方式:"
+              :label-width="formLabelWidth"
+            >
+              <single-change
+                v-model="form.payWay"
+                :disabled="operationStatus === 1"
+                status-type="tenant_pay_way"
+                type="select"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item
+              prop="amount"
+              label="充值金额:"
+              :label-width="formLabelWidth"
+            >
+              <el-input-number
+                v-model="form.amount"
+                autocomplete="off"
+                placeholder="请输入金额"
+                :disabled="operationStatus === 1"
+                :min="0"
+                style="width: 100%;"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          v-if="operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="recharge"
+        >保 存</el-button>
+        <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改</el-button>
+        <el-button
+          size="small"
+          @click="rechargeDialogPvVisible = false"
+        >取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
+import { createOrder } from '@/api/orders/tenantorder'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
 export default {
@@ -340,6 +485,11 @@ export default {
           label: '租户编号',
           hide: true,
           prop: 'code'
+        },
+        {
+          label: '租户折扣',
+          hide: false,
+          prop: 'discount'
         },
         {
           label: '联系电话',
@@ -412,6 +562,7 @@ export default {
       tableKey: 0,
       tableLoading: false,
       dialogPvVisible: false,
+      rechargeDialogPvVisible: false,
       operationStatus: 0,
       formRules: {
         name: [
@@ -422,6 +573,13 @@ export default {
           {
             required: true,
             message: '请输入租户编号',
+            trigger: 'blur'
+          }
+        ],
+        discount: [
+          {
+            required: true,
+            message: '请输入租户折扣',
             trigger: 'blur'
           }
         ],
@@ -470,6 +628,17 @@ export default {
           { required: true, message: '请上传租户LOGO', trigger: 'change' }
         ]
       },
+      rechargeFormRules: {
+        itemType: [
+          { required: true, message: '请选择充值类型', trigger: 'change' }
+        ],
+        payWay: [
+          { required: true, message: '请选择支付方式', trigger: 'change' }
+        ],
+        amount: [
+          { required: true, message: '请输入充值金额', trigger: 'change' }
+        ]
+      },
       form: {},
       formLabelWidth: '90px',
       admin_systenant_add: false,
@@ -487,9 +656,6 @@ export default {
     this.getList()
   },
   methods: {
-    chongZhi() {
-      console.log('')
-    },
     getList() {
       this.tableLoading = true
       fetchList(
@@ -523,10 +689,63 @@ export default {
       this.dialogPvVisible = true
       this.operationStatus = 1
     },
+    handleRechargeList(row) {
+      this.$router.push({
+        path: '/orders/tenantorder',
+        query: {
+          tenantId: row.id
+        }
+      })
+    },
+    handleRecharge(row) {
+      this.operationStatus = 0
+      this.form = row
+      if (this.form.discount == null) {
+        this.$message({
+          showClose: true,
+          message: '请先完善租户折扣',
+          type: 'error'
+        })
+        return
+      }
+      this.form.itemType = '0'
+      this.form.payWay = '0'
+      this.rechargeDialogPvVisible = true
+    },
+    recharge() {
+      this.$refs.dataForm.validate(valid => {
+        if (valid) {
+          var _this = this
+          this.$confirm('是否确认给' + _this.form.name + '充值' + _this.form.amount + '元', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
+            .then(function() {
+              _this.tableLoading = true
+              _this.form.tenantId = _this.form.id
+              return createOrder(_this.form)
+            })
+            .then(data => {
+              _this.rechargeDialogPvVisible = false
+              _this.tableLoading = false
+              _this.$message({
+                showClose: true,
+                message: '充值成功',
+                type: 'success'
+              })
+              _this.getList()
+            }).catch(() => {
+              _this.tableLoading = false
+            })
+        }
+      })
+    },
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
       this.form = {
+        discount: 0,
         adminFlag: '0',
         templateFlag: '0'
       }
