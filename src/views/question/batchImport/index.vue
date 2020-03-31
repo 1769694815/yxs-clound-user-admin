@@ -424,11 +424,9 @@ export default {
     const CDN7 = '/batchImport/js/bootstrap.min.js'
     this.loadScript([CDN1, CDN7, CDN2, CDN3, CDN4, CDN8, CDN9, CDN5, CDN6])
     remote('question_difficulty').then(function(response) {
-      console.log('response555', response)
       that.questionDifficulty = response.data.data
     })
     remote('question_type').then(function(response) {
-      console.log('response666', response)
       that.questionType = response.data.data
     })
   },
@@ -491,7 +489,6 @@ export default {
     /* eslint-disable */
     admin_importQuestionsOnline(){
       const that=this;
-      console.log(that.questionDifficulty)
       const token = this.access_token
       var introjs =  introJs();
       $(document).ready( function() {
@@ -548,7 +545,6 @@ export default {
 
         // 点击查看例题
         $("#showExample").click(function (e) {
-          console.log('showExample')
           e.stopPropagation();
           e.preventDefault();
           var newHeight = $('.batch-input-box').height() / 2 - 40;
@@ -694,7 +690,6 @@ export default {
             return false;
           }else{
             var data=serializeFn();
-            console.log('data is',data,that.questionDifficulty);
 
             const dataFormat=[];
             for(let i=0;i<data.length;i++){
@@ -724,13 +719,12 @@ export default {
                     content:content
                   });
                 }
-                console.log('arr',arr)
                 optionsContent=JSON.stringify(arr)
               }else {
                 optionsContent=undefined
               }
 
-              console.log('optionsContent',optionsContent)
+
               dataFormat.push({
                  typeId:data[i].type,
                 stem:data[i].question,
@@ -744,7 +738,7 @@ export default {
               });
             }
 
-            console.log('dataFormat',dataFormat)
+
             $("#import").hide();
             $("#import_questions").show();
             $.ajax({
@@ -1165,7 +1159,7 @@ export default {
             "disorder":1
           };
           // 若不存在该项则不存入
-          console.log('data', data,index)
+
           for (let i in data[index]) {
             if(data[index][i]==""||!data[index][i]){
               delete data[index][i];
@@ -1217,7 +1211,6 @@ export default {
 
       // 尝试新的文本编辑器
       function initFroala() {
-        console.log('$', $)
         $('#text-input').froalaEditor({
           key: 'AODOd2HLEBFZOTGHW==',
           charCounterCount: false,
@@ -1245,7 +1238,6 @@ export default {
             var questionArr = []
             var detail = []
             var contentText = editor.html.get().replace(/<p>/g, '\n\n').replace(/<\/p>/g, '\n\n').replace(/<br>/g, '\n\n').replace(/auto;">/g, 'auto;">\n\n').split('\n')
-            console.log('contentText', contentText)
             // 去除空格
             contentText.forEach(function(value) {
               if (value) {
