@@ -103,6 +103,18 @@ export const constantRoutes = [
       component: () => import('@/views/question/batchImport'),
       meta: { title: '批量录入' }
     }]
+  },
+  {
+    path: '/orders/tenantorder',
+    component: Layout,
+    redirect: '/orders/tenantorder/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'tenantorder',
+      component: () => import('@/views/orders/tenantorder'),
+      meta: { title: '充值记录' }
+    }]
   }
 
 ]

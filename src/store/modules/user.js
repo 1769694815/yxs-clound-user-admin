@@ -224,6 +224,8 @@ const actions = {
         const data = response.data
         commit('SET_ACCESS_TOKEN', data.access_token)
         commit('SET_REFRESH_TOKEN', data.refresh_token)
+        console.log('新插入的租户id', data.tenant_id)
+        commit('SET_TENANTID', data.tenant_id)
         commit('SET_EXPIRES_IN', data.expires_in)
         resolve()
       }).catch(error => {
@@ -239,8 +241,6 @@ const actions = {
         const data = response.data.data || {}
         commit('SET_USER_INFO', data.sysUser)
         commit('SET_ROLES', data.roles || [])
-        console.log('新插入的租户id', data.sysUser.tenantId)
-        commit('SET_TENANTID', data.sysUser.tenantId)
         commit('SET_PERMISSIONS', data.permissions || [])
         resolve(data)
       }).catch(error => {
