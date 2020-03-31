@@ -82,7 +82,7 @@
                           <span>答案:ABCD</span><br>
                           <span>解析:请仔细阅读交规
                             <span class="txt-red">(若无解析本行可不填)</span></span><br>
-                          <span>难度:普通</span><br>
+                          <span>难度:中等</span><br>
 
                         </p>
                       </div>
@@ -97,7 +97,7 @@
                           <span>答案:对</span><br>
                           <span>解析:无
                             <span class="txt-red">(若无解析本行可不填)</span></span><br>
-                          <span>难度:困难</span><br>
+                          <span>难度:复杂</span><br>
 
                         </p>
                       </div>
@@ -128,7 +128,7 @@
                           <span>答案:全球化使国家主权受到一定的制约；全球化对政府的治理提出了更高的要求。</span><br>
                           <span>解析:无
                             <span class="txt-red">(若无解析本行可不填)</span></span><br>
-                          <span>难度:普通</span><br>
+                          <span>难度:极难</span><br>
 
                         </p>
                       </div>
@@ -169,7 +169,7 @@
                           <span>答案:ABCD</span><br>
                           <span>解析:请仔细阅读交规
                             <span style="visibility: hidden;">(若无解析本行可不填)</span></span><BR style="visibility: hidden;" />
-                          <span>难度:普通</span><br>
+                          <span>难度:中等</span><br>
 
                         </p>
                       </div>
@@ -183,7 +183,7 @@
                           <span>答案:对</span><br>
                           <span>解析:无
                             <span style="visibility: hidden;">(若无解析本行可不填)</span></span><BR style="visibility: hidden;" />
-                          <span>难度:困难</span><br>
+                          <span>难度:复杂</span><br>
 
                         </p>
                       </div>
@@ -214,7 +214,7 @@
                           />
                           <span>解析:无
                             <span style="visibility: hidden;">(若无解析本行可不填)</span></span><BR style="visibility: hidden;" />
-                          <span>难度:普通</span><br>
+                          <span>难度:中等</span><br>
 
                         </p>
                       </div>
@@ -757,7 +757,7 @@ export default {
               },
               dataType: "json",
               contentType: "application/json",
-              url: "/question/question",
+              url: "/question/question/bulk",
               data: JSON.stringify(dataFormat),
               success: function(msg){
                 $("#import_questions").hide();
@@ -2370,7 +2370,7 @@ span.title-font {
 .batch-import-top{
   display: flex;
   align-items: center;
-  padding:0 0 15px 15px;
+  padding-bottom: 15px;
 }
 .textarea-group::after {
   content: '';
