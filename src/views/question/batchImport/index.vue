@@ -745,7 +745,6 @@ export default {
             }
 
             console.log('dataFormat',dataFormat)
-            // var dataForm=JSON.stringify(data[0]);
             $("#import").hide();
             $("#import_questions").show();
             $.ajax({
