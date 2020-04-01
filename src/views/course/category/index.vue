@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 16:03:06
+ * @LastEditTime: 2020-04-01 16:48:48
  * @Description: 文件管理
  -->
 <template>
@@ -227,7 +227,7 @@ import {
   addObj,
   putObj,
   delObj,
-  getCategoryTreeByNotType
+  getCategoryTree
 } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
@@ -396,27 +396,15 @@ export default {
     ...mapGetters(['permissions'])
   },
   watch: {
-    // 联动需要监听主数据
-    'form.groupType': function(val) {
-      if (!val) {
-        this.form.parentId = ''
-        this.treeData = []
-      } else {
-        this.getCategoryTreeByNotType(val)
-      }
-    }
   },
   created() {
     this.getList()
+    this.getCategoryTree()
     this.dialogPvVisible = false
   },
   methods: {
-    groupTypeChange(type) {
-      this.form.parentId = ''
-      this.getCategoryTreeByNotType(type)
-    },
-    getCategoryTreeByNotType(type) {
-      getCategoryTreeByNotType(type).then(res => {
+    getCategoryTree() {
+      getCategoryTree().then(res => {
         this.treeData = res.data.data
       })
     },
