@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 12:01:21
+ * @LastEditTime: 2020-04-01 18:13:47
  * @Description: 文件管理
  -->
 <template>
@@ -57,6 +57,7 @@
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
+      :add-btn="permissions['classroom_category_add']"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
@@ -66,7 +67,7 @@
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
-        <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+        <el-button v-if="permissions['classroom_category_edit']" type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
           type="text"
           size="mini"
@@ -123,7 +124,12 @@
             <el-form-item label="字体颜色" prop="fontColor">
               <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
               <!-- 颜色格式： hsl / hsv / hex / rgb -->
-              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" size="medium" />
+              <color-picker
+                v-model="form.fontColor"
+                color-format="rgb"
+                :disabled="operationStatus === 1"
+                size="medium"
+              />
             </el-form-item>
           </el-col>
           <!--是否最热-->
@@ -161,7 +167,6 @@
                 size="medium"
               />
             </el-form-item>
-
           </el-col>
           <!--是否面授-->
           <el-col :span="12">
@@ -239,11 +244,7 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image
-                v-model="form.icon"
-                status="8"
-                :disabled="operationStatus === 1"
-              />
+              <single-image v-model="form.icon" status="8" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -430,8 +431,7 @@ export default {
   computed: {
     ...mapGetters(['permissions'])
   },
-  watch: {
-  },
+  watch: {},
   created() {
     this.getList()
     this.dialogPvVisible = false
@@ -475,31 +475,35 @@ export default {
           this.dialogPvVisible = false
           this.tableLoading = true
           if (this.form.id != null) {
-            putObj(this.form).then(() => {
-              this.tableLoading = false
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+            putObj(this.form)
+              .then(() => {
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
-            addObj(this.form).then(() => {
-              this.tableLoading = false
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
+            addObj(this.form)
+              .then(() => {
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
         } else {
           return false

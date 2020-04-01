@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 16:48:48
+ * @LastEditTime: 2020-04-01 19:59:13
  * @Description: 文件管理
  -->
 <template>
@@ -371,7 +371,7 @@ export default {
           { required: true, message: '请选择是否置顶', trigger: 'change' }
         ],
         columnFlag: [
-          { required: true, message: '请选择是否推荐栏目', trigger: 'change' }
+          { required: true, message: '请选择是否首页顶部导航', trigger: 'change' }
         ],
         recommendedFlag: [
           { required: true, message: '请选择是否首页推荐', trigger: 'change' }
