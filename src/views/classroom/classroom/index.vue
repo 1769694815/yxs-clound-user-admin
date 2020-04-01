@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-23 12:30:19
+ * @LastEditTime: 2020-04-01 13:18:02
  * @Description: 文件管理
  -->
 <template>
@@ -13,6 +13,17 @@
       <!--班级名称-->
       <el-form-item label="班级名称:" label-width="80px">
         <el-input v-model="searchForm.title" type="text" size="small" placeholder="请输入班级名称" />
+      </el-form-item>
+      <!--课程分类-->
+      <el-form-item label="班级分类:" label-width="80px">
+        <Input-tree
+          v-model="searchForm.categoryId"
+          :tree-data="treeData"
+          :disabled="operationStatus === 1"
+          title="班级分类"
+          placeholder="请选择班级分类"
+          size="small"
+        />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
@@ -304,7 +315,7 @@ import {
 import { getCourseSimpleList } from '@/api/course/course'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
-import { getCategoryTreeByNotType } from '@/api/course/category'
+import { getCategoryTree } from '@/api/classroom/category'
 import CourseModal from './courseModal.vue'
 // import Tinymce from '@/components/Tinymce/index'
 import Ue from '@/components/ue/ueditor'
@@ -524,7 +535,7 @@ export default {
      * 班级分类
      */
     getCategoryTree() {
-      getCategoryTreeByNotType(2).then(res => {
+      getCategoryTree().then(res => {
         this.treeData = res.data.data
       })
     },

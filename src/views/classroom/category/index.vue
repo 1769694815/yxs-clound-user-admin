@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 16:03:06
+ * @LastEditTime: 2020-04-01 12:01:21
  * @Description: 文件管理
  -->
 <template>
@@ -30,6 +30,16 @@
           v-model="searchForm.topFlag"
           :disabled="operationStatus === 1"
           status-type="common_flag"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <!--分类类型-->
+      <el-form-item label="分类类型:" label-width="80px">
+        <single-change
+          v-model="searchForm.groupType"
+          :disabled="operationStatus === 1"
+          status-type="category_group_type"
           type="select"
           size="small"
         />
@@ -108,6 +118,14 @@
               />
             </el-form-item>
           </el-col>
+          <!--字体颜色-->
+          <el-col :span="12">
+            <el-form-item label="字体颜色" prop="fontColor">
+              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
+              <!-- 颜色格式： hsl / hsv / hex / rgb -->
+              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" size="medium" />
+            </el-form-item>
+          </el-col>
           <!--是否最热-->
           <el-col :span="12">
             <el-form-item label="是否最热" prop="hotFlag">
@@ -132,6 +150,31 @@
               />
             </el-form-item>
           </el-col>
+          <!--是否网课-->
+          <el-col :span="12">
+            <el-form-item label="是否网课" prop="onlineCourseFlag">
+              <single-change
+                v-model="form.onlineCourseFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+
+          </el-col>
+          <!--是否面授-->
+          <el-col :span="12">
+            <el-form-item label="是否面授" prop="faceToFaceFlag">
+              <single-change
+                v-model="form.faceToFaceFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
@@ -142,14 +185,6 @@
                 type="radio"
                 size="medium"
               />
-            </el-form-item>
-          </el-col>
-          <!--字体颜色-->
-          <el-col :span="12">
-            <el-form-item label="字体颜色" prop="fontColor">
-              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
-              <!-- 颜色格式： hsl / hsv / hex / rgb -->
-              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
@@ -178,7 +213,7 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item label="跳转类型">
+            <el-form-item label="跳转类型" prop="jumpType">
               <single-change
                 v-model="form.jumpType"
                 :disabled="true"
@@ -227,8 +262,8 @@ import {
   addObj,
   putObj,
   delObj,
-  getCategoryTreeByNotType
-} from '@/api/course/category'
+  getCategoryTree
+} from '@/api/classroom/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
 
@@ -396,32 +431,20 @@ export default {
     ...mapGetters(['permissions'])
   },
   watch: {
-    // 联动需要监听主数据
-    'form.groupType': function(val) {
-      if (!val) {
-        this.form.parentId = ''
-        this.treeData = []
-      } else {
-        this.getCategoryTreeByNotType(val)
-      }
-    }
   },
   created() {
     this.getList()
     this.dialogPvVisible = false
   },
   methods: {
-    groupTypeChange(type) {
-      this.form.parentId = ''
-      this.getCategoryTreeByNotType(type)
-    },
-    getCategoryTreeByNotType(type) {
-      getCategoryTreeByNotType(type).then(res => {
+    getCategoryTree() {
+      getCategoryTree().then(res => {
         this.treeData = res.data.data
       })
     },
     getList() {
       this.tableLoading = true
+      this.getCategoryTree()
       fetchList(
         Object.assign(
           {
@@ -539,7 +562,8 @@ export default {
         showFlag: '1',
         columnFlag: '0',
         recommendedFlag: '0',
-        jumpType: '1'
+        jumpType: '2',
+        sort: 0
       }
     }
   }
