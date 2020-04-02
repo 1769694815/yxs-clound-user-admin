@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 19:59:13
+ * @LastEditTime: 2020-04-02 11:20:02
  * @Description: 文件管理
  -->
 <template>
@@ -25,9 +25,27 @@
         />
       </el-form-item>
       <!--是否置顶-->
-      <el-form-item label="是否置顶:" label-width="130px">
+      <el-form-item label="是否置顶:" label-width="80px">
         <single-change
           v-model="searchForm.topFlag"
+          :disabled="operationStatus === 1"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="中部导航" prop="columnFlag" label-width="80px">
+        <single-change
+          v-model="searchForm.columnFlag"
+          :disabled="operationStatus === 1"
+          status-type="common_flag"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
+      <el-form-item label="推荐首页" prop="recommendedFlag" label-width="80px">
+        <single-change
+          v-model="searchForm.recommendedFlag"
           :disabled="operationStatus === 1"
           status-type="common_flag"
           type="select"
@@ -154,7 +172,7 @@
           </el-col>
           <!--APP顶部导航-->
           <el-col :span="12">
-            <el-form-item label="APP顶部导航" prop="columnFlag" label-width="120px">
+            <el-form-item label="中部导航" prop="columnFlag">
               <single-change
                 v-model="form.columnFlag"
                 :disabled="operationStatus === 1"
@@ -166,7 +184,7 @@
           </el-col>
           <!--APP首页分栏-->
           <el-col :span="12">
-            <el-form-item label="APP首页分栏" prop="recommendedFlag" label-width="140px">
+            <el-form-item label="推荐首页" prop="recommendedFlag">
               <single-change
                 v-model="form.recommendedFlag"
                 :disabled="operationStatus === 1"
@@ -301,16 +319,16 @@ export default {
           dicData: []
         },
         {
-          label: 'APP首页分栏',
-          prop: 'recommendedFlag',
+          label: '中部导航',
+          prop: 'columnFlag',
           overHidden: true,
           width: '120',
           dicUrl: 'common_flag',
           dicData: []
         },
         {
-          label: 'APP顶部导航',
-          prop: 'columnFlag',
+          label: '推荐首页',
+          prop: 'recommendedFlag',
           overHidden: true,
           width: '120',
           dicUrl: 'common_flag',
@@ -371,7 +389,7 @@ export default {
           { required: true, message: '请选择是否置顶', trigger: 'change' }
         ],
         columnFlag: [
-          { required: true, message: '请选择是否首页顶部导航', trigger: 'change' }
+          { required: true, message: '请选择是否中部导航', trigger: 'change' }
         ],
         recommendedFlag: [
           { required: true, message: '请选择是否首页推荐', trigger: 'change' }
@@ -437,10 +455,10 @@ export default {
     create(form) {
       this.$refs.dataForm.validate(valid => {
         if (valid) {
-          this.dialogPvVisible = false
           this.tableLoading = true
           if (this.form.id != null) {
             putObj(this.form).then(() => {
+              this.dialogPvVisible = false
               this.tableLoading = false
               this.$notify({
                 title: '成功',
@@ -454,6 +472,7 @@ export default {
             })
           } else {
             addObj(this.form).then(() => {
+              this.dialogPvVisible = false
               this.tableLoading = false
               this.$notify({
                 title: '成功',
