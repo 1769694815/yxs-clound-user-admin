@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 19:59:13
+ * @LastEditTime: 2020-04-01 18:13:47
  * @Description: 文件管理
  -->
 <template>
@@ -34,6 +34,16 @@
           size="small"
         />
       </el-form-item>
+      <!--分类类型-->
+      <el-form-item label="分类类型:" label-width="80px">
+        <single-change
+          v-model="searchForm.groupType"
+          :disabled="operationStatus === 1"
+          status-type="category_group_type"
+          type="select"
+          size="small"
+        />
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="small" @click="handleFilter">搜 索</el-button>
       </el-form-item>
@@ -47,6 +57,7 @@
       :table-data="tableData"
       :page="page"
       :table-option.sync="tableOption"
+      :add-btn="permissions['classroom_category_add']"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
@@ -56,7 +67,7 @@
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
-        <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+        <el-button v-if="permissions['classroom_category_edit']" type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
           type="text"
           size="mini"
@@ -108,6 +119,19 @@
               />
             </el-form-item>
           </el-col>
+          <!--字体颜色-->
+          <el-col :span="12">
+            <el-form-item label="字体颜色" prop="fontColor">
+              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
+              <!-- 颜色格式： hsl / hsv / hex / rgb -->
+              <color-picker
+                v-model="form.fontColor"
+                color-format="rgb"
+                :disabled="operationStatus === 1"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
           <!--是否最热-->
           <el-col :span="12">
             <el-form-item label="是否最热" prop="hotFlag">
@@ -132,6 +156,30 @@
               />
             </el-form-item>
           </el-col>
+          <!--是否网课-->
+          <el-col :span="12">
+            <el-form-item label="是否网课" prop="onlineCourseFlag">
+              <single-change
+                v-model="form.onlineCourseFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <!--是否面授-->
+          <el-col :span="12">
+            <el-form-item label="是否面授" prop="faceToFaceFlag">
+              <single-change
+                v-model="form.faceToFaceFlag"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
           <!--是否展示-->
           <el-col :span="12">
             <el-form-item label="是否展示" prop="showFlag">
@@ -142,14 +190,6 @@
                 type="radio"
                 size="medium"
               />
-            </el-form-item>
-          </el-col>
-          <!--字体颜色-->
-          <el-col :span="12">
-            <el-form-item label="字体颜色" prop="fontColor">
-              <!-- <el-color-picker v-model="form.fontColor" :disabled="operationStatus === 1" /> -->
-              <!-- 颜色格式： hsl / hsv / hex / rgb -->
-              <color-picker v-model="form.fontColor" color-format="rgb" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
           <!--APP顶部导航-->
@@ -178,7 +218,7 @@
           </el-col>
           <!--跳转类型-->
           <el-col :span="12">
-            <el-form-item label="跳转类型">
+            <el-form-item label="跳转类型" prop="jumpType">
               <single-change
                 v-model="form.jumpType"
                 :disabled="true"
@@ -204,11 +244,7 @@
           <!--图片上传-->
           <el-col :span="24">
             <el-form-item prop="icon" label="图片上传:" :label-width="formLabelWidth">
-              <single-image
-                v-model="form.icon"
-                status="8"
-                :disabled="operationStatus === 1"
-              />
+              <single-image v-model="form.icon" status="8" :disabled="operationStatus === 1" />
             </el-form-item>
           </el-col>
         </el-form>
@@ -228,7 +264,7 @@ import {
   putObj,
   delObj,
   getCategoryTree
-} from '@/api/course/category'
+} from '@/api/classroom/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
 
@@ -371,7 +407,7 @@ export default {
           { required: true, message: '请选择是否置顶', trigger: 'change' }
         ],
         columnFlag: [
-          { required: true, message: '请选择是否首页顶部导航', trigger: 'change' }
+          { required: true, message: '请选择是否推荐栏目', trigger: 'change' }
         ],
         recommendedFlag: [
           { required: true, message: '请选择是否首页推荐', trigger: 'change' }
@@ -395,11 +431,9 @@ export default {
   computed: {
     ...mapGetters(['permissions'])
   },
-  watch: {
-  },
+  watch: {},
   created() {
     this.getList()
-    this.getCategoryTree()
     this.dialogPvVisible = false
   },
   methods: {
@@ -410,6 +444,7 @@ export default {
     },
     getList() {
       this.tableLoading = true
+      this.getCategoryTree()
       fetchList(
         Object.assign(
           {
@@ -440,31 +475,35 @@ export default {
           this.dialogPvVisible = false
           this.tableLoading = true
           if (this.form.id != null) {
-            putObj(this.form).then(() => {
-              this.tableLoading = false
-              this.$notify({
-                title: '成功',
-                message: '修改成功',
-                type: 'success',
-                duration: 2000
+            putObj(this.form)
+              .then(() => {
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '修改成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           } else {
-            addObj(this.form).then(() => {
-              this.tableLoading = false
-              this.$notify({
-                title: '成功',
-                message: '创建成功',
-                type: 'success',
-                duration: 2000
+            addObj(this.form)
+              .then(() => {
+                this.tableLoading = false
+                this.$notify({
+                  title: '成功',
+                  message: '创建成功',
+                  type: 'success',
+                  duration: 2000
+                })
+                this.getList()
               })
-              this.getList()
-            }).catch(() => {
-              this.tableLoading = false
-            })
+              .catch(() => {
+                this.tableLoading = false
+              })
           }
         } else {
           return false
@@ -527,7 +566,8 @@ export default {
         showFlag: '1',
         columnFlag: '0',
         recommendedFlag: '0',
-        jumpType: '1'
+        jumpType: '2',
+        sort: 0
       }
     }
   }

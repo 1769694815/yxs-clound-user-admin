@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-19 17:26:34
+ * @LastEditTime: 2020-04-01 16:51:41
  * @Description: 课程管理
  -->
 <template>
@@ -334,7 +334,7 @@
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
 import { getTeacherList } from '@/api/user'
-import { getCategoryTreeByNotType } from '@/api/course/category'
+import { getCategoryTree } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
 import _ from 'lodash'
@@ -555,12 +555,8 @@ export default {
       console.log('html', html)
       this.form.about = html
     },
-    groupTypeChange(type) {
-      this.form.categoryIds = ''
-      this.getCategoryTree(type)
-    },
-    getCategoryTree(type) {
-      getCategoryTreeByNotType(type).then(res => {
+    getCategoryTree() {
+      getCategoryTree().then(res => {
         this.treeData = res.data.data
       })
     },
