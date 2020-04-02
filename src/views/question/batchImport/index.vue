@@ -753,24 +753,25 @@ export default {
               url: "/question/question/bulk",
               data: JSON.stringify(dataFormat),
               success: function(msg){
+                that.$message.success('导入成功')
                 $("#import_questions").hide();
                 $("#import").show();
-                var message="成功导入 "+msg.bizContent.successCount+" 道试题，失败 "+msg.bizContent.failCount+" 道题";
-                $("#import_result").text(message);
-                if (USER_ROLE == 'sub_admin' && KSXRIGHTS.allowPaperAdd != 1){
-                  $('#conResult').hide();
-                }
-                $('#txtImport').modal();
-                // gio
-                ksxProbe.gioTrack('enterQuestionSuccess', 1, {
-                  'questionEnterMethod_var': '批量录入',
-                  'questionEnterCount_var': msg.bizContent.successCount
-                });
-
-                $('#txtImport').on('hidden.bs.modal', function (e) {
-                  $( '#txtImport' ).off().on( 'hidden', 'hidden.bs.modal');
-                  location.reload();
-                })
+                // var message="成功导入 "+msg.bizContent.successCount+" 道试题，失败 "+msg.bizContent.failCount+" 道题";
+                // $("#import_result").text(message);
+                // if (USER_ROLE == 'sub_admin' && KSXRIGHTS.allowPaperAdd != 1){
+                //   $('#conResult').hide();
+                // }
+                // $('#txtImport').modal();
+                // // gio
+                // ksxProbe.gioTrack('enterQuestionSuccess', 1, {
+                //   'questionEnterMethod_var': '批量录入',
+                //   'questionEnterCount_var': msg.bizContent.successCount
+                // });
+                //
+                // $('#txtImport').on('hidden.bs.modal', function (e) {
+                //   $( '#txtImport' ).off().on( 'hidden', 'hidden.bs.modal');
+                //   location.reload();
+                // })
               }
             });
           }
