@@ -1,8 +1,8 @@
 /*
  * @Date: 2020-02-11 17:07:24
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-02 14:25:11
+ * @LastEditTime: 2020-04-07 18:30:42
  * @Description: 菜单api
  */
 import request from '@/utils/request'
@@ -24,6 +24,9 @@ export function fetchMenuTree(query) {
 }
 
 export function addObj(obj) {
+  if (obj.parentId == null) {
+    obj.parentId = -1
+  }
   return request({
     url: '/admin/menu',
     method: 'post',
