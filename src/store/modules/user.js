@@ -111,6 +111,8 @@ function formatRoutes(aMenu = [], first) {
     }
     aRouter.push(oRouter)
   }
+  // 所有匹配不到正确路由的都会进 404 页面
+  aRouter.push({ path: '*', redirect: '/404', hidden: true })
   return aRouter
   // if (first) {
   //   // console.log('routerList', routerList)
