@@ -93,6 +93,30 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/course/coursestudent',
+    component: Layout,
+    redirect: '/course/coursestudent/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Coursestudent',
+      component: () => import('@/views/course/coursestudent'),
+      meta: { title: '学员管理' }
+    }]
+  },
+  {
+    path: '/course/importlog',
+    component: Layout,
+    redirect: '/course/importlog/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Importlog',
+      component: () => import('@/views/course/importlog'),
+      meta: { title: '导入记录' }
+    }]
+  },
+  {
     path: '/question/batchImport',
     component: Layout,
     redirect: '/question/batchImport/index',

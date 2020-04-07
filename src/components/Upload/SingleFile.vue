@@ -1,8 +1,8 @@
 <!--
  * @Author: xwen
  * @Date: 2020-03-06 17:38:07
- * @LastEditTime: 2020-03-07 10:34:38
- * @LastEditors: xwen
+ * @LastEditTime: 2020-04-07 16:16:21
+ * @LastEditors: Donkey
  * @Description: 附件上传
  -->
 <template class="uploadFile">
@@ -19,7 +19,9 @@
       :before-upload="beforeUpload"
       :on-success="handlerSuccess"
       :on-exceed="handlerExceed"
+      :on-error="handlerError"
       :disabled="disabled"
+      :accept="accept"
       class="upload-demo"
     >
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -31,10 +33,13 @@
       :action="action"
       :file-list="fileList"
       :limit="limit"
+      :headers="headers"
       :on-remove="handlerRemove"
       :before-upload="beforeUpload"
       :on-success="handlerSuccess"
+      :on-error="handlerError"
       :disabled="disabled"
+      :accept="accept"
       class="upload-demo"
     >
       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
@@ -45,6 +50,7 @@
 
 <script>
 import { getToken } from '@/api/qiniu'
+import { getStore } from '@/utils/store'
 import { mapGetters } from 'vuex'
 export default {
   name: 'SingleFile',
@@ -72,6 +78,14 @@ export default {
     limit: {
       type: Number,
       default: 2
+    },
+    accept: {
+      type: String,
+      default: '*'
+    },
+    onSuccess: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -80,8 +94,10 @@ export default {
       upload_qiniu_addr: '',
       dataObj: { token: '', key: '' },
       fileList: [],
+      errorMap: {},
       headers: {
-        Authorization: 'Bearer '
+        Authorization: 'Bearer ',
+        'TENANT-ID': null
       }
     }
   },
@@ -100,6 +116,7 @@ export default {
     action: {
       handler: function(val) {
         this.headers.Authorization = 'Bearer ' + this.access_token
+        this.headers['TENANT-ID'] = getStore({ name: 'tenantId' })
       },
       immediate: true
     }
@@ -113,19 +130,24 @@ export default {
           fileSize: file.size,
           type: this.status
         }
-        getToken(params)
-          .then(response => {
-            const key = response.data.data.fileKey
-            const token = response.data.data.token
-            _self._data.upload_qiniu_addr = response.data.data.domain
-            _self._data.dataObj.token = token
-            _self._data.dataObj.key = key
-            resolve(true)
-          })
-          .catch(err => {
-            console.log(err)
-            reject(false)
-          })
+        if (!this.action) {
+          getToken(params)
+            .then(response => {
+              const key = response.data.data.fileKey
+              const token = response.data.data.token
+              _self._data.upload_qiniu_addr = response.data.data.domain
+              _self._data.errorMap = response.data.data.errorMap
+              _self._data.dataObj.token = token
+              _self._data.dataObj.key = key
+              resolve(true)
+            })
+            .catch(err => {
+              console.log(err)
+              reject(false)
+            })
+        } else {
+          resolve(true)
+        }
       })
     },
     handlerSuccess(res, file) {
@@ -137,6 +159,9 @@ export default {
       const result = JSON.stringify(this.fileList)
       console.log(result)
       this.$emit('input', result)
+      if (this.onSuccess != null) {
+        this.onSuccess(res, file)
+      }
     },
     handlerRemove(file, fileList) {
       this.fileList = fileList
@@ -148,6 +173,17 @@ export default {
       this.$message({
         message: '上传图片超过限制'
       })
+    },
+    handlerError(err, file, fileList) {
+      const errorTemplate = this.errorMap[err.status]
+      if (errorTemplate != null) {
+        this.$message({
+          message: errorTemplate
+        })
+      }
+    },
+    clearFiles() {
+      this.$refs.upload.clearFiles()
     }
   }
 }

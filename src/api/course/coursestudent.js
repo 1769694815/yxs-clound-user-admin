@@ -1,15 +1,20 @@
 /*
  * @Author: Donkey
- * @Date: 2020-03-31 16:49:27
- * @LastEditTime: 2020-04-02 11:43:52
+ * @Date: 2020-04-03 09:31:57
+ * @LastEditTime: 2020-04-03 16:28:18
  * @LastEditors: Donkey
  * @Description:
  */
 import request from '@/utils/request'
 
 export function fetchList(query) {
+  for (const key in query) {
+    if (query[key] == null || query[key] === '') {
+      delete query[key]
+    }
+  }
   return request({
-    url: '/admin/tenant/page',
+    url: '/course/coursestudent/page',
     method: 'get',
     params: query
   })
@@ -17,7 +22,7 @@ export function fetchList(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: '/course/coursestudent',
     method: 'post',
     data: obj
   })
@@ -25,36 +30,31 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: '/course/coursestudent/' + id,
     method: 'get'
   })
 }
 
-export function delObj(id) {
+export function delObj(row) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: '/course/coursestudent/' + row.id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: '/course/coursestudent',
     method: 'put',
     data: obj
   })
 }
 
-export function enableObj(id) {
+export function importStudent(obj) {
   return request({
-    url: '/admin/tenant/enable/' + id,
-    method: 'put'
+    url: '/course/coursestudent/import',
+    method: 'post',
+    data: obj
   })
 }
 
-export function disableObj(id) {
-  return request({
-    url: '/admin/tenant/disable/' + id,
-    method: 'put'
-  })
-}

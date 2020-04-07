@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-02 11:20:02
+ * @LastEditTime: 2020-04-02 11:33:18
  * @Description: 文件管理
  -->
 <template>
@@ -546,7 +546,8 @@ export default {
         showFlag: '1',
         columnFlag: '0',
         recommendedFlag: '0',
-        jumpType: '1'
+        jumpType: '1',
+        sort: 0
       }
     }
   }

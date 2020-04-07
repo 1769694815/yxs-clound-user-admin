@@ -469,7 +469,6 @@ export default {
     ...mapGetters(['permissions'])
   },
   created() {
-    this.searchForm.tenantId = this.$route.query.tenantId
     this.getList()
   },
   methods: {
@@ -483,7 +482,8 @@ export default {
           {
             descs: 'create_time',
             current: this.page.current,
-            size: this.page.size
+            size: this.page.size,
+            tenantId: this.$route.query.tenantId
           },
           this.searchForm
         )

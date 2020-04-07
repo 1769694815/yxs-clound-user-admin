@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-30 17:26:02
+ * @LastEditTime: 2020-04-02 12:02:40
  * @Description: 租户管理
  -->
 <template>
@@ -107,6 +107,22 @@
         slot="menu"
         slot-scope="scope"
       >
+        <el-button
+          v-if="admin_systenant_edit&&scope.row.status==9"
+          type="text"
+          icon="el-icon-edit"
+          size="mini"
+          @click="handleEnable(scope.row)"
+        >启用
+        </el-button>
+        <el-button
+          v-if="admin_systenant_edit&&scope.row.status==0"
+          type="text"
+          icon="el-icon-edit"
+          size="mini"
+          @click="handleDisable(scope.row)"
+        >禁用
+        </el-button>
         <el-button
           v-if="admin_systenant_edit"
           type="text"
@@ -448,7 +464,7 @@
 </template>
 
 <script>
-import { addObj, delObj, fetchList, putObj } from '@/api/admin/tenant'
+import { addObj, delObj, fetchList, putObj, enableObj, disableObj } from '@/api/admin/tenant'
 import { createOrder } from '@/api/orders/tenantorder'
 import SingleChange from '@/components/DictItem/SingleChange'
 import { mapGetters } from 'vuex'
@@ -808,6 +824,44 @@ export default {
           _this.$message({
             showClose: true,
             message: '删除成功',
+            type: 'success'
+          })
+        })
+    },
+    handleEnable(row) {
+      var _this = this
+      this.$confirm('是否确认启用' + row.name, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return enableObj(row.id)
+        })
+        .then(data => {
+          _this.getList()
+          _this.$message({
+            showClose: true,
+            message: '启用成功',
+            type: 'success'
+          })
+        })
+    },
+    handleDisable(row) {
+      var _this = this
+      this.$confirm('是否确认禁用' + row.name, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return disableObj(row.id)
+        })
+        .then(data => {
+          _this.getList()
+          _this.$message({
+            showClose: true,
+            message: '禁用成功',
             type: 'success'
           })
         })

@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 16:51:41
+ * @LastEditTime: 2020-04-03 09:27:35
  * @Description: 课程管理
  -->
 <template>
@@ -75,11 +75,19 @@
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
+          v-bind="permissions['zj']"
           type="text"
           icon="el-icon-edit"
           size="mini"
           @click="handleChapterList(scope.row,scope.index)"
         >章节列表</el-button>
+        <el-button
+          v-bind="permissions['course_student_list']"
+          type="text"
+          icon="el-icon-edit"
+          size="mini"
+          @click="handleStudentList(scope.row,scope.index)"
+        >学员管理</el-button>
         <el-button
           type="text"
           size="mini"
@@ -673,6 +681,14 @@ export default {
     handleChapterList(row, index) {
       this.$router.push({
         path: '/course/coursechapter',
+        query: {
+          courseId: row.id
+        }
+      })
+    },
+    handleStudentList(row, index) {
+      this.$router.push({
+        path: '/course/coursestudent',
         query: {
           courseId: row.id
         }

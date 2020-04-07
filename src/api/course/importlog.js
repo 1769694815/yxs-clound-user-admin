@@ -1,15 +1,20 @@
 /*
  * @Author: Donkey
- * @Date: 2020-03-31 16:49:27
- * @LastEditTime: 2020-04-02 11:43:52
+ * @Date: 2020-04-06 08:50:30
+ * @LastEditTime: 2020-04-06 17:00:43
  * @LastEditors: Donkey
  * @Description:
  */
 import request from '@/utils/request'
 
 export function fetchList(query) {
+  for (const key in query) {
+    if (query[key] == null || query[key] === '') {
+      delete query[key]
+    }
+  }
   return request({
-    url: '/admin/tenant/page',
+    url: '/course/importlog/page',
     method: 'get',
     params: query
   })
@@ -17,7 +22,7 @@ export function fetchList(query) {
 
 export function addObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: '/course/importlog',
     method: 'post',
     data: obj
   })
@@ -25,36 +30,30 @@ export function addObj(obj) {
 
 export function getObj(id) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: '/course/importlog/' + id,
     method: 'get'
   })
 }
 
-export function delObj(id) {
+export function delObj(row) {
   return request({
-    url: '/admin/tenant/' + id,
+    url: '/course/importlog/' + row.id,
     method: 'delete'
   })
 }
 
 export function putObj(obj) {
   return request({
-    url: '/admin/tenant',
+    url: '/course/importlog',
     method: 'put',
     data: obj
   })
 }
 
-export function enableObj(id) {
+export function reGenResultFile(id) {
   return request({
-    url: '/admin/tenant/enable/' + id,
-    method: 'put'
-  })
-}
+    url: '/course/importlog/reGenResultFile/' + id,
+    method: 'get'
 
-export function disableObj(id) {
-  return request({
-    url: '/admin/tenant/disable/' + id,
-    method: 'put'
   })
 }
