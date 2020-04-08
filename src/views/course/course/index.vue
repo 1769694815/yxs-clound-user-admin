@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-04-07 18:50:43
+ * @LastEditTime: 2020-04-08 15:16:29
  * @Description: 课程管理
  -->
 <template>
@@ -669,7 +669,12 @@ export default {
     importStudent() {
       this.$refs.importDataForm.validate(valid => {
         if (valid) {
-          this.tableLoading = true
+          const loading = this.$loading({
+            lock: true,
+            text: '数据导入中...',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.3)'
+          })
           let fileList = []
           if (typeof (this.form.fileList) === 'string') {
             fileList = JSON.parse(this.form.fileList)
@@ -678,7 +683,7 @@ export default {
           importStudent(this.form)
             .then(res => {
               this.importView = false
-              this.tableLoading = false
+              loading.close()
               this.$message({
                 showClose: true,
                 message: '提交成功',
@@ -686,7 +691,7 @@ export default {
               })
             })
             .catch(() => {
-              this.tableLoading = false
+              loading.close()
             })
         }
       })
