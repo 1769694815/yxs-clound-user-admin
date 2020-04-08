@@ -77,18 +77,21 @@
           @click="handleCreate"
         >新 增</el-button>
         <el-button
+          v-if="permissions['classroom_classroomstudent_import_template']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleDownload"
         >下载导入模板</el-button>
         <el-button
+          v-if="permissions['classroom_classroomstudent_import']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleImport"
         >导入学员</el-button>
         <el-button
+          v-if="permissions['classroom_importlog_list']"
           type="primary"
           icon="el-icon-document"
           size="mini"
@@ -130,6 +133,7 @@
         </el-button>
       </template>
     </Xtable>
+
     <!-- 表单弹窗 -->
     <el-dialog
       :visible.sync="dialogPvVisible"
@@ -272,6 +276,88 @@
       </div>
     </el-dialog>
     <!-- 表单弹窗 -->
+    <el-dialog
+      :visible.sync="AddDialogPvVisible"
+      :title="operationStatus | dialogTitle"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
+      >
+        <el-form
+          ref="dataForm"
+          :rules="formRules"
+          :model="form"
+        >
+          <el-col :span="12">
+            <el-form-item prop="realName" label="真实姓名:" :label-width="formLabelWidth">
+              <el-input
+                v-model="form.realName"
+                autocomplete="off"
+                placeholder="请输入真实姓名"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="phone" label="手机号:" :label-width="formLabelWidth">
+              <el-input
+                v-model="form.phone"
+                autocomplete="off"
+                placeholder="手机号"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="idCard" label="身份证号:" :label-width="formLabelWidth">
+              <el-input
+                v-model="form.idCard"
+                autocomplete="off"
+                placeholder="手机号"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item prop="remark" label="备注:" :label-width="formLabelWidth">
+              <el-input
+                v-model="form.remark"
+                autocomplete="off"
+                placeholder="请输入备注"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          v-if="operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="create"
+        >保 存
+        </el-button>
+        <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改
+        </el-button>
+        <el-button
+          size="small"
+          @click="AddDialogPvVisible = false"
+        >取 消
+        </el-button>
+      </div>
+    </el-dialog>
+    <!-- 表单弹窗 -->
     <el-dialog :visible.sync="importView" title="导入学员">
       <el-row style="padding: 0 20px;" :span="24" :gutter="20">
         <el-form ref="importDataForm" :rules="importFormRules" :model="form">
@@ -395,9 +481,22 @@ export default {
         current: 1,
         size: 10
       },
-      formRules: {},
+      formRules: {
+        phone: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
+        ],
+        realName: [
+          { required: true, message: '请输入真实姓名', trigger: 'blur' }
+        ]
+      },
+      importFormRules: {
+        fileList: [
+          { required: true, message: '请选择要导入的文件', trigger: 'blur' }
+        ]
+      },
       searchForm: {},
       dialogPvVisible: false,
+      AddDialogPvVisible: false,
       importView: false,
       operationStatus: 0,
       form: {},
@@ -453,11 +552,13 @@ export default {
              * 点击新增
              */
     handleCreate() {
-      this.dialogPvVisible = true
+      this.AddDialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
+        this.form = {
+          classroomId: this.$route.query.classroomId
+        }
       })
     },
     /**
@@ -539,7 +640,7 @@ export default {
             this.tableLoading = true
             addObj(this.form)
               .then(res => {
-                this.dialogPvVisible = false
+                this.AddDialogPvVisible = false
                 this.tableLoading = false
                 this.$message({
                   showClose: true,

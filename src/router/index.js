@@ -111,7 +111,7 @@ export const constantRoutes = [
     hidden: true,
     children: [{
       path: 'index',
-      name: 'Importlog',
+      name: 'CourseImportlog',
       component: () => import('@/views/course/importlog'),
       meta: { title: '导入记录' }
     }]
@@ -135,7 +135,7 @@ export const constantRoutes = [
     hidden: true,
     children: [{
       path: 'index',
-      name: 'Importlog',
+      name: 'ClassroomImportlog',
       component: () => import('@/views/classroom/importlog'),
       meta: { title: '导入记录' }
     }]

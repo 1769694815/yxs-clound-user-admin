@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-07 18:50:43
+ * @LastEditTime: 2020-04-08 14:45:08
  * @Description: 课程管理
  -->
 <template>
@@ -81,12 +81,14 @@
           @click="handleCreate"
         >新 增</el-button>
         <el-button
+          v-if="permissions['course_student_import_template']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleDownload"
         >下载导入模板</el-button>
         <el-button
+          v-if="permissions['course_importlog_list']"
           type="primary"
           icon="el-icon-document"
           size="mini"
@@ -104,6 +106,7 @@
           @click="handleChapterList(scope.row,scope.index)"
         >章节列表</el-button>
         <el-button
+          v-if="permissions['course_student_import']"
           type="text"
           icon="el-icon-document"
           size="mini"

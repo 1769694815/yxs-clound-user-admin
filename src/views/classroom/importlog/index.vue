@@ -62,8 +62,7 @@
         slot-scope="scope"
       >
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
-        <el-button v-if="scope.row.status==2" type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看异常</el-button>
-        <el-button type="text" icon="el-icon-view" size="mini" @click="handleDownLoad(scope.row)">下载导入结果</el-button>
+        <el-button v-if="permissions['classroom_importlog_reGenResultFile']" type="text" icon="el-icon-view" size="mini" @click="handleDownLoad(scope.row)">下载导入结果</el-button>
         <el-button
           v-if="permissions['classroom_importlog_edit']"
           type="text"

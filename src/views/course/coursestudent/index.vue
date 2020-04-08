@@ -59,18 +59,21 @@
           @click="handleCreate"
         >新 增</el-button>
         <el-button
+          v-if="permissions['course_student_import_template']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleDownload"
         >下载导入模板</el-button>
         <el-button
+          v-if="permissions['course_student_import']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleImport"
         >导入学员</el-button>
         <el-button
+          v-if="permissions['course_importlog_list']"
           type="primary"
           icon="el-icon-document"
           size="mini"

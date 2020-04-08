@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-08 13:50:27
+ * @LastEditTime: 2020-04-08 14:46:21
  * @Description: 班级管理
  -->
 <template>
@@ -53,12 +53,14 @@
           @click="handleCreate"
         >新 增</el-button>
         <el-button
+          v-if="permissions['classroom_classroomstudent_import_template']"
           type="primary"
           icon="el-icon-document"
           size="mini"
           @click="handleDownload"
         >下载导入模板</el-button>
         <el-button
+          v-if="permissions['classroom_importlog_list']"
           type="primary"
           icon="el-icon-document"
           size="mini"
@@ -73,6 +75,7 @@
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
+          v-if="permissions['classroom_classroomstudent_import']"
           type="text"
           icon="el-icon-document"
           size="mini"
