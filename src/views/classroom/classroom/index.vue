@@ -2,8 +2,8 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-01 13:18:02
- * @Description: 文件管理
+ * @LastEditTime: 2020-04-08 13:50:27
+ * @Description: 班级管理
  -->
 <template>
   <div class="app-container calendar-list-container">
@@ -37,12 +37,34 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      :add-btn="false"
       :table-option.sync="tableOption"
       menu-width="160"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+        <el-button
+          v-if="permissions['generator_classroom_add']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleDownload"
+        >下载导入模板</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleImportLog"
+        >导入记录</el-button>
+      </template>
       <template slot="role" slot-scope="scope">
         <el-tag>{{ scope.row.role }}</el-tag>
       </template>
@@ -50,6 +72,13 @@
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleCourse(scope.row)">课程管理</el-button>
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+        <el-button
+          type="text"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleImport(scope.row,scope.index)"
+        >导入学员</el-button>
+        <el-button v-if="permissions['classroom_classroomstudent_list']" type="text" icon="el-icon-edit" size="mini" @click="handleStudentList(scope.row)">学员管理</el-button>
         <el-button
           type="text"
           size="mini"
@@ -292,7 +321,29 @@
         <el-button size="small" @click="closeDialog">取 消</el-button>
       </div>
     </el-dialog>
-
+    <!-- 表单弹窗 -->
+    <el-dialog :visible.sync="importView" title="导入学员">
+      <el-row style="padding: 0 20px;" :span="24" :gutter="20">
+        <el-form ref="importDataForm" :rules="importFormRules" :model="form">
+          <el-col :span="12">
+            <el-form-item prop="fileList" label="导入学员" :label-width="formLabelWidth">
+              <singleFile
+                ref="importDataUpload"
+                v-model="form.fileList"
+                title="请选择导入文件"
+                :limit="1"
+                accept=".xls,.xlsx"
+                :status="10"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="doalog-footer">
+        <el-button type="primary" size="small" @click="importStudent">提交</el-button>
+        <el-button size="small" @click="importView = false">取 消</el-button>
+      </div>
+    </el-dialog>
     <course-modal
       :modal-show="modalShow"
       :classroom-id="classroomId"
@@ -313,6 +364,7 @@ import {
   getCourseSimpleById
 } from '@/api/classroom/classroom'
 import { getCourseSimpleList } from '@/api/course/course'
+import { importStudent } from '@/api/classroom/classroomstudent'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
 import { getCategoryTree } from '@/api/classroom/category'
@@ -451,6 +503,7 @@ export default {
       searchForm: {},
       dialogPvVisible: false,
       operationStatus: 0,
+      importView: false,
       formLabelWidth: '90px',
       form: {
         topFlag: 0
@@ -516,6 +569,11 @@ export default {
       defaultProps: {
         children: 'children',
         label: 'name'
+      },
+      importFormRules: {
+        fileList: [
+          { required: true, message: '请选择要导入的文件', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -559,6 +617,60 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
+    },
+    handleDownload() {
+      var elemIF = document.createElement('iframe')
+      elemIF.src = 'classroom/classroomstudent/import/template'
+      elemIF.style.display = 'none'
+      document.body.appendChild(elemIF)
+    },
+    handleImportLog() {
+      this.$router.push({
+        path: '/classroom/importlog',
+        query: {
+          type: 0
+        }
+      })
+    },
+    handleImport(row) {
+      this.importView = true
+      this.form.classroomId = row.id
+      this.$nextTick(() => {
+        this.$refs.importDataUpload.clearFiles()
+      })
+    },
+    importStudent() {
+      this.$refs.importDataForm.validate(valid => {
+        if (valid) {
+          this.tableLoading = true
+          let fileList = []
+          if (typeof (this.form.fileList) === 'string') {
+            fileList = JSON.parse(this.form.fileList)
+          }
+          this.form.fileUrl = fileList[0].url
+          importStudent(this.form)
+            .then(res => {
+              this.importView = false
+              this.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '提交成功',
+                type: 'success'
+              })
+            })
+            .catch(() => {
+              this.tableLoading = false
+            })
+        }
+      })
+    },
+    handleStudentList(row, index) {
+      this.$router.push({
+        path: '/classroom/classroomstudent',
+        query: {
+          classroomId: row.id
+        }
+      })
     },
     /**
      * 创建方法

@@ -5,7 +5,7 @@
       <el-form-item v-if="false" label="导入类型:" label-width="80px">
         <single-change
           v-model="searchForm.type"
-          status-type="course_import_type"
+          status-type="classroom_import_type"
           type="select"
           size="small"
         />
@@ -13,7 +13,7 @@
       <el-form-item label="导入状态:" label-width="80px">
         <single-change
           v-model="searchForm.status"
-          status-type="course_import_status"
+          status-type="classroom_import_status"
           type="select"
           size="small"
         />
@@ -38,7 +38,7 @@
     >
       <template slot="menuLeft">
         <el-button
-          v-if="permissions['course_importlog_add']"
+          v-if="permissions['classroom_importlog_add']"
           type="primary"
           icon="el-icon-plus"
           size="mini"
@@ -51,39 +51,54 @@
           @click="$router.go(-1)"
         >返回</el-button>
       </template>
-      <template slot="role" slot-scope="scope">
+      <template
+        slot="role"
+        slot-scope="scope"
+      >
         <el-tag>{{ scope.row.role }}</el-tag>
       </template>
-      <template slot="menu" slot-scope="scope">
+      <template
+        slot="menu"
+        slot-scope="scope"
+      >
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button v-if="scope.row.status==2" type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看异常</el-button>
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleDownLoad(scope.row)">下载导入结果</el-button>
         <el-button
-          v-if="permissions['course_importlog_edit']"
+          v-if="permissions['classroom_importlog_edit']"
           type="text"
           icon="el-icon-view"
           size="mini"
           @click="handleUpdate(scope.row)"
-        >编辑</el-button>
+        >编辑
+        </el-button>
         <el-button
-          v-if="permissions['course_importlog_del']"
+          v-if="permissions['classroom_importlog_del']"
           type="text"
           size="mini"
           icon="el-icon-delete"
           @click="handleDelete(scope.row, scope.index)"
-        >删除</el-button>
+        >删除
+        </el-button>
       </template>
     </Xtable>
     <!-- 表单弹窗 -->
-    <el-dialog :visible.sync="dialogPvVisible" :title="operationStatus | dialogTitle">
-      <el-row style="padding: 0 20px;" :span="24" :gutter="20">
+    <el-dialog
+      :visible.sync="dialogPvVisible"
+      :title="operationStatus | dialogTitle"
+    >
+      <el-row
+        style="padding: 0 20px;"
+        :span="24"
+        :gutter="20"
+      >
         <el-form ref="dataForm" :rules="formRules" :model="form">
           <el-col :span="12">
             <el-form-item prop="type" label="导入类型：" :label-width="formLabelWidth">
               <single-change
                 v-model="form.type"
                 :disabled="operationStatus === 1"
-                status-type="course_import_type"
+                status-type="classroom_import_type"
                 type="select"
                 size="medium"
               />
@@ -114,7 +129,7 @@
               <single-change
                 v-model="form.status"
                 :disabled="operationStatus === 1"
-                status-type="course_import_status"
+                status-type="classroom_import_status"
                 type="select"
                 size="medium"
               />
@@ -206,17 +221,36 @@
           </el-col>
         </el-form>
       </el-row>
-      <div slot="footer" class="doalog-footer">
-        <el-button v-if="operationStatus === 0" type="primary" size="small" @click="create">保 存</el-button>
-        <el-button v-if="operationStatus === 2" type="primary" size="small" @click="update">修 改</el-button>
-        <el-button size="small" @click="dialogPvVisible = false">取 消</el-button>
+      <div
+        slot="footer"
+        class="doalog-footer"
+      >
+        <el-button
+          v-if="operationStatus === 0"
+          type="primary"
+          size="small"
+          @click="create"
+        >保 存
+        </el-button>
+        <el-button
+          v-if="operationStatus === 2"
+          type="primary"
+          size="small"
+          @click="update"
+        >修 改
+        </el-button>
+        <el-button
+          size="small"
+          @click="dialogPvVisible = false"
+        >取 消
+        </el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { addObj, delObj, fetchList, putObj, reGenResultFile } from '@/api/course/importlog'
+import { addObj, delObj, fetchList, putObj, reGenResultFile } from '@/api/classroom/importlog'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -253,7 +287,7 @@ export default {
         {
           label: '导入类型',
           prop: 'type',
-          dicUrl: 'course_import_type',
+          dicUrl: 'classroom_import_type',
           dicData: []
         },
         {
@@ -269,7 +303,7 @@ export default {
         {
           label: '导入状态',
           prop: 'status',
-          dicUrl: 'course_import_status',
+          dicUrl: 'classroom_import_status',
           dicData: []
         },
         {
@@ -323,8 +357,8 @@ export default {
   },
   methods: {
     /**
-     * 获取列表数据
-     */
+             * 获取列表数据
+             */
     getList() {
       this.tableLoading = true
       fetchList(
@@ -347,21 +381,21 @@ export default {
         })
     },
     /**
-     * 搜索
-     */
+             * 搜索
+             */
     handleFilter() {
       this.getList()
     },
     /**
-     * 清空搜索表单
-     */
+             * 清空搜索表单
+             */
     handleEmpty() {
       this.searchForm = {}
       this.getList()
     },
     /**
-     * 点击新增
-     */
+             * 点击新增
+             */
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
@@ -371,8 +405,8 @@ export default {
       })
     },
     /**
-     * 点击查看
-     */
+             * 点击查看
+             */
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
@@ -382,8 +416,8 @@ export default {
       })
     },
     /**
-     * 点击编辑
-     */
+             * 点击编辑
+             */
     handleUpdate(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 2
@@ -408,56 +442,58 @@ export default {
       }
     },
     /**
-     * 新增保存
-     */
+             * 新增保存
+             */
     create() {
-      this.$refs.dataForm.validate(valid => {
-        if (valid) {
-          this.tableLoading = true
-          addObj(this.form)
-            .then(res => {
-              this.dialogPvVisible = false
-              this.tableLoading = false
-              this.$message({
-                showClose: true,
-                message: '添加成功',
-                type: 'success'
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.tableLoading = true
+            addObj(this.form)
+              .then(res => {
+                this.dialogPvVisible = false
+                this.tableLoading = false
+                this.$message({
+                  showClose: true,
+                  message: '添加成功',
+                  type: 'success'
+                })
+                this.getList()
               })
-              this.getList()
-            })
-            .catch(() => {
-              this.tableLoading = false
-            })
-        }
-      })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
+        })
     },
     /**
-     * 编辑保存
-     */
+             * 编辑保存
+             */
     update() {
-      this.$refs.dataForm.validate(valid => {
-        if (valid) {
-          this.tableLoading = true
-          putObj(this.form)
-            .then(res => {
-              this.dialogPvVisible = false
-              this.tableLoading = false
-              this.$message({
-                showClose: true,
-                message: '修改成功',
-                type: 'success'
+      this.$refs
+        .dataForm.validate(valid => {
+          if (valid) {
+            this.tableLoading = true
+            putObj(this.form)
+              .then(res => {
+                this.dialogPvVisible = false
+                this.tableLoading = false
+                this.$message({
+                  showClose: true,
+                  message: '修改成功',
+                  type: 'success'
+                })
+                this.getList()
               })
-              this.getList()
-            })
-            .catch(() => {
-              this.tableLoading = false
-            })
-        }
-      })
+              .catch(() => {
+                this.tableLoading = false
+              })
+          }
+        })
     },
     /**
-     * 点击删除
-     */
+             * 点击删除
+             */
     handleDelete(row, index) {
       var _this = this
       this.$confirm('是否确认删除ID为' + row.id, '提示', {
@@ -473,6 +509,7 @@ export default {
           this.getList()
         })
     }
+
   }
 }
 </script>

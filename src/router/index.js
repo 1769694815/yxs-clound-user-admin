@@ -117,6 +117,30 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/classroom/classroomstudent',
+    component: Layout,
+    redirect: '/classroom/classroomstudent/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Classroomstudent',
+      component: () => import('@/views/classroom/classroomstudent'),
+      meta: { title: '学员管理' }
+    }]
+  },
+  {
+    path: '/classroom/importlog',
+    component: Layout,
+    redirect: '/classroom/importlog/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'Importlog',
+      component: () => import('@/views/classroom/importlog'),
+      meta: { title: '导入记录' }
+    }]
+  },
+  {
     path: '/question/batchImport',
     component: Layout,
     redirect: '/question/batchImport/index',

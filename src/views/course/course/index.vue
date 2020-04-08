@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-03 09:27:35
+ * @LastEditTime: 2020-04-07 18:50:43
  * @Description: 课程管理
  -->
 <template>
@@ -66,23 +66,51 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      :add-btn="false"
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+        <el-button
+          v-if="permissions['generator_course_add']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleDownload"
+        >下载导入模板</el-button>
+        <el-button
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleImportLog"
+        >导入记录</el-button>
+      </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
-          v-bind="permissions['zj']"
+          v-if="permissions['zj']"
           type="text"
           icon="el-icon-edit"
           size="mini"
           @click="handleChapterList(scope.row,scope.index)"
         >章节列表</el-button>
         <el-button
-          v-bind="permissions['course_student_list']"
+          type="text"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleImport(scope.row,scope.index)"
+        >导入学员</el-button>
+        <el-button
+          v-if="permissions['course_student_list']"
           type="text"
           icon="el-icon-edit"
           size="mini"
@@ -336,12 +364,35 @@
         <el-button size="small" @click="closeDialog">取 消</el-button>
       </div>
     </el-dialog>
+    <!-- 表单弹窗 -->
+    <el-dialog :visible.sync="importView" title="导入学员">
+      <el-row style="padding: 0 20px;" :span="24" :gutter="20">
+        <el-form ref="importDataForm" :rules="importFormRules" :model="form">
+          <el-col :span="12">
+            <el-form-item prop="fileList" label="导入学员" :label-width="formLabelWidth">
+              <singleFile
+                ref="importDataUpload"
+                v-model="form.fileList"
+                title="请选择导入文件"
+                :limit="1"
+                accept=".xls,.xlsx"
+                :status="10"
+              />
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <div slot="footer" class="doalog-footer">
+        <el-button type="primary" size="small" @click="importStudent">提交</el-button>
+        <el-button size="small" @click="importView = false">取 消</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { fetchList, addObj, putObj, delObj } from '@/api/course/course'
-import { getTeacherList } from '@/api/user'
+import { importStudent } from '@/api/course/coursestudent'
 import { getCategoryTree } from '@/api/course/category'
 import { mapGetters } from 'vuex'
 import InputTree from '@/components/InputTree/index'
@@ -490,6 +541,7 @@ export default {
       },
       searchForm: {},
       dialogPvVisible: false,
+      importView: false,
       operationStatus: 0,
       labelWidth: '90px',
       form: {}, // 新增 编辑 数据源
@@ -547,7 +599,11 @@ export default {
         smallPicture: [
           { required: true, message: '请上传课程图片', trigger: 'change' }
         ]
-
+      },
+      importFormRules: {
+        fileList: [
+          { required: true, message: '请选择要导入的文件', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -588,6 +644,52 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
+    },
+    handleDownload() {
+      var elemIF = document.createElement('iframe')
+      elemIF.src = 'course/coursestudent/import/template'
+      elemIF.style.display = 'none'
+      document.body.appendChild(elemIF)
+    },
+    handleImportLog() {
+      this.$router.push({
+        path: '/course/importlog',
+        query: {
+          type: 0
+        }
+      })
+    },
+    handleImport(row) {
+      this.importView = true
+      this.form.courseId = row.id
+      this.$nextTick(() => {
+        this.$refs.importDataUpload.clearFiles()
+      })
+    },
+    importStudent() {
+      this.$refs.importDataForm.validate(valid => {
+        if (valid) {
+          this.tableLoading = true
+          let fileList = []
+          if (typeof (this.form.fileList) === 'string') {
+            fileList = JSON.parse(this.form.fileList)
+          }
+          this.form.fileUrl = fileList[0].url
+          importStudent(this.form)
+            .then(res => {
+              this.importView = false
+              this.tableLoading = false
+              this.$message({
+                showClose: true,
+                message: '提交成功',
+                type: 'success'
+              })
+            })
+            .catch(() => {
+              this.tableLoading = false
+            })
+        }
+      })
     },
     /**
      * 创建方法
