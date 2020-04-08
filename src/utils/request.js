@@ -1,11 +1,12 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, Loading } from 'element-ui'
 import store from '@/store'
 import router from '@/router/index'
 import { getStore } from '../utils/store'
 import { serialize } from '@/utils/index'
 import qs from 'qs'
 
+let loadingInstance
 // 返回其他状态吗
 axios.defaults.validateStatus = function(status) {
   return status >= 200 && status <= 500 // 默认的
@@ -34,6 +35,12 @@ service.interceptors.request.use(
     if (TENANT_ID != null) {
       config.headers['TENANT-ID'] = TENANT_ID // 租户ID
     }
+    loadingInstance = Loading.service({
+      lock: true,
+      text: '加载中...',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.3)'
+    })
 
     // headers中配置serialize为true开启序列化
     if (config.method === 'post' && config.headers.serialize) {
@@ -52,6 +59,7 @@ service.interceptors.request.use(
   error => {
     // do something with request error
     console.log(error) // for debug
+    loadingInstance.close()
     return Promise.reject(error)
   }
 )
@@ -69,6 +77,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   res => {
+    loadingInstance.close()
     const status = Number(res.status) || 200
     const message = res.data.msg
     if (status === 401) {
@@ -93,6 +102,7 @@ service.interceptors.response.use(
     return res
   },
   error => {
+    loadingInstance.close()
     Message({
       message: '网络错误，请稍后重试',
       type: 'error'
