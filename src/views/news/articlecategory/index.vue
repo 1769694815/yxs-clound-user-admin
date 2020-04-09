@@ -120,7 +120,7 @@
           >
             <el-form-item
               prop="published"
-              label="是否启用:"
+              label="是否显示:"
               :label-width="formLabelWidth"
             >
               <el-radio v-model="form.published" label="1" :disabled="operationStatus === 1">启用</el-radio>
@@ -261,7 +261,7 @@ export default {
           width: 150
         },
         {
-          label: '是否启用',
+          label: '是否显示',
           prop: 'published',
           dicData: DIC.flag,
           width: 120

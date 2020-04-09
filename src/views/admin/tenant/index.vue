@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-09 10:07:11
+ * @LastEditTime: 2020-04-09 13:52:16
  * @Description: 租户管理
  -->
 <template>
@@ -346,7 +346,7 @@
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="rechargeDialogPvVisible"
-      :title="充值"
+      title="充值"
     >
       <el-row
         style="padding: 0 20px;"
