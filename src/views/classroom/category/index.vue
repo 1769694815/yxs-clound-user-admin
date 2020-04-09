@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-04-02 11:20:17
+ * @LastEditTime: 2020-04-09 09:57:34
  * @Description: 文件管理
  -->
 <template>
@@ -43,7 +43,7 @@
           size="small"
         />
       </el-form-item>
-      <el-form-item label="推荐首页" prop="recommendedFlag" label-width="80px">
+      <el-form-item label="推荐首页分栏" prop="recommendedFlag" label-width="120px">
         <single-change
           v-model="searchForm.recommendedFlag"
           :disabled="operationStatus === 1"
@@ -214,7 +214,7 @@
           </el-col>
           <!--APP首页分栏-->
           <el-col :span="12">
-            <el-form-item label="推荐首页" prop="recommendedFlag">
+            <el-form-item label="推荐首页分栏" prop="recommendedFlag" label-width="120px">
               <single-change
                 v-model="form.recommendedFlag"
                 :disabled="operationStatus === 1"
@@ -353,7 +353,7 @@ export default {
           dicData: []
         },
         {
-          label: '推荐首页',
+          label: '推荐首页分栏',
           prop: 'recommendedFlag',
           overHidden: true,
           width: '120',

@@ -20,7 +20,7 @@
         />
       </el-form-item>
       <el-form-item
-        label="是否启用:"
+        label="是否显示:"
         label-width="80px"
       >
         <single-change
@@ -198,7 +198,7 @@
           >
             <el-form-item
               prop="openFlag"
-              label="是否启用:"
+              label="是否显示:"
               :label-width="formLabelWidth"
             >
               <single-change
@@ -308,7 +308,7 @@ export default {
           dicUrl: 'navigation_type',
           dicData: []
         }, {
-          label: '是否启用',
+          label: '是否显示',
           prop: 'openFlag',
           dicUrl: 'common_enable_flag',
           dicData: []
