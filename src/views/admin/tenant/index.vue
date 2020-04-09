@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-14 13:00:50
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-04-02 12:02:40
+ * @LastEditTime: 2020-04-09 09:21:16
  * @Description: 租户管理
  -->
 <template>
@@ -346,7 +346,7 @@
     <!-- 弹窗 -->
     <el-dialog
       :visible.sync="rechargeDialogPvVisible"
-      :title="充值"
+      title="充值"
     >
       <el-row
         style="padding: 0 20px;"
@@ -533,16 +533,24 @@ export default {
           dicData: []
         },
         {
+          label: '医币余额'
+        },
+        {
+          label: '现金余额'
+        },
+        {
           label: '类型',
           prop: 'type',
           dicUrl: 'tenant_type',
-          dicData: []
+          dicData: [],
+          hide: true
         },
         {
           label: '总后台',
           prop: 'adminFlag',
           dicUrl: 'common_flag',
-          dicData: []
+          dicData: [],
+          hide: true
 
         },
         {
