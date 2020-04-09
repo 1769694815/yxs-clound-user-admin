@@ -331,7 +331,9 @@ export default {
           {
             descs: 'create_time',
             current: this.page.current,
-            size: this.page.size
+            size: this.page.size,
+            type: this.$route.query.type,
+            objId: this.$route.query.objId
           },
           this.searchForm
         )

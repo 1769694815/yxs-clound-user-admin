@@ -2,7 +2,7 @@
  * @Date: 2020-02-13 15:15:03
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-23 09:05:06
+ * @LastEditTime: 2020-04-09 10:50:08
  * @Description: 用户管理api
  */
 import request from '@/utils/request'
@@ -50,5 +50,12 @@ export function updateInfo(obj) {
     url: '/admin/user/edit',
     method: 'put',
     data: obj
+  })
+}
+
+export function resetPwd(id) {
+  return request({
+    url: '/admin/user/resetPwd/' + id,
+    method: 'put'
   })
 }

@@ -1,8 +1,8 @@
 /*
  * @Author: zhoum
  * @Date: 2020-02-28 13:59:32
- * @LastEditTime: 2020-03-04 11:58:50
- * @LastEditors: zhoum
+ * @LastEditTime: 2020-04-09 12:00:48
+ * @LastEditors: Donkey
  * @Description:
  */
 import request from '@/utils/request'
@@ -66,5 +66,12 @@ export function saveClassCourse(obj) {
       'Content-Type': 'application/json;charset=UTF-8'
     },
     data: obj
+  })
+}
+
+export function updateAllTeacherName() {
+  return request({
+    url: '/classroom/classroom/updateAllTeacherName',
+    method: 'put'
   })
 }

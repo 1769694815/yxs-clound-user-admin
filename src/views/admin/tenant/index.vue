@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-02 12:02:40
+ * @LastEditTime: 2020-04-09 10:07:11
  * @Description: 租户管理
  -->
 <template>
@@ -536,13 +536,15 @@ export default {
           label: '类型',
           prop: 'type',
           dicUrl: 'tenant_type',
-          dicData: []
+          dicData: [],
+          hide: true
         },
         {
           label: '总后台',
           prop: 'adminFlag',
           dicUrl: 'common_flag',
-          dicData: []
+          dicData: [],
+          hide: true
 
         },
         {
@@ -550,6 +552,18 @@ export default {
           prop: 'templateFlag',
           dicUrl: 'common_flag',
           dicData: []
+        },
+        {
+          label: '医币余额',
+          prop: 'virtualCurrency'
+        },
+        {
+          label: '现金余额',
+          prop: 'cash'
+        },
+        {
+          label: '保证金',
+          prop: 'earnestMoney'
         },
         {
           label: '初始化',

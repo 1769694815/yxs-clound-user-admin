@@ -2,7 +2,7 @@
  * @Date: 2020-02-11 19:09:58
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-23 16:32:15
+ * @LastEditTime: 2020-04-09 11:09:20
  * @Description: 用户管理
  -->
 <template>
@@ -119,6 +119,14 @@
               size="mini"
               @click="handleUpdate(scope.row)"
             >编辑
+            </el-button>
+            <el-button
+              v-if="sys_user_resetpwd"
+              type="text"
+              icon="el-icon-edit"
+              size="mini"
+              @click="handleResetPwd(scope.row)"
+            >重置密码
             </el-button>
             <el-button
               v-if="sys_user_del"
@@ -292,7 +300,7 @@
 </template>
 
 <script>
-import { addObj, delObj, fetchList, putObj } from '@/api/admin/user'
+import { addObj, delObj, fetchList, putObj, resetPwd } from '@/api/admin/user'
 import { deptRoleList } from '@/api/admin/role'
 import { fetchTree } from '@/api/admin/dept'
 import { mapGetters } from 'vuex'
@@ -460,6 +468,7 @@ export default {
     this.sys_user_add = this.permissions['sys_user_add']
     this.sys_user_edit = this.permissions['sys_user_edit']
     this.sys_user_del = this.permissions['sys_user_del']
+    this.sys_user_resetpwd = this.permissions['sys_user_resetpwd']
     this.getList()
     this.getNodeData()
     this.handleDept()
@@ -549,6 +558,37 @@ export default {
               this.$notify({
                 title: '失败',
                 message: '删除失败',
+                type: 'error',
+                duration: 2000
+              })
+            })
+        })
+        .catch(() => {})
+    },
+    handleResetPwd(row, index) {
+      this.$confirm(
+        '此操作将重置该用户(用户名:' + row.username + ')的密码, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          resetPwd(row.userId)
+            .then((res) => {
+              this.$notify({
+                title: '成功',
+                message: '重置成功,新密码为：' + res.data.data,
+                type: 'success',
+                duration: 2000
+              })
+            })
+            .catch(() => {
+              this.$notify({
+                title: '失败',
+                message: '重置失败',
                 type: 'error',
                 duration: 2000
               })

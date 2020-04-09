@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-08 14:46:21
+ * @LastEditTime: 2020-04-09 12:02:51
  * @Description: 班级管理
  -->
 <template>
@@ -52,6 +52,13 @@
           size="mini"
           @click="handleCreate"
         >新 增</el-button>
+        <el-button
+          v-if="permissions['generator_classroom_edit']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleupdateTeacher"
+        >更新讲师</el-button>
         <el-button
           v-if="permissions['classroom_classroomstudent_import_template']"
           type="primary"
@@ -364,7 +371,8 @@ import {
   addObj,
   putObj,
   delObj,
-  getCourseSimpleById
+  getCourseSimpleById,
+  updateAllTeacherName
 } from '@/api/classroom/classroom'
 import { getCourseSimpleList } from '@/api/course/course'
 import { importStudent } from '@/api/classroom/classroomstudent'
@@ -426,6 +434,11 @@ export default {
           width: 100,
           label: '标题',
           prop: 'title'
+        },
+        {
+          width: 100,
+          label: '讲师',
+          prop: 'teacherName'
         },
         {
           width: 100,
@@ -619,6 +632,21 @@ export default {
         })
         .catch(() => {
           this.tableLoading = false
+        })
+    },
+    handleupdateTeacher() {
+      var _this = this
+      this.$confirm('是否确认更新所有教师信息', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(function() {
+          return updateAllTeacherName()
+        })
+        .then(data => {
+          _this.$message.success('更新成功')
+          this.getList()
         })
     },
     handleDownload() {
