@@ -392,6 +392,16 @@ export default {
           hide: false
         },
         {
+          label: '手机号',
+          prop: 'phone',
+          hide: false
+        },
+        {
+          label: '身份证号',
+          prop: 'idCard',
+          hide: false
+        },
+        {
           label: '过期时间',
           prop: 'deadline',
           width: '160'

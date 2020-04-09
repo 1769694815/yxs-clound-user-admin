@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-08 16:12:36
+ * @LastEditTime: 2020-04-09 16:26:21
  * @Description: 课程管理
  -->
 <template>
@@ -663,6 +663,30 @@ export default {
       })
     },
     handleImport(row) {
+      if (row.status === '0') {
+        this.$message({
+          showClose: true,
+          message: '未发布课程不允许导入',
+          type: 'error'
+        })
+        return
+      }
+      if (row.price === null) {
+        this.$message({
+          showClose: true,
+          message: '该课程未设置价格，不允许导入',
+          type: 'error'
+        })
+        return
+      }
+      if (row.price === 0) {
+        this.$message({
+          showClose: true,
+          message: '免费课程不允许导入',
+          type: 'error'
+        })
+        return
+      }
       this.importView = true
       this.form.courseId = row.id
       this.$nextTick(() => {

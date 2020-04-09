@@ -431,6 +431,12 @@ export default {
           label: '学员姓名',
           prop: 'studentName'
         }, {
+          label: '手机号',
+          prop: 'phone'
+        }, {
+          label: '身份证号',
+          prop: 'idCard'
+        }, {
           label: '过期时间',
           prop: 'deadline',
           width: '160'

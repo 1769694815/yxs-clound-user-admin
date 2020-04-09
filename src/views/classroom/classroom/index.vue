@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-09 12:02:51
+ * @LastEditTime: 2020-04-09 16:26:02
  * @Description: 班级管理
  -->
 <template>
@@ -664,6 +664,30 @@ export default {
       })
     },
     handleImport(row) {
+      if (row.status === '0') {
+        this.$message({
+          showClose: true,
+          message: '未发布班级不允许导入',
+          type: 'error'
+        })
+        return
+      }
+      if (row.price === null) {
+        this.$message({
+          showClose: true,
+          message: '该班级未设置价格，不允许导入',
+          type: 'error'
+        })
+        return
+      }
+      if (row.price === 0) {
+        this.$message({
+          showClose: true,
+          message: '免费班级不允许导入',
+          type: 'error'
+        })
+        return
+      }
       this.importView = true
       this.form.classroomId = row.id
       this.$nextTick(() => {
