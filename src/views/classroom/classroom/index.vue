@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-09 16:26:02
+ * @LastEditTime: 2020-04-09 16:59:08
  * @Description: 班级管理
  -->
 <template>
@@ -458,6 +458,11 @@ export default {
           width: 60,
           label: '价格',
           prop: 'price'
+        },
+        {
+          width: 80,
+          label: '实际人数',
+          prop: 'studentNum'
         },
         {
           width: 80,

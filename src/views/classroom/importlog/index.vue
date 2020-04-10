@@ -411,9 +411,9 @@ export default {
     handleView(row, index) {
       this.dialogPvVisible = true
       this.operationStatus = 1
-      this.form = row
       this.$nextTick(() => {
         this.$refs.dataForm.resetFields()
+        this.form = row
       })
     },
     /**
