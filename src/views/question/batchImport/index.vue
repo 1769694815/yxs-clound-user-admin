@@ -1186,6 +1186,8 @@ export default {
       var upload_file = ''
       window.qt_type = '1'
       window.typeName = ['单选题', '多选题', '判断题', '填空题', '问答题']
+      // 题目校对页面需要展示 修改按钮
+      window.proofread = false
       var nameReg = /^\n?\s*(([0-9]+\s*[.|、])|(((\()|（)[0-9]+((\))|）)))\s*(.*?)\s*(?:\n|$)/g
       var singleReg = /^\n?\s*(答案[:：])\s*(.*?)\s*(?:\n|$)/g
       var fillReg = /([\(|\（]\s*[\)|\）])/g
@@ -1239,6 +1241,7 @@ export default {
             var questionArr = []
             var detail = []
             var contentText = editor.html.get().replace(/<p>/g, '\n\n').replace(/<\/p>/g, '\n\n').replace(/<br>/g, '\n\n').replace(/auto;">/g, 'auto;">\n\n').split('\n')
+            console.log('editor', editor)
             // 去除空格
             contentText.forEach(function(value) {
               if (value) {
@@ -1383,8 +1386,10 @@ export default {
               ii++
 
               window.qt_type = value.type
+              console.log('value', value.name)
+              console.log('value', (value.name).join(''))
               html = markdown.toHTML((value.name).join(''))
-
+              console.log('html', html)
               $('div#preview').append(html)
 
               // 标记答案
@@ -1470,6 +1475,7 @@ export default {
       function markAnswer(type, ii) {
         var list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
         $('.question').eq(ii).each(function(index, element) {
+          console.log('element', element)
           var $that = $(this)
           var titleNum = $(this).find('.type-box .title').text()
           var answerText = $(this).find('.qt_answer').text().replace(/^\s*答案\s*[:：]/, '')

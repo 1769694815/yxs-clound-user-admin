@@ -925,13 +925,18 @@ function render_tree( jsonml ) {
   }
 
   if(window.qt_type=="1"){
-      span = "<span class='change-type'><input class='checkOrRadio' type='checkbox' /><span>录入为多选题</span></span>";
+      // span = "<span class='change-type'><input class='checkOrRadio' type='checkbox' /><span>录入为多选题</span></span>";
       checkOrRadio = "<input class='checkOrRadio' type='radio' />";
   }else if(window.qt_type=="2") {
       checkOrRadio = "<input class='checkOrRadio' type='checkbox' />";
   }
-  if(window.qt_type != '1'){
-      span = "";
+  // if(window.qt_type != '1'){
+  //     span = "";
+  // }
+  if (window.proofread) {
+    span = '<div class="modify">修改</div>'
+  } else {
+    span = ''
   }
 
   // be careful about adding whitespace here for inline elements

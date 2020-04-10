@@ -153,6 +153,18 @@ export const constantRoutes = [
     }]
   },
   {
+    path: '/question/proofread',
+    component: Layout,
+    redirect: '/question/proofread/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'proofread',
+      component: () => import('@/views/question/proofread'),
+      meta: { title: '题目校对' }
+    }]
+  },
+  {
     path: '/orders/tenantorder',
     component: Layout,
     redirect: '/orders/tenantorder/index',
@@ -164,7 +176,6 @@ export const constantRoutes = [
       meta: { title: '充值记录' }
     }]
   }
-
 ]
 
 /**

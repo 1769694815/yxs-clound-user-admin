@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: Donkey
+ * @LastEditors: xwen
  * @Author: xw
- * @LastEditTime: 2020-03-20 10:09:53
+ * @LastEditTime: 2020-04-09 11:48:14
  * @Description: 题目表管理
  -->
 <template>
@@ -11,10 +11,10 @@
     <!--头部搜索-->
     <el-form ref="search" :inline="true" class="search" size="medium">
       <!--题目类容-->
-      <el-form-item label="题目类容:" label-width="80px">
-        <el-input v-model="searchForm.stem" type="text" size="small" placeholder="请输入题目类容" />
+      <el-form-item label="题目内容:" label-width="80px">
+        <el-input v-model="searchForm.stem" type="text" size="small" placeholder="请输入题目内容" />
       </el-form-item>
-      <el-form-item label="所属课程" label-width="80px">
+      <el-form-item label="所属课程:" label-width="80px">
         <el-select
           v-model="searchForm.courseId"
           :disabled="operationStatus === 1"
@@ -114,8 +114,13 @@
         <el-button
           type="primary"
           size="mini"
-          @click="goto"
+          @click="goto('/question/batchImport')"
         >批量录入</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="goto('/question/proofread')"
+        >题目校对</el-button>
       </template>
       <template slot="menu" slot-scope="scope">
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
@@ -265,30 +270,31 @@
           <!--题目选项-->
           <el-col
             v-for="(item, index) in singleArray"
-            v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3"
             :key="index"
           >
-            <el-col :span="20">
-              <el-form-item :label="'选项'+ letterArray[index]" :label-width="formLabelWidth">
-                <el-input
-                  v-model="singleArray[index]"
-                  :disabled="operationStatus === 1"
-                  :autosize="{ minRows: 2, maxRows: 6}"
-                  type="textarea"
-                  size="medium"
-                  class="question-textarea"
-                />
-              </el-form-item>
-            </el-col>
-            <button
-              v-if="singleArray.length > 2 && form.typeId === 1"
-              @click="optionDel(letterArray[index])"
-            >-</button>
-            <button
-              v-if="singleArray.length > 4 && form.typeId === 2"
-              @click="optionDel(letterArray[index])"
-            >-</button>
-            <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
+            <template v-if="form.typeId === 1 || form.typeId === 2 || form.typeId === 3">
+              <el-col :span="20">
+                <el-form-item :label="'选项'+ letterArray[index]" :label-width="formLabelWidth">
+                  <el-input
+                    v-model="singleArray[index]"
+                    :disabled="operationStatus === 1"
+                    :autosize="{ minRows: 2, maxRows: 6}"
+                    type="textarea"
+                    size="medium"
+                    class="question-textarea"
+                  />
+                </el-form-item>
+              </el-col>
+              <button
+                v-if="singleArray.length > 2 && form.typeId === 1"
+                @click="optionDel(letterArray[index])"
+              >-</button>
+              <button
+                v-if="singleArray.length > 4 && form.typeId === 2"
+                @click="optionDel(letterArray[index])"
+              >-</button>
+              <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
+            </template>
           </el-col>
           <!-- 题目答案 -->
           <el-col v-if="form.typeId != 7" :span="24">
@@ -511,9 +517,9 @@ export default {
     this.getCourseList()
   },
   methods: {
-    goto() {
+    goto(path) {
       this.$router.push({
-        path: '/question/batchImport',
+        path,
         query: {
           // courseId: row.id
         }
@@ -646,7 +652,7 @@ export default {
         if (json === null || json === '') {
           this.checkArray = []
         } else {
-          this.checkArray = JSON.parse(row.answer)
+          this.checkArray = row.answer.split('')
         }
       }
       if (type === 1 || type === 2 || type === 3) {
