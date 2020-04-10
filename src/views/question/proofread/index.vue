@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-04-09 11:23:04
- * @LastEditTime: 2020-04-10 16:15:52
+ * @LastEditTime: 2020-04-10 18:04:24
  * @LastEditors: xwen
  * @Description: 题目校对
  -->
@@ -56,7 +56,7 @@
     </el-form>
     <!-- content -->
     <div class="content">
-      <div ref="preview" v-html="previewDom" />
+      <div id="preview" />
     </div>
     <!-- pagination -->
     <Pagination
@@ -81,7 +81,7 @@ import Pagination from '@/components/Pagination'
 import 'froala-editor/css/froala_style.css'
 import 'froala-editor/css/froala_editor.pkgd.css'
 import load from 'load-script'
-import $ from 'jquery'
+// import $ from 'jquery'
 export default {
   name: 'Proofread',
   components: { Pagination },
@@ -286,6 +286,10 @@ export default {
           name: [`\n${index}.\n${ele.stem}\n`],
           type: ele.typeId
         }
+        const answer = `\n答案:${ele.answer}\n`
+        const analysis = `\n解析:${ele.analysis | '无'}\n`
+        // const difficulty = `\n难度:${ele.difficulty | '简单'}\n`
+        const difficulty = `\n难度:简单\n`
         // 判断题目类型
         if (obj.type === 1 || obj.type === 2 || obj.type === 3) {
           const optionsContent = JSON.parse(ele.optionsContent) || []
@@ -293,17 +297,10 @@ export default {
             const item = optionsContent[i]
             obj.name.push(`\n${item.name}、${item.content}\n`)
           }
-          const answer = `\n答案:${ele.answer}\n`
-          const analysis = `\n解析:${ele.analysis}\n`
-          obj.name.push(answer)
-          obj.name.push(analysis)
         }
-        if (obj.type === 4 || obj.type === 5 || obj.type === 6) {
-          const answer = `\n答案:${ele.answer}\n`
-          const analysis = `\n解析:${ele.analysis}\n`
-          obj.name.push(answer)
-          obj.name.push(analysis)
-        }
+        obj.name.push(answer)
+        obj.name.push(analysis)
+        obj.name.push(difficulty)
         this.getClassify(obj.name, obj.type)
       }
       let ii = -1
@@ -312,18 +309,11 @@ export default {
         window.qt_type = value.type
         console.log(value.name)
         // eslint-disable-next-line
-        this.previewDom += markdown.toHTML((value.name).join(''))
+        $('div#preview').append(markdown.toHTML((value.name).join('')))
 
         // 标记答案
         this.markAnswer(window.qt_type, ii)
-        // this.changeSize(ii)
       })
-      // const html = {
-      //   name: ['\n1.\n驾驶人有下列哪种违法行为一次记6分\n', '\nA、使用其他车辆行驶证\n', '\nB、饮酒后驾驶机动车\n', '\nC、车速超过规定时速50%以上\n', '\nD、违法占用应急车道行驶\n', '\n答案:D\n'],
-      //   type: 1
-      // }
-      // eslint-disable-next-line
-      // this.previewDom = markdown.toHTML(html.name.join(''))
     },
     getClassify(value, num) {
       this.detail.push({
@@ -332,11 +322,9 @@ export default {
       })
     },
     markAnswer(type, ii) {
-      console.log('type', type, 'ii', ii)
       const list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-      console.log('question', $('.question').eq(ii))
-      $('.question').eq(ii).each((index, element) => {
-        console.log('element', element)
+      /* eslint-disable */
+      $('.question').eq(ii).each(function(index, element) {
         var $that = $(this)
         var titleNum = $(this).find('.type-box .title').text()
         var answerText = $(this).find('.qt_answer').text().replace(/^\s*答案\s*[:：]/, '')
@@ -349,15 +337,15 @@ export default {
         var checkTitle = $(this).find('.qt_title').text().replace($(this).find('.type-box').text(), '')
 
         if ($.trim(checkTitle) === '') {
-          if ($(this).find('.qt_title img').size() < 1) {
-            $(this).find('.qt_title').addClass('qt_error').html('题目（至少两个字)')
-          }
+          // if ($(this).find('.qt_title img').size() < 1) {
+          //   $(this).find('.qt_title').addClass('qt_error').html('题目（至少两个字)')
+          // }
         }
         // 检测是否按顺序排序
         var select = $(this).find('.key .title').text()
         var type = $(this).data('type')
         select = select.split('.').join('')
-        console.log(type)
+        console.log('select', select)
 
         // 处理题目中的题号带括号，替换下中文括号
         titleNum = titleNum.replace(/（/, '(')
@@ -369,7 +357,7 @@ export default {
           $(this).addClass('check_error')
         }
 
-        if (type === '1' || type === '2') {
+        if (type == '1' || type == '2' || type == '3') {
           for (var k = 0, selectLen = select.length; k < selectLen; k++) {
             // 根据选项与ACSII的比较，判断是否为正常的排序及重复选项的存在
             if (!(select[k] === String.fromCharCode(65 + k))) {
@@ -377,7 +365,6 @@ export default {
               $(this).find('.key').addClass('qt_error')
             }
           }
-          console.log('选择题你好么')
           for (var i = 0, listLen = list.length; i < listLen; i++) {
             // 标记选项框
             if (answer.search(list[i]) !== -1) {
@@ -416,7 +403,7 @@ export default {
             $(this).find('.change-type').show()
           }
         }
-        if (type === '4') {
+        if (type == '5') {
           //  填空题括号与答案对应，先进行空元素匹配，在进行重复答案匹配
           var fillReg = /([\(|\（]\s*[\)|\）])/g
           var newAnswer = []
@@ -444,7 +431,7 @@ export default {
             }
           }
         }
-        if (type === '5') {
+        if (type == '6') {
           // 问答题答案为空时标记为错误
           if (answerText.length === 0) {
             $(this).addClass('check_error')
@@ -452,8 +439,8 @@ export default {
           }
         }
       })
+      /* eslint-disable */
     },
-    changeSize(ii) {},
     getList() {
       const param = { parentId: this.parentId }
       fetchList(
@@ -483,6 +470,7 @@ export default {
     pageChange() {}
   }
 }
+
 </script>
 
 <style src="@/assets/css/markdown.css"></style>

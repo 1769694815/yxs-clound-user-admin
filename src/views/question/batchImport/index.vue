@@ -1474,6 +1474,8 @@ export default {
       // 标记答案
       function markAnswer(type, ii) {
         var list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+        console.log('ii', ii)
+        console.log('question', $('.question').eq(ii))
         $('.question').eq(ii).each(function(index, element) {
           console.log('element', element)
           var $that = $(this)
@@ -1496,6 +1498,7 @@ export default {
           var select = $(this).find('.key .title').text()
           var type = $(this).data('type')
           select = select.split('.').join('')
+          console.log('type', type)
 
           // 处理题目中的题号带括号，替换下中文括号
           titleNum = titleNum.replace(/（/, '(')
