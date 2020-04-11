@@ -702,7 +702,7 @@ export default {
               }
 
               let optionsContent=''
-              if(data[i].type==='1'||data[i].type==='2'){
+              if(data[i].type==='1'||data[i].type==='2'||data[i].type=="3"){
                 let arr=[];
                 let keys=Object.keys(data[i]);
                 let count=1;
@@ -1075,7 +1075,7 @@ export default {
             $(this).addClass("check_error");
           }
           // 对按照答案对选型进行检索，若答案不在选项中，则将答案标记为错误
-          if(qt_type=="1"||qt_type=="2"){
+          if(qt_type=="1"||qt_type=="2"||qt_type=="3"){
             ans=$(this).find(".qt_answer").text().replace(/^答案[:：]/,"").replace(/\s/g,"").toUpperCase();
             if(ans.replace(/[A-Z]/g,"")!=""){
               $(this).addClass("check_error");
@@ -1090,14 +1090,14 @@ export default {
               }
             }
           }
-          if(qt_type=="3") {
+          if(qt_type=="4") {
             ans=$(this).find(".qt_answer").text().replace(/^答案[:：]/,"").replace(/\s/g,"");
             if(ans != '正确' && ans != '错误' && ans != '对' && ans != '错'){
               // $(this).addClass("check_error");
               $(this).find(".qt_answer").addClass("error");
             }
           }
-          if(qt_type=='4'||qt_type=='5'){
+          if(qt_type=='5'||qt_type=='6'){
             ans=$(this).find(".qt_answer").text().replace(/^答案[:：]/,"").replace(/\s/g,"");
             if(ans==''){
               $(this).addClass("check_error");
@@ -1124,9 +1124,9 @@ export default {
           var answer6=$(this).find(".key_F").length==0 ? "" : (escapeHTML($(this).find(".key_F").html())==""?" ":escapeHTML($(this).find(".key_F").html()))
           var answer7=$(this).find(".key_G").length==0 ? "" : (escapeHTML($(this).find(".key_G").html())==""?" ":escapeHTML($(this).find(".key_G").html()))
           var answer8=$(this).find(".key_H").length==0 ? "" : (escapeHTML($(this).find(".key_H").html())==""?" ":escapeHTML($(this).find(".key_H").html()))
-          if(type=="1"||type=="2"){
+          if(type=="1"||type=="2"||type=="3"){
             var key=escapeHTML($(this).find(".qt_answer").html()).replace(/&nbsp;/g,"").toUpperCase().replace(/<BR CLASS="MARKDOWN_RETURN">/g, "");
-          }else if (type=="3") {
+          }else if (type=="4") {
             var key=escapeHTML($(this).find(".qt_answer").html()).replace(/(^\s+)|(\s+$)/g,"").replace(/(正确|对)/,1).replace(/(错误|错)/,0);
           }else{
             var key=escapeHTML($(this).find(".qt_answer").html());
@@ -1185,7 +1185,7 @@ export default {
 
       var upload_file = ''
       window.qt_type = '1'
-      window.typeName = ['单选题', '多选题', '判断题', '填空题', '问答题']
+      window.typeName = ['单选题', '多选题', '不定项', '判断题', '填空题', '问答题']
       // 题目校对页面需要展示 修改按钮
       window.proofread = false
       var nameReg = /^\n?\s*(([0-9]+\s*[.|、])|(((\()|（)[0-9]+((\))|）)))\s*(.*?)\s*(?:\n|$)/g
@@ -1275,10 +1275,10 @@ export default {
                   getClassify(value, detail, 1)
                 } else if (fillReg.test(allValue)) {
                   // 在判断是否带有（）
-                  getClassify(value, detail, 4)
+                  getClassify(value, detail, 5)
                 } else {
                   // 否则默认为问答题
-                  getClassify(value, detail, 5)
+                  getClassify(value, detail, 6)
                 }
               } else {
                 var answerReg = /^\s*\n?【\s*答案\s*】\s*/
@@ -1313,11 +1313,11 @@ export default {
                       } else {
                         // 填空题筛选
                         if ((newString.split('答案')[0]).match(fillReg)) {
-                          getClassify(value, detail, 4)
+                          getClassify(value, detail, 5)
                           return false
                         }
                         // 无选项情况下，默认为问答题（主要包括判断题与问答题的区分）
-                        getClassify(value, detail, 5)
+                        getClassify(value, detail, 6)
                       }
                     } else {
                       // word版多选题带,号处理
@@ -1357,16 +1357,16 @@ export default {
                       }
                       // 判断题
                       if (isJude) {
-                        getClassify(value, detail, 3)
+                        getClassify(value, detail, 4)
                       }
                       if (!isSelect && !isJude) {
                         // 填空题
                         if ((((value.join(' ').split('答案:'))[0].match(fillReg)) && (value.join(' ').split('答案:')).length > 1) ||
                           (((value.join(' ').split('答案：'))[0].match(fillReg))) && (value.join(' ').split('答案：')).length > 1) {
-                          getClassify(value, detail, 4)
+                          getClassify(value, detail, 5)
                         } else {
                           // 问答题
-                          getClassify(value, detail, 5)
+                          getClassify(value, detail, 6)
                         }
                       }
                     }
@@ -1553,7 +1553,7 @@ export default {
               $(this).find('.change-type').show()
             }
           }
-          if (type == '4') {
+          if (type == '5') {
             //  填空题括号与答案对应，先进行空元素匹配，在进行重复答案匹配
             var fillReg = /([\(|\（]\s*[\)|\）])/g
             var newAnswer = []
@@ -1581,7 +1581,7 @@ export default {
               }
             }
           }
-          if (type == '5') {
+          if (type == '6') {
             // 问答题答案为空时标记为错误
             if (answerText.length === 0) {
               $(this).addClass('check_error')
