@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-04-09 11:23:04
- * @LastEditTime: 2020-04-10 18:04:24
+ * @LastEditTime: 2020-04-11 10:52:49
  * @LastEditors: xwen
  * @Description: 题目校对
  -->
@@ -94,14 +94,22 @@ export default {
         current: 1,
         size: 10
       },
+      difficultyList: [{
+        label: '困难',
+        value: '1'
+      }, {
+        label: '中等',
+        value: '2'
+      }, {
+        label: '简单',
+        value: '3'
+      }],
       parentId: 0,
       detail: [],
       previewDom: ''
     }
   },
   created() {
-    this.getList()
-    this.getCourseList()
     const CDN1 = '/batchImport/js/jquery.min.js'
     const CDN2 = '/batchImport/js/froala_editor.pkgd.min.js'
     const CDN3 = '/batchImport/js/markdown-v1.1.js'
@@ -121,7 +129,8 @@ export default {
           })
         })
       }
-      this.initList()
+      this.getList()
+      this.getCourseList()
     },
     initFroala() {
       const nameReg = /^\n?\s*(([0-9]+\s*[.|、])|(((\()|（)[0-9]+((\))|）)))\s*(.*?)\s*(?:\n|$)/g
@@ -274,6 +283,9 @@ export default {
       })
     },
     initList() {
+      // 清空 preview 内容
+      // eslint-disable-next-line
+      $('div#preview').empty()
       window.qt_type = '1'
       window.typeName = ['单选题', '多选题', '不定项选择题', '判断题', '填空题', '问答题']
       window.proofread = true
@@ -287,9 +299,8 @@ export default {
           type: ele.typeId
         }
         const answer = `\n答案:${ele.answer}\n`
-        const analysis = `\n解析:${ele.analysis | '无'}\n`
-        // const difficulty = `\n难度:${ele.difficulty | '简单'}\n`
-        const difficulty = `\n难度:简单\n`
+        const analysis = `\n解析:${ele.analysis !== null || '无'}\n`
+        const difficulty = `\n难度:${this.statusFilter(ele.difficulty, this.difficultyList)}\n`
         // 判断题目类型
         if (obj.type === 1 || obj.type === 2 || obj.type === 3) {
           const optionsContent = JSON.parse(ele.optionsContent) || []
@@ -323,6 +334,7 @@ export default {
     },
     markAnswer(type, ii) {
       const list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      const _this = this
       /* eslint-disable */
       $('.question').eq(ii).each(function(index, element) {
         var $that = $(this)
@@ -345,7 +357,6 @@ export default {
         var select = $(this).find('.key .title').text()
         var type = $(this).data('type')
         select = select.split('.').join('')
-        console.log('select', select)
 
         // 处理题目中的题号带括号，替换下中文括号
         titleNum = titleNum.replace(/（/, '(')
@@ -438,6 +449,12 @@ export default {
             $(this).find('.qt_answer').addClass('qt_error')
           }
         }
+        // 点击修改
+        $(this).find('.modify').on('click', () => {
+          // 修改数据
+          const item = _this.tableData[ii]
+          console.log(`第${ii}条数据`, item)
+        })
       })
       /* eslint-disable */
     },
@@ -457,6 +474,7 @@ export default {
         .then(res => {
           this.tableData = res.data.data.records
           this.page.total = res.data.data.total
+          this.initList()
         })
         .catch(() => {})
     },
@@ -465,9 +483,25 @@ export default {
         this.courseList = res.data
       })
     },
-    handleFilter() {},
-    handleEmpty() {},
-    pageChange() {}
+    statusFilter(status, list) {
+      let result
+      list.map(ele => {
+        if (status === ele.value) {
+          result = ele.label
+        }
+      })
+      return result
+    },
+    handleFilter() {
+      this.getList()
+    },
+    handleEmpty() {
+      this.searchForm = {}
+      this.getList()
+    },
+    pageChange() {
+      this.getList()
+    }
   }
 }
 

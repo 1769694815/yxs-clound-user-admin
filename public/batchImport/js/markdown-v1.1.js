@@ -934,7 +934,7 @@ function render_tree( jsonml ) {
   //     span = "";
   // }
   if (window.proofread) {
-    span = '<div class="modify">修改</div>'
+    span = '<span class="modify">修改</span>'
   } else {
     span = ''
   }

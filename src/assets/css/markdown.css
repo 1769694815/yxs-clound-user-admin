@@ -296,6 +296,9 @@ img.fr-dib {
 .question .qt_analysis {
   margin: 0px 0px 5px;
 }
+.question .qt_difficult {
+  margin: 0px 0px 5px;
+}
 .question .title {
   color: rgb(173, 192, 212);
 }
