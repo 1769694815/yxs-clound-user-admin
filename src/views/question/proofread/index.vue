@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-04-09 11:23:04
- * @LastEditTime: 2020-04-11 10:52:49
+ * @LastEditTime: 2020-04-11 15:27:44
  * @LastEditors: xwen
  * @Description: 题目校对
  -->
@@ -66,25 +66,27 @@
       :limit.sync="page.size"
       @pagination="pageChange"
     />
+    <!-- modal -->
+    <modify-modal :dialog-pv-visible="dialogPvVisible" :info="row" @handle-save="handleSave" @handle-close="handleClose" />
   </div>
 </template>
 
 <script>
 import {
   fetchList,
-  addObj,
   putObj,
-  delObj,
-  getCourseList,
-  getLessonList } from '@/api/question/question'
+  getCourseList } from '@/api/question/question'
 import Pagination from '@/components/Pagination'
 import 'froala-editor/css/froala_style.css'
 import 'froala-editor/css/froala_editor.pkgd.css'
 import load from 'load-script'
-// import $ from 'jquery'
+import ModifyModal from './modify-modal'
 export default {
   name: 'Proofread',
-  components: { Pagination },
+  components: {
+    Pagination,
+    ModifyModal
+  },
   data() {
     return {
       searchForm: {},
@@ -106,7 +108,9 @@ export default {
       }],
       parentId: 0,
       detail: [],
-      previewDom: ''
+      previewDom: '',
+      dialogPvVisible: false,
+      row: {}
     }
   },
   created() {
@@ -295,7 +299,7 @@ export default {
         // 下标index DOTO size
         const index = idx + 1 + ((this.page.current - 1) * this.page.size)
         const obj = {
-          name: [`\n${index}.\n${ele.stem}\n`],
+          name: [`\n${index}.\n${ele.stem}${ele.score ? '(' + ele.score + '分)' : ''}\n`],
           type: ele.typeId
         }
         const answer = `\n答案:${ele.answer}\n`
@@ -318,7 +322,7 @@ export default {
       this.detail.forEach(value => {
         ii++
         window.qt_type = value.type
-        console.log(value.name)
+        // console.log(value.name)
         // eslint-disable-next-line
         $('div#preview').append(markdown.toHTML((value.name).join('')))
 
@@ -454,6 +458,7 @@ export default {
           // 修改数据
           const item = _this.tableData[ii]
           console.log(`第${ii}条数据`, item)
+          _this.handleUpdate(item)
         })
       })
       /* eslint-disable */
@@ -491,6 +496,29 @@ export default {
         }
       })
       return result
+    },
+    handleUpdate(item) {
+      this.dialogPvVisible = true
+      this.row = item
+    },
+    handleSave(info) {
+      // 题目修改
+      console.log('题目信息', info)
+      putObj(info).then(res => {
+        console.log(res)
+        if (res.data.code !== 0) {
+          this.$message({
+            message: res.data.msg,
+            type: 'error'
+          })
+          return
+        }
+        this.dialogPvVisible = false
+        this.getList()
+      })
+    },
+    handleClose() {
+      this.dialogPvVisible = false
     },
     handleFilter() {
       this.getList()
