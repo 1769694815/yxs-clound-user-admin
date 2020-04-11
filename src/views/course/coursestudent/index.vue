@@ -468,7 +468,13 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' }
         ],
         realName: [
-          { required: true, message: '请输入真实姓名', trigger: 'blur' }
+          { required: true, message: '请输入真实姓名', trigger: 'blur' },
+          {
+            min: 2,
+            max: 20,
+            message: '长度在 2 到 20 个字符',
+            trigger: 'blur'
+          }
         ]
       },
       importFormRules: {
