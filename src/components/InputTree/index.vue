@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-13 17:54:11
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-03-12 17:56:03
+ * @LastEditTime: 2020-04-13 14:02:17
  * @Description: 输入框内下拉tree组件
  -->
 <template>
@@ -49,6 +49,7 @@
 
 <script>
 import Tree from '@/components/Tree/index'
+import { http } from '@/api/admin/dict'
 export default {
   components: {
     Tree
@@ -74,6 +75,12 @@ export default {
       type: Array,
       default: function() {
         return []
+      }
+    },
+    treeUrl: {
+      type: String,
+      default: function() {
+        return ''
       }
     },
     disabled: {
@@ -131,7 +138,18 @@ export default {
     //   immediate: true
     // }
   },
+  created() {
+    this.getTreeData()
+  },
   methods: {
+    getTreeData() {
+      if (this.treeUrl) {
+        http(this.treeUrl).then(res => {
+          this.treeData = res.data.data
+          this.$emit('tree-list', this.treeData)
+        })
+      }
+    },
     getText() {
       if (!isNaN(this.value)) {
         this.text = this.showName(this.value, this.treeData)

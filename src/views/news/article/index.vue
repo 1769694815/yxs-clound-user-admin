@@ -23,12 +23,12 @@
         label="栏目:"
         label-width="60px"
       >
-        <single-change
+        <Input-tree
           v-model="searchForm.categoryId"
-          :dic-prop="{ label: 'name', value: 'id' }"
-          dic-url="/news/articlecategory/getCategoryType"
-          type="select"
-          size="small"
+          tree-url="/news/articlecategory/tree"
+          :disabled="operationStatus === 1"
+          title="新闻分类"
+          placeholder="请选择新闻分类"
         />
       </el-form-item>
       <el-form-item
@@ -201,13 +201,12 @@
               label="所属栏目:"
               :label-width="formLabelWidth"
             >
-              <single-change
+              <Input-tree
                 v-model="form.categoryId"
+                tree-url="/news/articlecategory/tree"
                 :disabled="operationStatus === 1"
-                :dic-prop="{ label: 'name', value: 'id' }"
-                dic-url="/news/articlecategory/getCategoryType"
-                type="select"
-                size="medium"
+                title="所属栏目"
+                placeholder="请选择所属栏目"
               />
             </el-form-item>
           </el-col>
@@ -370,7 +369,7 @@
             >
               <!--<tinymce ref="tinymce" v-model="form.body" :readonly="operationStatus === 1" :height="300" />-->
               <!--:config="{readonly: operationStatus === 1}"-->
-              <ue ref="ueditor" v-model="form.body" :valuex="ueValue"/>
+              <ue ref="ueditor" v-model="form.body" :valuex="ueValue" />
             </el-form-item>
           </el-col>
 
@@ -409,12 +408,13 @@ import { fetchList, getObj, addObj, putObj, delObj } from '@/api/news/article'
 import { mapGetters } from 'vuex'
 // import Tinymce from '@/components/Tinymce/index'
 import Ue from '@/components/ue/ueditor'
+import InputTree from '@/components/InputTree/index'
 
 export default {
   name: 'Article',
   components: {
-    // Tinymce,
-    Ue
+    Ue,
+    InputTree
   },
   filters: {
     statusFilter(type, list) {

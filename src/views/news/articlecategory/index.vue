@@ -119,24 +119,56 @@
             :span="24"
           >
             <el-form-item
-              prop="published"
-              label="是否显示:"
+              prop="code"
+              label="栏目编码:"
               :label-width="formLabelWidth"
             >
-              <el-radio v-model="form.published" label="1" :disabled="operationStatus === 1">启用</el-radio>
-              <el-radio v-model="form.published" label="0" :disabled="operationStatus === 1">不启用</el-radio>
+              <el-input
+                v-model="form.code"
+                autocomplete="off"
+                placeholder="请输入栏目编码"
+                :disabled="operationStatus === 1"
+              />
+            </el-form-item>
+          </el-col>
+          <!--父类类型-->
+          <el-col :span="24">
+            <el-form-item label="父类类型" prop="parentId" :label-width="formLabelWidth">
+              <Input-tree
+                v-model="form.parentId"
+                tree-url="news/articlecategory/tree"
+                :disabled="operationStatus === 1"
+                placeholder="请选择父类类型"
+              />
             </el-form-item>
           </el-col>
           <el-col
             :span="24"
           >
             <el-form-item
-              prop="code"
+              prop="published"
+              label="是否显示:"
+              :label-width="formLabelWidth"
+            >
+              <single-change
+                v-model="form.published"
+                :disabled="operationStatus === 1"
+                status-type="common_flag"
+                type="radio"
+                size="medium"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col
+            :span="24"
+          >
+            <el-form-item
+              prop="url"
               label="地址链接:"
               :label-width="formLabelWidth"
             >
               <el-input
-                v-model="form.code"
+                v-model="form.url"
                 autocomplete="off"
                 placeholder="请输入地址链接"
                 :disabled="operationStatus === 1"
@@ -176,7 +208,11 @@
 <script>
 import { addObj, delObj, fetchArticleCategoryTree, getObj, putObj } from '@/api/news/articlecategory'
 import { mapGetters } from 'vuex'
+import InputTree from '@/components/InputTree/index'
 export default {
+  components: {
+    InputTree
+  },
   filters: {
     dialogTitle(type) {
       const titleMap = {
@@ -189,17 +225,6 @@ export default {
     }
   },
   data() {
-    const DIC = {
-      flag: [
-        {
-          label: '是',
-          value: 1
-        }, {
-          label: '否',
-          value: 0
-        }
-      ]
-    }
     return {
       formEdit: true,
       formAdd: true,
@@ -212,7 +237,7 @@ export default {
       form: {
         name: undefined,
         published: undefined,
-        code: undefined
+        url: undefined
       },
       currentId: -1,
       articleCategory_btn_add: false,
@@ -223,7 +248,7 @@ export default {
         name: [{ required: true, message: '请输入栏目名称', trigger: 'blur' }],
         seoTitle: [{ required: true, message: 'SEO标题不合法', trigger: 'blur' }],
         seoKeyword: [{ required: true, message: 'SEO关键字不合法', trigger: 'blur' }],
-        code: [{ required: true, message: '请输入地址链接', trigger: 'blur' }],
+        url: [{ required: true, message: '请输入地址链接', trigger: 'blur' }],
         seoDesc: [{ required: true, message: 'URL描述不合法', trigger: 'blur' }],
         weight: [{ required: true, message: '排序不合法', trigger: 'blur' }],
         publishArticle: [{ required: true, message: '请选择是否发布文章', trigger: 'blur' }],
@@ -261,14 +286,20 @@ export default {
           width: 150
         },
         {
+          label: '栏目编码',
+          prop: 'code',
+          width: 150
+        },
+        {
           label: '是否显示',
           prop: 'published',
-          dicData: DIC.flag,
+          dicUrl: 'common_flag',
+          dicData: [],
           width: 120
         },
         {
           label: '地址链接',
-          prop: 'code',
+          prop: 'url',
           width: 500,
           link: true
         }
@@ -285,10 +316,11 @@ export default {
     this.getList()
   },
   methods: {
+
     getList() {
       this.tableLoading = true
       fetchArticleCategoryTree().then(response => {
-        // this.treeData = response.data.data
+        this.treeData = response.data.data
         this.tableLoading = false
         this.page.total = response.data.data.length
         this.tableData = response.data.data
@@ -313,18 +345,18 @@ export default {
     handleCreate() {
       this.dialogPvVisible = true
       this.operationStatus = 0
-      this.form = {}
-      this.form.body = ''
+      this.form = {
+        published: '1'
+      }
     },
     /**
      * 点击查看
      */
     handleView(row, index) {
-      this.dialogPvVisible = true
-      this.operationStatus = 1
       getObj(row.id).then(data => {
         this.form = data.data.data
-        this.init()
+        this.dialogPvVisible = true
+        this.operationStatus = 1
       })
     },
     /**
