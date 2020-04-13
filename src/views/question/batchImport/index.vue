@@ -724,7 +724,6 @@ export default {
                 optionsContent=undefined
               }
 
-
               dataFormat.push({
                  typeId:data[i].type,
                 stem:data[i].question,
@@ -1111,7 +1110,6 @@ export default {
         var classification = $("input[name=classification]").val();
         // var difficult=$("select[name=difficult]").val();
         var data=[];
-
         $("#preview").find(".question").each(function (index,element) {
           var type = $(this).attr('data-type');
           var reQuestion = $(this).find(".qt_title").html().replace(/^[\s\S]*<span class="type-box"[\s\S]*>[\s\S]+<\/span>([\s\S]*)$/,"$1");
@@ -1124,8 +1122,11 @@ export default {
           var answer6=$(this).find(".key_F").length==0 ? "" : (escapeHTML($(this).find(".key_F").html())==""?" ":escapeHTML($(this).find(".key_F").html()))
           var answer7=$(this).find(".key_G").length==0 ? "" : (escapeHTML($(this).find(".key_G").html())==""?" ":escapeHTML($(this).find(".key_G").html()))
           var answer8=$(this).find(".key_H").length==0 ? "" : (escapeHTML($(this).find(".key_H").html())==""?" ":escapeHTML($(this).find(".key_H").html()))
-          if(type=="1"||type=="2"||type=="3"){
+          if (type == "1") {
             var key=escapeHTML($(this).find(".qt_answer").html()).replace(/&nbsp;/g,"").toUpperCase().replace(/<BR CLASS="MARKDOWN_RETURN">/g, "");
+          } else if(type=="2"||type=="3"){
+            var keyStr = escapeHTML($(this).find(".qt_answer").html()).replace(/&nbsp;/g,"").toUpperCase().replace(/<BR CLASS="MARKDOWN_RETURN">/g, "");
+            var key = JSON.stringify(keyStr.split(''))
           }else if (type=="4") {
             var key=escapeHTML($(this).find(".qt_answer").html()).replace(/(^\s+)|(\s+$)/g,"").replace(/(正确|对)/,1).replace(/(错误|错)/,0);
           }else{
