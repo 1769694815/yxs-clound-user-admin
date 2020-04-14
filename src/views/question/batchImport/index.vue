@@ -403,8 +403,8 @@ export default {
       courseList: [],
       courseId: 0,
       courseName: '课程名',
-      questionTypeName: '题目题型',
-      questionTypeId: 0
+      questionTypeName: '练习题',
+      questionTypeId: 1
     }
   },
   computed: {
@@ -674,6 +674,14 @@ export default {
           var previewHtml = $('#preview').html();
           var previewText = $('#preview').text();
 
+          if (that.courseId == 0) {
+            that.$message({
+              message: '请选择课程名',
+              type: 'warning'
+            })
+            return
+          }
+          
           if($.trim(previewHtml) === '' || $.trim(previewText) === ''){
             alert('导入内容不能为空！');
             return false
