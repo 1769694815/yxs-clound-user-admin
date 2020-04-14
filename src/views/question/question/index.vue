@@ -297,11 +297,12 @@
             </template>
           </el-col>
           <!-- 题目答案 -->
+          <!-- // 题型(1:选择题，2：多选题，3：不定项选择题，4：判断题，5：填空题，6：问答题，7：材料分析题) -->
           <el-col v-if="form.typeId != 7" :span="24">
             <el-form-item label="题目答案" prop="answer" :label-width="formLabelWidth">
               <!-- 非选择题 -->
               <el-input
-                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 5"
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
@@ -342,7 +343,7 @@
               </el-checkbox-group>
               <!-- 判断题 -->
               <el-radio-group
-                v-if="form.typeId === 5"
+                v-if="form.typeId === 4"
                 v-model="form.answer"
                 size="medium"
                 :disabled="operationStatus === 1"
