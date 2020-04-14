@@ -286,14 +286,14 @@
                 </el-form-item>
               </el-col>
               <button
-                v-if="singleArray.length > 2 && form.typeId === 1"
+                v-if="(singleArray.length > 2 && form.typeId === 1) && !(operationStatus === 1)"
                 @click="optionDel(letterArray[index])"
               >-</button>
               <button
-                v-if="singleArray.length > 4 && form.typeId === 2"
+                v-if="(singleArray.length > 4 && form.typeId === 2) && !(operationStatus === 1)"
                 @click="optionDel(letterArray[index])"
               >-</button>
-              <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
+              <button v-if="(letterArray.length > singleArray.length) && !(operationStatus === 1)" @click="optionAdd">+</button>
             </template>
           </el-col>
           <!-- 题目答案 -->
