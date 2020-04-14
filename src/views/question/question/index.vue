@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-15 16:57:27
- * @LastEditors: xwen
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-09 11:48:14
+ * @LastEditTime: 2020-04-14 18:57:55
  * @Description: 题目表管理
  -->
 <template>
@@ -116,6 +116,11 @@
           size="mini"
           @click="goto('/question/batchImport')"
         >批量录入</el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          @click="handleExport()"
+        >导出</el-button>
         <el-button
           type="primary"
           size="mini"
@@ -511,7 +516,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['permissions'])
+    ...mapGetters(['permissions', 'access_token'])
   },
   created() {
     this.getList()
@@ -727,7 +732,40 @@ export default {
     },
     optionDel(index) {
       this.singleArray.splice(index, 1)
+    },
+    handleExport() {
+      var elemIF = document.createElement('iframe')
+
+      console.log('xxx' + this.access_token)
+
+      this.searchForm.access_token = this.access_token
+
+      console.log(this.formateObjToParamStr(this.searchForm))
+
+      elemIF.src = '/question/question/export?accessToken=' + this.access_token
+      elemIF.style.display = 'none'
+      document.body.appendChild(elemIF)
+    },
+    filter(str) { // 特殊字符转义
+      str += '' // 隐式转换
+      str = str.replace(/%/g, '%25')
+      str = str.replace(/\+/g, '%2B')
+      str = str.replace(/ /g, '%20')
+      str = str.replace(/\//g, '%2F')
+      str = str.replace(/\?/g, '%3F')
+      str = str.replace(/&/g, '%26')
+      str = str.replace(/\=/g, '%3D')
+      str = str.replace(/#/g, '%23')
+      return str
+    },
+    formateObjToParamStr(paramObj) {
+      const sdata = []
+      for (const attr in paramObj) {
+        sdata.push(`${attr}=${this.filter(paramObj[attr])}`)
+      }
+      return sdata.join('&')
     }
+
   }
 }
 </script>
