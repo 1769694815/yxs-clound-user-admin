@@ -302,7 +302,7 @@
             <el-form-item label="题目答案" prop="answer" :label-width="formLabelWidth">
               <!-- 非选择题 -->
               <el-input
-                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3"
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
