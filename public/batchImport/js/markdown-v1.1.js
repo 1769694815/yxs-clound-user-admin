@@ -312,7 +312,7 @@ Markdown.dialects.Gruber = {
     qtKey: function qtKey( block, next ) {
         var m = block.match( /^\s*([A-H])(\.)\s*(.*?)\s*(?:\n|$)/ );
         if ( !m ) return undefined;
-        if(window.qt_type=="1"||window.qt_type=="2"){
+        if(window.qt_type=="1"||window.qt_type=="2"||window.qt_type=="3"){
             var n=m[0].match(/^[A-H]/);
             var type="";
             switch (n[0]) {
@@ -392,8 +392,8 @@ Markdown.dialects.Gruber = {
                 next.unshift( mk_block( block.substr( m[0].length ), block.trailing, block.lineNumber + 2 ) );
               return [error];
           }
-      }else if(window.qt_type=="2") {
-          ms = m[2].replace(/[,|，]/g,'');//匹配标点分隔符
+      }else if(window.qt_type=="2" || window.qt_type=="3") {
+          ms = m[2].replace(/[,|\[|\]|\"]/g,'');//匹配标点、[、]和"分隔符
           n=ms.match(/^\s*[a-h]{1,8}\s*(?:\n|$)/i);
           if(n==null){
               var error = [ "ans_error" ];
@@ -403,7 +403,7 @@ Markdown.dialects.Gruber = {
                 next.unshift( mk_block( block.substr( m[0].length ), block.trailing, block.lineNumber + 2 ) );
               return [error];
           }
-      }else if (window.qt_type=="3") {
+      }else if (window.qt_type=="4") {
           ms = m[2] || m[1];
           n=ms.match(/^\s*(正确|错误|对|错)\s*(?:\n|$)/i);
           if(n==null){
@@ -709,7 +709,7 @@ expose.renderJsonML = function( jsonml, options ) {
       "left": "<div class='question' data-type='"+window.qt_type+"'>",
       "title": "<p class='qt_error'>题目（至少两个字）</p>",
       //key只存在于单选和多选
-      "key": (window.qt_type=="1"||window.qt_type=="2") ? "<p class='qt_error'>选项（至少两项）</p>" : "",
+      "key": (window.qt_type=="1"||window.qt_type=="2"||window.qt_type=="3") ? "<p class='qt_error'>选项（至少两项）</p>" : "",
       "comKeyWord":"",
       "coreKeyWord":"",
       "answer": "<p class='qt_error'>答案</p>",
@@ -773,11 +773,11 @@ expose.renderJsonML = function( jsonml, options ) {
               //当下一项中有图片（fr-dib是froala编辑器中图片的class）；并且当前项为答案时
               if(content[j+1].match('class="fr-dib"') && content[j].match('qt_answer')){
                   //判断题、填空题答案不能有图片
-                  if((window.qt_type=="3"||window.qt_type=="4")){
+                  if((window.qt_type=="4"||window.qt_type=="5")){
                       content[j] = content[j].replace(/qt_answer/,'qt_answer qt_error');
                   }
                   //问答题的答案中不能只放图片(问答题；字符串长度小于4；答案；下一项是图片)
-                  else if(window.qt_type=="5"){
+                  else if(window.qt_type=="6"){
                       var answerLength = $(content[j]).text().replace(/\s*/g,"").length;//答案长度
                       if(answerLength<4){
                           content[j] = content[j].replace(/qt_answer/,'qt_answer qt_error');
@@ -824,7 +824,7 @@ expose.renderJsonML = function( jsonml, options ) {
               "left": "<div class='question' data-type='"+window.qt_type+"'>",
               "title": "<p class='qt_error'>题目（至少两个字）</p>",
               //key只存在于单选和多选
-              "key": (window.qt_type=="1"||window.qt_type=="2") ? "<p class='qt_error'>选项（至少两项）</p>" : "",
+              "key": (window.qt_type=="1"||window.qt_type=="2"||window.qt_type=="3") ? "<p class='qt_error'>选项（至少两项）</p>" : "",
               "comKeyWord":"",
               "coreKeyWord":"",
               "answer": "<p class='qt_error'>答案</p>",
@@ -839,7 +839,7 @@ expose.renderJsonML = function( jsonml, options ) {
           params.count = 1;
           params.key_count = 0;
           insert.title = content[i];
-          if(window.qt_type == '5'){
+          if(window.qt_type == '6'){
               html += insert.left + insert.title + insert.key +insert.comKeyWord+insert.coreKeyWord+ insert.answer + insert.analysis + insert.difficult + insert.label + insert.error + insert.right;
           }else{
               html += insert.left + insert.title + insert.key+ insert.answer + insert.analysis + insert.difficult + insert.label + insert.error + insert.right;
@@ -855,11 +855,11 @@ expose.renderJsonML = function( jsonml, options ) {
               }
           }
           //如果单选题、多选题的答案中有图片
-          if(insert.answer.match('class="fr-dib"') && (window.qt_type=="1"||window.qt_type=="2")){
+          if(insert.answer.match('class="fr-dib"') && (window.qt_type=="1"||window.qt_type=="2"||window.qt_type=="3")){
               insert.error = "<p class='qt_error'>请勿在答案中写入图片</p>";
           }
           // 拼接所有部分，对整块question进行更新
-          if(window.qt_type == '5'){
+          if(window.qt_type == '6'){
               var characterCheck = /[`~!@#$%^&*()_\-+=<>?:"{},.\/;'\\[\]·~！@#￥%……&*（）——\-+={}《》？：“”【】；‘’，。]/im;//解决特殊字符判分不准的问题
               var _comKeyWord = $(insert.comKeyWord).text().substring(6,$(insert.comKeyWord).text().length);
               var _coreKeyWord = $(insert.coreKeyWord).text().substring(6,$(insert.coreKeyWord).text().length);
@@ -872,7 +872,7 @@ expose.renderJsonML = function( jsonml, options ) {
           }
           //如果answer和error内容相同，就只显示answer
           if(insert.answer == insert.error){
-              if(window.qt_type == '5'){
+              if(window.qt_type == '6'){
                   html_temp = insert.left + insert.title + insert.key +insert.comKeyWord+insert.coreKeyWord+insert.answer + insert.analysis + insert.difficult + insert.label + insert.right;
               }else{
                   html_temp = insert.left + insert.title + insert.key+insert.answer + insert.analysis + insert.difficult + insert.label + insert.right;
@@ -927,7 +927,7 @@ function render_tree( jsonml ) {
   if(window.qt_type=="1"){
       // span = "<span class='change-type'><input class='checkOrRadio' type='checkbox' /><span>录入为多选题</span></span>";
       checkOrRadio = "<input class='checkOrRadio' type='radio' />";
-  }else if(window.qt_type=="2") {
+  }else if(window.qt_type=="2"||window.qt_title=="3") {
       checkOrRadio = "<input class='checkOrRadio' type='checkbox' />";
   }
   // if(window.qt_type != '1'){
@@ -987,7 +987,7 @@ function render_tree( jsonml ) {
        tag_attrs=" class='qt_answer'";
        tag_hidden = " class=qt_answer hidden";
 
-       if(window.qt_type == '1' ||window.qt_type == '2'){
+       if(window.qt_type == '1' ||window.qt_type == '2' || window.qt_type == '3'){
            return "<p" + tag_hidden + ">" + content.join( "" ).replace(/(&nbsp;)*\s*答案[:：]/,"<span class='title'>答案：</span>") + "</p>";
        }else{
            return "<p" + tag_attrs + ">" + content.join( "" ).replace(/(&nbsp;)*\s*答案[:：]/,"<span class='title'>答案：</span>") + "</p>";
