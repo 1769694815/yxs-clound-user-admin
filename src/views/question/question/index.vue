@@ -291,14 +291,14 @@
                 </el-form-item>
               </el-col>
               <button
-                v-if="singleArray.length > 2 && form.typeId === 1"
+                v-if="(singleArray.length > 2 && form.typeId === 1) && !(operationStatus === 1)"
                 @click="optionDel(letterArray[index])"
               >-</button>
               <button
-                v-if="singleArray.length > 4 && form.typeId === 2"
+                v-if="(singleArray.length > 4 && form.typeId === 2) && !(operationStatus === 1)"
                 @click="optionDel(letterArray[index])"
               >-</button>
-              <button v-if="letterArray.length > singleArray.length" @click="optionAdd">+</button>
+              <button v-if="(letterArray.length > singleArray.length) && !(operationStatus === 1)" @click="optionAdd">+</button>
             </template>
           </el-col>
           <!-- 题目答案 -->
@@ -307,7 +307,7 @@
             <el-form-item label="题目答案" prop="answer" :label-width="formLabelWidth">
               <!-- 非选择题 -->
               <el-input
-                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3"
+                v-if="form.typeId !== 1 && form.typeId !== 2 && form.typeId !==3 && form.typeId !== 4"
                 v-model="form.answer"
                 :disabled="operationStatus === 1"
                 :autosize="{ minRows: 2, maxRows: 6}"
