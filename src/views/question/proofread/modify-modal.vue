@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-04-11 10:54:02
- * @LastEditTime: 2020-04-11 15:27:32
+ * @LastEditTime: 2020-04-14 10:55:25
  * @LastEditors: xwen
  * @Description: 修改题目弹窗
  -->
@@ -134,6 +134,9 @@ export default {
         // 匹配答案
         if (item.match(/\s*答案[:：]\s*/g)) {
           answer = item.split('答案:')[1]
+          if (this.info.typeId === 2 || this.info.typeId === 3) {
+            answer = JSON.stringify(answer.split(''))
+          }
         }
         // 匹配解析
         if (item.match(/\s*解析[:：]\s*/g)) {

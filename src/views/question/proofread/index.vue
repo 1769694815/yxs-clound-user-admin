@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-04-09 11:23:04
- * @LastEditTime: 2020-04-11 15:27:44
+ * @LastEditTime: 2020-04-14 11:57:20
  * @LastEditors: xwen
  * @Description: 题目校对
  -->
@@ -302,6 +302,13 @@ export default {
           name: [`\n${index}.\n${ele.stem}${ele.score ? '(' + ele.score + '分)' : ''}\n`],
           type: ele.typeId
         }
+        // 多选和不定项选择题
+        // let answer
+        // if (obj.type === 2 || obj.type === 3) {
+        //   answer = `\n答案:${JSON.parse(ele.answer).join('')}\n`
+        // } else {
+        //   answer = `\n答案:${ele.answer}\n`
+        // }
         const answer = `\n答案:${ele.answer}\n`
         const analysis = `\n解析:${ele.analysis !== null || '无'}\n`
         const difficulty = `\n难度:${this.statusFilter(ele.difficulty, this.difficultyList)}\n`
@@ -391,6 +398,7 @@ export default {
           // 根据选项最后一位的ASCII码 与选项对比小于即为不存选项（大写比较）
           // 单选题判断答案是否存在
           // 过滤空字符串
+          answer = answer.replace(/[,|\[|\]|\"]/g,'') // 匹配标点、[、]和"分隔符
           var answerhandle = answer.split('').filter(function(msg) {
             return msg && msg.trim()
           })
