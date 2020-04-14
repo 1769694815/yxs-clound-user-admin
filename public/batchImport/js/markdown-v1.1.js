@@ -405,7 +405,7 @@ Markdown.dialects.Gruber = {
           }
       }else if (window.qt_type=="4") {
           ms = m[2] || m[1];
-          n=ms.match(/^\s*(正确|错误|对|错)\s*(?:\n|$)/i);
+          n=ms.match(/^\s*(正确|错误|对|错|true|false)\s*(?:\n|$)/i);
           if(n==null){
               var error = [ "ans_error" ];
               Array.prototype.push.apply(error, this.processInline(m[ 0 ]));

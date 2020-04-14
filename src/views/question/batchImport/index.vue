@@ -1136,7 +1136,8 @@ export default {
             var keyStr = escapeHTML($(this).find(".qt_answer").html()).replace(/&nbsp;/g,"").toUpperCase().replace(/<BR CLASS="MARKDOWN_RETURN">/g, "");
             var key = JSON.stringify(keyStr.split(''))
           }else if (type=="4") {
-            var key=escapeHTML($(this).find(".qt_answer").html()).replace(/(^\s+)|(\s+$)/g,"").replace(/(正确|对)/,1).replace(/(错误|错)/,0);
+            var key=escapeHTML($(this).find(".qt_answer").html()).replace(/(^\s+)|(\s+$)/g,"").replace(/(正确|对)/,'true').replace(/(错误|错)/,'false');
+            console.log(key, '<<<key')
           }else{
             var key=escapeHTML($(this).find(".qt_answer").html());
           }
