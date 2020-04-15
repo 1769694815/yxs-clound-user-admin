@@ -741,7 +741,8 @@ export default {
                 questionType :that.questionTypeId,
                 parentId:0,
                 score:that.score,
-                courseId:that.courseId
+                courseId:that.courseId,
+                analysis: data[i].analysis
               });
             }
 
