@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-14 18:57:55
+ * @LastEditTime: 2020-04-15 11:02:27
  * @Description: 题目表管理
  -->
 <template>
@@ -131,7 +131,7 @@
         <el-button type="text" icon="el-icon-view" size="mini" @click="handleView(scope.row)">查看</el-button>
         <el-button type="text" icon="el-icon-edit" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
         <el-button
-          v-if="!hasParentId"
+          v-if="!hasParentId && scope.row.questionType=='7'"
           type="text"
           icon="el-icon-edit"
           size="mini"
