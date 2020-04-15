@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-14 18:57:55
+ * @LastEditTime: 2020-04-15 10:56:40
  * @Description: 题目表管理
  -->
 <template>
@@ -736,11 +736,7 @@ export default {
     handleExport() {
       var elemIF = document.createElement('iframe')
 
-      console.log('xxx' + this.access_token)
-
       this.searchForm.access_token = this.access_token
-
-      console.log(this.formateObjToParamStr(this.searchForm))
 
       elemIF.src = '/question/question/export?accessToken=' + this.access_token
       elemIF.style.display = 'none'
