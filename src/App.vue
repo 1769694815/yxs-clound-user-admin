@@ -1,13 +1,13 @@
 <!--
  * @Author: Donkey
  * @Date: 2020-02-13 12:00:47
- * @LastEditTime: 2020-03-20 09:24:52
- * @LastEditors: Donkey
+ * @LastEditTime: 2020-04-16 15:19:46
+ * @LastEditors: xwen
  * @Description:
  -->
 <template>
   <div id="app">
-    <router-view :key="this.$route.path" />
+    <router-view />
   </div>
 </template>
 
