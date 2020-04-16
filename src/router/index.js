@@ -175,6 +175,18 @@ export const constantRoutes = [
       component: () => import('@/views/orders/tenantorder'),
       meta: { title: '充值记录' }
     }]
+  },
+  {
+    path: '/admin/systenanttask',
+    component: Layout,
+    redirect: '/admin/systenanttask/index',
+    hidden: true,
+    children: [{
+      path: 'index',
+      name: 'systenanttask',
+      component: () => import('@/views/admin/systenanttask'),
+      meta: { title: '租户创建记录' }
+    }]
   }
 ]
 
