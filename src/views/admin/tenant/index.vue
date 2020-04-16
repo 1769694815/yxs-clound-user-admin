@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-16 11:17:04
+ * @LastEditTime: 2020-04-16 13:43:01
  * @Description: 租户管理
  -->
 <template>
@@ -593,6 +593,12 @@ export default {
           prop: 'logo',
           width: '140',
           img: true
+        },
+        {
+          label: '创建时间',
+          hide: false,
+          prop: 'createTime',
+          width: '140'
         }
 
       ],
