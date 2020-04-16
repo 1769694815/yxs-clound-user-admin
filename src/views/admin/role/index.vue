@@ -1,8 +1,8 @@
 <!--
  * @Date: 2020-02-12 13:45:09
- * @LastEditors: xw
+ * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime : 2020-02-14 17:37:22
+ * @LastEditTime: 2020-04-16 13:15:27
  * @Description: 角色管理
  -->
 <template>
@@ -15,6 +15,7 @@
       :page="page"
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
+      @refresh-change="handleFilter"
       @page-change="getList"
     >
       <template
@@ -383,6 +384,9 @@ export default {
         .catch(() => {
           this.tableLoading = false
         })
+    },
+    handleFilter() {
+      this.getList()
     },
     handleOpenBefore() {
       fetchTree().then(res => {

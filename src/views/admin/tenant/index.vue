@@ -2,7 +2,7 @@
  * @Date: 2020-02-14 13:00:50
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-09 13:52:16
+ * @LastEditTime: 2020-04-16 13:43:01
  * @Description: 租户管理
  -->
 <template>
@@ -92,11 +92,28 @@
       :table-loading="tableLoading"
       :table-data="tableData"
       :page="page"
+      :add-btn="false"
       :table-option.sync="tableOption"
       @handle-create="handleCreate"
       @refresh-change="handleFilter"
       @page-change="getList"
     >
+      <template slot="menuLeft">
+        <el-button
+          v-if="permissions['admin_systenant_add']"
+          type="primary"
+          icon="el-icon-plus"
+          size="mini"
+          @click="handleCreate"
+        >新 增</el-button>
+        <el-button
+          v-if="permissions['admin_systenanttask_list']"
+          type="primary"
+          icon="el-icon-document"
+          size="mini"
+          @click="handleCreateLog"
+        >创建记录</el-button>
+      </template>
       <template
         slot="status"
         slot-scope="scope"
@@ -576,6 +593,12 @@ export default {
           prop: 'logo',
           width: '140',
           img: true
+        },
+        {
+          label: '创建时间',
+          hide: false,
+          prop: 'createTime',
+          width: '140'
         }
 
       ],
@@ -718,6 +741,11 @@ export default {
       this.form = row
       this.dialogPvVisible = true
       this.operationStatus = 1
+    },
+    handleCreateLog() {
+      this.$router.push({
+        path: '/admin/systenanttask'
+      })
     },
     handleRechargeList(row) {
       this.$router.push({
