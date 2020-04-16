@@ -2,7 +2,7 @@
  * @Date: 2020-02-15 16:57:27
  * @LastEditors: Donkey
  * @Author: xw
- * @LastEditTime: 2020-04-15 11:38:21
+ * @LastEditTime: 2020-04-16 10:30:11
  * @Description: 题目表管理
  -->
 <template>
@@ -469,12 +469,12 @@ export default {
         },
         {
           label: '课程',
-          prop: 'courseId',
+          prop: 'courseTitle',
           width: 120
         },
         {
           label: '课时',
-          prop: 'lessonId',
+          prop: 'courseLessonTitle',
           width: 120
         },
         {

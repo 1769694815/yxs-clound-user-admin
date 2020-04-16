@@ -1,7 +1,7 @@
 <!--
  * @Author: xwen
  * @Date: 2020-03-05 14:02:24
- * @LastEditTime: 2020-03-11 19:14:52
+ * @LastEditTime: 2020-04-16 10:43:11
  * @LastEditors: Donkey
  * @Description: 个人信息
  -->
@@ -151,6 +151,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.ruleForm.newpassword1 = this.ruleForm.password1
           updateInfo(this.ruleForm).then(res => {
             if (res.data.ok && res.data.data) {
               this.$message({
