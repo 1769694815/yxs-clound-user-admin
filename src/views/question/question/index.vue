@@ -569,6 +569,7 @@ export default {
             this.form.typeId === 2 ||
             this.form.typeId === 3
           ) {
+            // 处理options
             const optionsContent = []
             for (let i = 0; i < this.singleArray.length; i++) {
               const content = {
@@ -579,13 +580,9 @@ export default {
             }
             const jsonstr = JSON.stringify(optionsContent)
             this.form.optionsContent = jsonstr
-            const checkAnswer = []
+            // 处理answer 多选和不定项选择时answer要转格式,
             if (this.form.typeId === 2 || this.form.typeId === 3) {
-              for (let i = 0; i < this.checkArray.length; i++) {
-                checkAnswer.push(this.checkArray[i])
-              }
-              const jsonAnswer = JSON.stringify(checkAnswer)
-              this.form.answer = jsonAnswer
+              this.form.answer = JSON.stringify(this.checkArray)
             }
           }
           if (this.form.id != null) {
@@ -652,16 +649,34 @@ export default {
       this.getList()
     },
     getOptionsContent(row) {
-      const json = JSON.parse(row.optionsContent)
+      let json
+      try {
+        json = JSON.parse(row.optionsContent)
+      } catch (e) {
+        console.error(e)
+      }
       const type = row.typeId
-      if (type === 2) {
+      // 多选和不定项选择
+      if (type === 2 || type === 3) {
         if (json === null || json === '') {
           this.checkArray = []
         } else {
-          this.checkArray = row.answer.split('')
+          // 兼容之前的多选题答案格式
+          try {
+            // anser如果能转成数组就是新格式
+            if (JSON.parse(row.answer) instanceof Array) {
+              this.checkArray = JSON.parse(row.answer)
+            } else {
+              // 否则为旧的格式
+              throw new Error(-1)
+            }
+          } catch (e) {
+            this.checkArray = row.answer.split('')
+          }
         }
       }
-      if (type === 1 || type === 2 || type === 3) {
+      // 单选
+      if (type === 1) {
         if (json === null || json === '') {
           this.singleArray = ['', '', '', '']
         } else {
