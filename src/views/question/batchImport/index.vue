@@ -761,6 +761,15 @@ export default {
               url: "/question/question/bulk",
               data: JSON.stringify(dataFormat),
               success: function(msg){
+
+                if (msg.code !== 0) {
+                  that.$message({
+                    message: msg.msg,
+                    type: 'warning'
+                  })
+                  return
+                }
+
                 that.$message.success('导入成功')
                 $("#import_questions").hide();
                 $("#import").show();
